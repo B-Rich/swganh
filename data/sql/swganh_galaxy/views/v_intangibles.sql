@@ -46,5 +46,4 @@ USE `swganh_galaxy`;
 
 /*!50001 DROP TABLE IF EXISTS `v_intangibles`*/;
 /*!50001 DROP VIEW IF EXISTS `v_intangibles`*/;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `v_intangibles` AS select 'id' AS `id`,'stf_detail_file' AS `stf_detail_file`,'stf_detail_string' AS `stf_detail_string`,'custom_name' AS `custom_name`,'generic_int' AS `genericInt` */;
+/*!50001 CREATE VIEW `v_intangibles` AS select 'id' AS `id`,'stf_detail_file' AS `stf_detail_file`,'stf_detail_string' AS `stf_detail_string`,'custom_name' AS `custom_name`,'generic_int' AS `genericInt` */;

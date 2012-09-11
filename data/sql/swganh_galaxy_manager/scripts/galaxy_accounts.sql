@@ -38,8 +38,6 @@ USE swganh_galaxy_manager;
 --
 
 DROP TABLE IF EXISTS `galaxy_accounts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `galaxy_accounts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `galaxy_id` bigint(20) unsigned NOT NULL,
@@ -49,15 +47,14 @@ CREATE TABLE `galaxy_accounts` (
   KEY `galaxy_account_type` (`account_type`),
   CONSTRAINT `galaxy_account_type` FOREIGN KEY (`account_type`) REFERENCES `swganh_static.galaxy_account_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `galaxy_accounts`
 --
 
-LOCK TABLES `galaxy_account` WRITE;
-/*!40000 ALTER TABLE `galaxy_account` DISABLE KEYS */;
-/*!40000 ALTER TABLE `galaxy_account` ENABLE KEYS */;
+LOCK TABLES `galaxy_accounts` WRITE;
+/*!40000 ALTER TABLE `galaxy_accounts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `galaxy_accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -68,5 +65,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2012-08-27  9:44:09
