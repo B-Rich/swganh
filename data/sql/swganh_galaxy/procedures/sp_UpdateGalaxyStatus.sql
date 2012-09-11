@@ -26,10 +26,10 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_GetSystemInTangible`(IN object_id BIGINT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_UpdateGalaxyStatus` $$
+CREATE PROCEDURE `sp_UpdateGalaxyStatus`(IN g_id INT, IN g_status INT)
 BEGIN
 
-  SELECT * FROM v_objects WHERE id = object_id;
-  SELECT * FROM v_intangibles WHERE id = object_id;
+    UPDATE swganh_galaxy_manager.galaxy SET galaxy_status = g_status, updated_at = NOW();
 
 END $$
