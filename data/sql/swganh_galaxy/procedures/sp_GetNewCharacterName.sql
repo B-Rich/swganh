@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetNewCharacterName`(IN `species` VARCHAR(16), IN `gender` INT)
 BEGIN
 
@@ -40,4 +44,4 @@ BEGIN
   -- return value
   SELECT new_firstname, new_lastname;
 
-END;
+END $$

@@ -22,10 +22,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetStaticPlanets`()
 BEGIN
 
   -- return our planets (scenes)
   SELECT id, name, name AS label, ' ' AS description, terrain_file AS terrain  FROM swganh_static.planet;
 
-END;
+END $$

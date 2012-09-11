@@ -22,9 +22,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetSystemObject`(IN object_id BIGINT)
 BEGIN
 
   SELECT * FROM v_objects WHERE id = object_id;
 
-END;
+END $$

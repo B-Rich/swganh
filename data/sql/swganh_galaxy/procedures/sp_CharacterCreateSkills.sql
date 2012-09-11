@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_CharacterCreateSkills`(IN character_id BIGINT, IN profession_id INT, IN race_id INT)
 BEGIN
 
@@ -45,4 +49,4 @@ BEGIN
     UNTIL loopEnd END REPEAT;
   CLOSE cur_1;
 
-END;
+END $$
