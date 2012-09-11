@@ -22,10 +22,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetSystemInTangible`(IN object_id BIGINT)
 BEGIN
 
   SELECT * FROM v_objects WHERE id = object_id;
   SELECT * FROM v_intangibles WHERE id = object_id;
 
-END;
+END $$

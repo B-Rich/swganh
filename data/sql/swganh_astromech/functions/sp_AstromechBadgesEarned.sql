@@ -33,6 +33,8 @@
 
 USE swganh_astromech;
 
+DELIMITER $$
+
 --
 -- `sp_AstromechBadgesEarned`
 --
@@ -73,7 +75,7 @@ BEGIN
     END IF;
   END LOOP loop1;
 
-END;
+END $$
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

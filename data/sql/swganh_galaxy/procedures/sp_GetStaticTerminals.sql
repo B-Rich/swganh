@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetStaticTerminals`(IN planet_id INT)
 BEGIN
 
@@ -59,4 +63,5 @@ FROM
   WHERE terminals.id > start_id AND terminals.planet_id = planet_id;
 
   -- exit
-END;
+
+END $$

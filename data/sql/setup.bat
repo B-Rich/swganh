@@ -185,25 +185,13 @@ GOTO:MainMenu
 		mysql --password=%db_pass% --host=%db_host% --user=%db_user% < "create.sql"
 	cd "%PROJECT_BASE%swganh_astromech"
 		mysql --password=%db_pass% --host=%db_host% --user=%db_user% < "create.sql"
-
+	
 	:: Populate the data
 		
 	:: (swganh_static)
 	
 	cd "%PROJECT_BASE%"
 	cd "%PROJECT_BASE%swganh_static\scripts"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
-	cd "%PROJECT_BASE%swganh_static\functions"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
-	cd "%PROJECT_BASE%swganh_static\procedures"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
@@ -245,12 +233,6 @@ GOTO:MainMenu
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%swganh_galaxy_manager\functions"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
 	cd "%PROJECT_BASE%swganh_galaxy_manager\procedures"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
@@ -259,20 +241,8 @@ GOTO:MainMenu
 		
 	:: (swganh_astromech)
 	
-	cd "%PROJECT_BASE%"
-	cd "%PROJECT_BASE%swganh_astromech\scripts"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
+	cd "%PROJECT_BASE%"		
 	cd "%PROJECT_BASE%swganh_astromech\functions"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
-	cd "%PROJECT_BASE%swganh_astromech\procedures"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
@@ -344,12 +314,6 @@ GOTO:MainMenu
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%swganh_galaxy_manager\functions"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
 	cd "%PROJECT_BASE%swganh_galaxy_manager\procedures"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 --comments < "%%A"
@@ -379,17 +343,6 @@ GOTO:MainMenu
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%swganh_static\functions"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
-	cd "%PROJECT_BASE%swganh_static\procedures"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 --comments < "%%A"
-		ECHO. Installing %%A [Done]
-		)
 	GOTO:MainMenu
 	
 :SchemaSWGANH_ASTROMECH
@@ -407,24 +360,13 @@ GOTO:MainMenu
 		
 	:: (swganh_astromech)
 	
-	cd "%PROJECT_BASE%"
-	cd "%PROJECT_BASE%swganh_astromech\scripts"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
+	cd "%PROJECT_BASE%"		
 	cd "%PROJECT_BASE%swganh_astromech\functions"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%swganh_astromech\procedures"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 --comments < "%%A"
-		ECHO. Installing %%A [Done]
-		)
 	GOTO:MainMenu
 
 	
@@ -495,7 +437,6 @@ GOTO:MainMenu
 	ECHO.
 	CALL:sleep 5
 	GOTO:MainMenu
-
 	
 :SchemaBackup
 	GOTO:MainMenu

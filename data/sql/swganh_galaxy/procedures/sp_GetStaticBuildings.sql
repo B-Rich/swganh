@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetStaticBuildings`(IN planet_id INT)
 BEGIN
 
@@ -82,4 +86,5 @@ BEGIN
     LEFT OUTER JOIN swganh_static.building_families ON (swganh_static.building_types.family_id = swganh_static.building_families.id)
     INNER JOIN swganh_static.cells ON (swganh_static.buildings.id = swganh_static.cells.building_id)
     WHERE buildings.planet_id = planet_id;
-END;
+
+END $$

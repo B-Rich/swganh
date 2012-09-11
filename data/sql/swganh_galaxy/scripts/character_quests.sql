@@ -45,7 +45,7 @@ CREATE TABLE `character_quests` (
   `quest_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`character_id`),
   CONSTRAINT `FK_character_quests_characters` FOREIGN KEY (`character_id`) REFERENCES `characters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

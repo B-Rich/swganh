@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS `galaxy_account_types`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `galaxy_account_types` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `type` char(255) NOT NULL,
+  `account_type` char(255) NOT NULL,
   `description` char(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;

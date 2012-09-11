@@ -22,10 +22,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetStaticAttributes`()
 BEGIN
   
   -- output our data
   SELECT name, internal FROM swganh_static.attributes;
 
-END;
+END $$

@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_GetSystemPlayer`(IN `object_id` BIGINT)
 BEGIN
 
@@ -62,4 +66,4 @@ BEGIN
 
   SELECT swganh_static.xp_types.xp_type, character_xp.value FROM character_xp INNER JOIN swganh_static.xp_types ON (character_xp.xp_type_id = swganh_static.xp_types.id) WHERE character_id = character_id;
 
-END;
+END $$
