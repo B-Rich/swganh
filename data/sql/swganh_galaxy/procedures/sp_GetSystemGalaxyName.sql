@@ -1,4 +1,4 @@
-/*
+﻿/*
 ---------------------------------------------------------------------------------------
 This source file is part of SWG:ANH (Star Wars Galaxies - A New Hope - Server Emulator)
 
@@ -22,29 +22,27 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
---
--- Table structure for view `v_intangibles`
---
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
-DROP TABLE IF EXISTS `v_intangibles`;
-/*!50001 DROP VIEW IF EXISTS `v_intangibles`*/;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-/*!50001 CREATE TABLE `v_intangibles` (
-  `id` varchar(2),
-  `stf_detail_file` varchar(15),
-  `stf_detail_string` varchar(17),
-  `custom_name` varchar(11),
-  `genericInt` varchar(11)
-) ENGINE=MyISAM */;
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetSystemGalaxyName` $$
+CREATE PROCEDURE `swganh_galaxy`.`sp_GetSystemGalaxyName` ()
+BEGIN
 
-USE `swganh_galaxy`;
+  -- grab our galaxy name
+  SELECT galaxy_name FROM swganh_galaxy_manager.galaxy WHERE id = 1;
 
---
--- Final view structure for view `v_intangibles`
---
+END;
 
-/*!50001 DROP TABLE IF EXISTS `v_intangibles`*/;
-/*!50001 DROP VIEW IF EXISTS `v_intangibles`*/;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50001 VIEW `v_intangibles` AS select 'id' AS `id`,'stf_detail_file' AS `stf_detail_file`,'stf_detail_string' AS `stf_detail_string`,'custom_name' AS `custom_name`,'generic_int' AS `genericInt` */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
