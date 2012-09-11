@@ -26,22 +26,21 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_GetNewCharacterName`(IN `species` VARCHAR(16), IN `gender` INT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_UpdateGalaxyName` $$
+CREATE PROCEDURE `sp_UpdateGalaxyName`(IN g_name VARCHAR(128), IN g_version VARCHAR(16), IN g_status INT)
 BEGIN
 
-  -- Declare our var(s)
-  DECLARE new_firstname CHAR(32);
-  DECLARE new_lastname CHAR(32);
-  DECLARE race_id INT(8);
+  -- Declare var(s)
+  DECLARE cur_galaxy_name VARCHAR(128);
+  DECLARE galaxy_check INT DEFAULT 0;
 
-  -- get our race_id
-  SELECT id FROM swganh_static.race WHERE name = species INTO race_id;
+  -- Check if our galaxy already exists
+  SELECT COUNT(*) FROM swganh_galaxy_manager.galaxy WHERE galaxy_name = g_name INTO galaxy_check;
 
-  -- get our random first & last name
-  SELECT firstname FROM swganh_static.namegen_firstname WHERE namegen_firstname.species = race_id AND namegen_firstname.gender = gender ORDER BY RAND() LIMIT 1 INTO new_firstname;
-  SELECT lastname FROM swganh_static.namegen_lastname WHERE namegen_lastname.species = race_id AND namegen_lastname.gender = gender ORDER BY RAND() LIMIT 1 INTO new_lastname;
-
-  -- return value
-  SELECT new_firstname, new_lastname;
+  IF galaxy_check IS NULL OR galaxy_check < 1 THEN
+    INSERT INTO swganh_galaxy_manager VALUES (1, g_name, g_version, g_status, NOW(), NOW());
+  ELSE
+    UPDATE swganh_galaxy_manager.galaxy SET galaxy_name = g_name, galaxy_version = g_version, galaxy_status = g_status, updated_at = NOW();
+  END IF;
 
 END $$

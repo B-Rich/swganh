@@ -152,7 +152,6 @@ charCreate:BEGIN
   END IF;
 
   -- create the starting items
-  SELECT inventory_id, race_id, profession_id, gender;
   CALL sp_CharacterCreateStartingItems(inventory_id, race_id, profession_id - 1, gender);
 
   -- Debug
