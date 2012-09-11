@@ -13,13 +13,13 @@ resource_cache_size = 500
 
 [db.galaxy_manager]
 host = localhost
-schema = galaxy_manager
+schema = swganh_galaxy_manager
 username = swganh
 password = swganh
 
 [db.galaxy]
 host = localhost
-schema = galaxy
+schema = swganh_galaxy
 username = swganh
 password = swganh
 
