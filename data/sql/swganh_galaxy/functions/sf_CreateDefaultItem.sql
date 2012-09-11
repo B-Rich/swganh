@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE FUNCTION `sf_CreateDefaultItem`(`family_id` INT, `type_id` INT, `parent_id` BIGINT, `planet` INT, `in_x` FLOAT, `in_y` FLOAT, `in_z` FLOAT, `customName` VARCHAR(32)) RETURNS BIGINT(20)
 BEGIN
 
@@ -66,5 +70,5 @@ BEGIN
 
   -- Return our result and exit
   RETURN item_id;
-  
-END;
+
+END $$

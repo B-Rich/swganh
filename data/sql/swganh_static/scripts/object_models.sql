@@ -41,7 +41,7 @@ DROP TABLE IF EXISTS `object_models`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `object_models` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
   `object_string` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15856 DEFAULT CHARSET=utf8;
@@ -53,7 +53,8 @@ CREATE TABLE `object_models` (
 
 LOCK TABLES `object_models` WRITE;
 /*!40000 ALTER TABLE `object_models` DISABLE KEYS */;
-INSERT INTO `object_models` VALUES (2,'object/battlefield_marker/shared_battlefield_marker.iff'),
+INSERT INTO `object_models` VALUES
+ (2,'object/battlefield_marker/shared_battlefield_marker.iff'),
 (3,'object/battlefield_marker/shared_battlefield_marker_128m.iff'),
 (4,'object/battlefield_marker/shared_battlefield_marker_192m.iff'),
 (5,'object/battlefield_marker/shared_battlefield_marker_256m.iff'),

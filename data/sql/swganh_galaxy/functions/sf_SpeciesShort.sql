@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE FUNCTION `sf_SpeciesShort`(species VARCHAR(255)) RETURNS char(128) CHARSET utf8
 BEGIN
 
@@ -35,4 +39,4 @@ BEGIN
 
   RETURN speciesShort;
 
-END;
+END $$

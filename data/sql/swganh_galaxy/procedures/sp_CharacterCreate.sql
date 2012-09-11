@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_CharacterCreate`(IN `account_id` INT, IN `galaxy_id` INT, IN `firstname` char(30), IN `lastname` char(50), IN `profession` char(64), IN `city` char(32), IN `scale` FLOAT, IN `biography` text(2048), IN `appearance_customization` BLOB, IN `hair_model` CHAR(64), IN `hair_customization` BLOB, IN `base_model_string` CHAR(64)
     )
 charCreate:BEGIN
@@ -161,4 +165,4 @@ charCreate:BEGIN
 
   SELECT character_id;
 
-END;
+END $$

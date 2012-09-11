@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE PROCEDURE `sp_CharacterCreateStartingItems`(IN `inventory_id` BIGINT, IN `race_id` INT, IN `profession_id` INT, IN `gender_id` INT)
 BEGIN
 
@@ -59,4 +63,4 @@ BEGIN
 
   -- Exit
 
-END;
+END $$

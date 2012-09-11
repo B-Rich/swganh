@@ -52,11 +52,6 @@ CREATE TABLE `galaxy_accounts` (
 -- Dumping data for table `galaxy_accounts`
 --
 
-LOCK TABLES `galaxy_accounts` WRITE;
-/*!40000 ALTER TABLE `galaxy_accounts` DISABLE KEYS */;
-/*!40000 ALTER TABLE `galaxy_accounts` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -22,6 +22,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
+use swganh_galaxy;
+
+DELIMITER $$
+
 CREATE FUNCTION `sf_CharacterCheckName`(`firstname` VARCHAR(32), `lastname` VARCHAR(32), `species` INT(11), `acc_id` INT(11)) RETURNS int(11)
 checkName:BEGIN
 
@@ -271,4 +275,4 @@ checkName:BEGIN
   SET error_id = 666;
   RETURN error_id;
 
-END;
+END $$
