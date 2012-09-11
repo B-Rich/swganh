@@ -42,22 +42,59 @@ TITLE %title%
 
 @ECHO OFF
 	CALL:READ_CFG
-	CALL:ScreenIntro
 	CALL:MainMenu
 
 	::
 	:: Functions
-	::
+	::	
 
 :READ_CFG
 	FOR /F "tokens=2 delims==" %%a IN ('find "username" ^< setup.cfg') DO SET db_user=%%a
 	FOR /F "tokens=2 delims==" %%a IN ('find "password" ^< setup.cfg') DO SET db_pass=%%a
 	FOR /F "tokens=2 delims==" %%a IN ('find "host" ^< setup.cfg') DO SET db_host=%%a
+	CLS
+	ECHO.
+	ECHO.                MIIIIIIIIIIIINNNNNNNNNNNNNNNDIIIIIIIINNN
+	ECHO.                MIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNIIIINNN
+	ECHO.                MIIIIIIIIONNNNNNNNN,,NNNNNNNNNNNNNNNINNN
+	ECHO.                MIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+	ECHO.                MIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+	ECHO.                MIIIIIDNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+	ECHO.                MIIIIINNNNNNN=...............NNNNNNNNNNN
+	ECHO.                MIIIIIINNNN8NNNNN......N+NNNNNN...DNNNNN
+	ECHO.                MIIIIIIONNNNNNNN~,......DNNNNNNNNN..NNNN
+	ECHO.                MIIIIIINNNNNNNN.N....... NNNNNNNNN....NN
+	ECHO.                MIIIIINNNNNNN$.NN .........NNNNNN.....NN
+	ECHO.                MIIINNNNNNNN.~NN8DNZ..................NN
+	ECHO.                MINNNNNNNNN$NNNNNNNN............MN....NN
+	ECHO.                MIINNNNNNNNNNNNN...:NN...........MN...NN
+	ECHO.                MIINNNNNNNNNNNN,..... N..........N....NN
+	ECHO.                MIINNNNNNNNNNNN.........D.............NN
+	ECHO.                MIINNNNNNNNNNN8.......................NN
+	ECHO.                MIINNNNNNNNNN ........................NN
+	ECHO.                MIINNNNNNNND...NNN..................DNNN
+	ECHO.                M8N80NNNNNNM...NNNNN................~.NN
+	ECHO.                M0000NNNNNN ..NNNNNNN.................NN
+	ECHO.                M0NNNNNNNNNN..NNNNNNN . NNN .........=NN
+	ECHO.                M000NNNNNNNNN.NNNNNNNN..NNNN........NNNN
+	ECHO.                M00NNNNNNNNNNNNNNNNNN7.............NNNNN
+	ECHO.                M0000NNNNNNNNNNNNNNNNNN?.........NNNNNNN
+	ECHO.                M0000NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+	ECHO.                M00000000NNNNNNNNNNN..D..N..NDN.:NNM..NN
+	ECHO.                M00000000NNNNNNNN7,NN.N..N.N,,,8.Z.:NNNN
+	ECHO.                M00000000NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+	ECHO.                M88888888888888888888888888888888888888N
+	ECHO.
+	ECHO.                     SWG:ANH - Database Installer
+	ECHO.
+	ECHO.
+	CALL:sleep 2
+	GOTO:EOF
 
 :MainMenu
 	CLS
 	ECHO. ----------------------------------------------------------------------
-	ECHO.  SWGANH Database Install Script                              (v.0.04)
+	ECHO.  SWGANH Database Install Script                              (v.0.05)
 	ECHO. ----------------------------------------------------------------------
 	ECHO.  DB IP: %db_host%     DB Username: %db_user%    DB Password: %db_pass%
 	ECHO. ----------------------------------------------------------------------
@@ -65,19 +102,19 @@ TITLE %title%
 	ECHO.          Database Setup           ^|       Database Maintenance
 	ECHO.                                   ^|
 	ECHO.   (1) Complete DB Install         ^|  (a) Backup accounts table
-	ECHO.                                   ^|  (b) ----
+	ECHO.                                   ^|  (b) 
 	ECHO.       Individual DB Setup         ^|
 	ECHO.                                   ^|
-	ECHO.   (2) galaxy                      ^|  (c) Complete Database Backup
-	ECHO.   (3) galaxy_manager              ^|  (d) Delete Databases
-	ECHO.                                   ^|  (e) Create new Galaxy
-	ECHO.        Server Configuration       ^|  (f) ----
-	ECHO.                                   ^|  (g) ----
-	ECHO.   (-) -------------------         ^|
-	ECHO.   (-) -------------------         ^|               Help
-	ECHO.   (-) -------------------         ^|
-	ECHO.   (-) -------------------         ^|  (h) Help
-	ECHO.                                   ^|  (s) Stats
+	ECHO.   (2) swganh_static               ^|  (c) Complete Database Backup
+	ECHO.   (3) swganh_astromech            ^|  (d) Delete Databases
+	ECHO.   (4) swganh_galaxy               ^|  (e) 
+	ECHO.   (5) swganh_galaxy_manager       ^|  (f) 
+	ECHO.                                   ^|  (g) 
+	ECHO.      Server Configuration         ^|
+	ECHO.                                   ^|               Help
+	ECHO.   (-)                             ^|
+	ECHO.   (-)                             ^|  (h) Help
+	ECHO.   (-)                             ^|  (s) Stats
 	ECHO.                                   ^|
 	ECHO.                                   ^|
 	ECHO.                                   ^|
@@ -88,27 +125,29 @@ TITLE %title%
 
 IF /I '%Choice%'=='1' GOTO :DatabaseCompleteSetup 
 
-IF /I '%Choice%'=='2' GOTO :SchemaGalaxy 
+IF /I '%Choice%'=='2' GOTO :SchemaSWGANH_STATIC 
 
-IF /I '%Choice%'=='3' GOTO :SchemaGalaxyManager
+IF /I '%Choice%'=='3' GOTO :SchemaSWGANH_ASTROMECH
 
-IF /I '%Choice%'=='4' GOTO :SchemaSWGANH_ASTROMECH
+IF /I '%Choice%'=='4' GOTO :SchemaSWGANH_GALAXY
 
-IF /I '%Choice%'=='5' GOTO :SchemaSWGANH_CONFIG
+IF /I '%Choice%'=='5' GOTO :SchemaSWGANH_GALAXY_MANAGER
 
-IF /I '%Choice%'=='6' GOTO :SchemaSWGANH_LOGS
+IF /I '%Choice%'=='6' GOTO :end
 
-IF /I '%Choice%'=='7' GOTO :SchemaSWGANH_STATIC
+IF /I '%Choice%'=='7' GOTO :end
 
-IF /I '%Choice%'=='8' GOTO :SchemaSWGANH_USER
+IF /I '%Choice%'=='8' GOTO :end
 
-IF /I '%Choice%'=='9' GOTO :SchemaSWGANH_UTILITY
+IF /I '%Choice%'=='9' GOTO :end
 
-IF /I '%Choice%'=='0' GOTO :ResetGlobalTimer
+IF /I '%Choice%'=='0' GOTO :end
 
-IF /I '%Choice%'=='@' GOTO :SetMOTD
+IF /I '%Choice%'=='@' GOTO :end
 
 IF /I '%Choice%'=='a' GOTO :AccountsBackup
+
+IF /I '%Choice%'=='b' GOTO :end
 
 IF /I '%Choice%'=='c' GOTO :CompleteBackup 
 
@@ -138,114 +177,256 @@ GOTO:MainMenu
 
 	:: Create the database schemas
 	
-	cd "%PROJECT_BASE%galaxy"
+	cd "%PROJECT_BASE%swganh_static"
 		mysql --password=%db_pass% --host=%db_host% --user=%db_user% < "create.sql"
-	cd "%PROJECT_BASE%galaxy_manager"
+	cd "%PROJECT_BASE%swganh_galaxy"
+		mysql --password=%db_pass% --host=%db_host% --user=%db_user% < "create.sql"
+	cd "%PROJECT_BASE%swganh_galaxy_manager"
+		mysql --password=%db_pass% --host=%db_host% --user=%db_user% < "create.sql"
+	cd "%PROJECT_BASE%swganh_astromech"
 		mysql --password=%db_pass% --host=%db_host% --user=%db_user% < "create.sql"
 
 	:: Populate the data
-	
-	:: (galaxy)
-	
-	cd "%PROJECT_BASE%"
-	cd "%PROJECT_BASE%galaxy\scripts"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy  < "%%A"
-		ECHO. Installing %%A [Done]
-		)
 		
-	cd "%PROJECT_BASE%galaxy\functions"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-		
-	cd "%PROJECT_BASE%galaxy\procedures"
-		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy --comments < "%%A"
-		ECHO. Installing %%A [Done]
-		)
-	
-	:: (galaxy_manager)
+	:: (swganh_static)
 	
 	cd "%PROJECT_BASE%"
-	cd "%PROJECT_BASE%galaxy_manager\scripts"
+	cd "%PROJECT_BASE%swganh_static\scripts"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy_manager --default-character-set=utf8 < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%galaxy_manager\functions"
+	cd "%PROJECT_BASE%swganh_static\functions"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy_manager --default-character-set=utf8 < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%galaxy_manager\procedures"
+	cd "%PROJECT_BASE%swganh_static\procedures"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy_manager --default-character-set=utf8 < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+	
+	:: (swganh_galaxy)
+	
+	cd "%PROJECT_BASE%"
+	cd "%PROJECT_BASE%swganh_galaxy\scripts"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy  < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_galaxy\functions"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_galaxy\procedures"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy --comments < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_galaxy\views"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy --comments < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+	
+	:: (swganh_galaxy_manager)
+	
+	cd "%PROJECT_BASE%"
+	cd "%PROJECT_BASE%swganh_galaxy_manager\scripts"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_galaxy_manager\functions"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_galaxy_manager\procedures"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	:: (swganh_astromech)
+	
+	cd "%PROJECT_BASE%"
+	cd "%PROJECT_BASE%swganh_astromech\scripts"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_astromech\functions"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_astromech\procedures"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 	
 	GOTO:MainMenu
 	
-:SchemaGalaxy
+:SchemaSWGANH_GALAXY
+	CALL:ScreenClear
+	CALL:ShortMenu
+	ECHO.                   Installing *swganh_galaxy* Database
+	ECHO.
+	ECHO.                              Please Wait
+	ECHO.
 
 	:: Create the schema
 	
-	cd "%PROJECT_BASE%galaxy"
+	cd "%PROJECT_BASE%swganh_galaxy"
 		mysql --password=%db_pass% --host=%db_host% --user=%db_user% --default-character-set=utf8 < "create.sql"
 		
-	:: (galaxy)
+	:: (swganh_galaxy)
 	
 	cd "%PROJECT_BASE%"
-	cd "%PROJECT_BASE%galaxy\scripts"
+	cd "%PROJECT_BASE%swganh_galaxy\scripts"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy --default-character-set=utf8 < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%galaxy\functions"
+	cd "%PROJECT_BASE%swganh_galaxy\functions"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy --default-character-set=utf8 < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%galaxy\procedures"
+	cd "%PROJECT_BASE%swganh_galaxy\procedures"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy --default-character-set=utf8 --comments < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy --default-character-set=utf8 --comments < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_galaxy\views"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy --comments < "%%A"
 		ECHO. Installing %%A [Done]
 		)		
 		
 	GOTO:MainMenu
 	
-:SchemaGalaxyManager
-:: Create the schema
+:SchemaSWGANH_GALAXY_MANAGER
+	CALL:ScreenClear
+	CALL:ShortMenu
+	ECHO.                Installing *swganh_galaxy_manager* Database
+	ECHO.
+	ECHO.                              Please Wait
+	ECHO.
+
+	:: Create the schema
 	
-	cd "%PROJECT_BASE%galaxy_manager"
+	cd "%PROJECT_BASE%swganh_galaxy_manager"
 		mysql --password=%db_pass% --host=%db_host% --user=%db_user% --default-character-set=utf8 < "create.sql"
 		
-	:: (galaxy_manager)
+	:: (swganh_galaxy_manager)
 	
 	cd "%PROJECT_BASE%"
-	cd "%PROJECT_BASE%galaxy_manager\scripts"
+	cd "%PROJECT_BASE%swganh_galaxy_manager\scripts"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy_manager --default-character-set=utf8 < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%galaxy_manager\functions"
+	cd "%PROJECT_BASE%swganh_galaxy_manager\functions"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy_manager --default-character-set=utf8 < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 		
-	cd "%PROJECT_BASE%galaxy_manager\procedures"
+	cd "%PROJECT_BASE%swganh_galaxy_manager\procedures"
 		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
-			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=galaxy_manager --default-character-set=utf8 --comments < "%%A"
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_galaxy_manager --default-character-set=utf8 --comments < "%%A"
 		ECHO. Installing %%A [Done]
 		)
 	GOTO:MainMenu
+
+:SchemaSWGANH_STATIC
+	CALL:ScreenClear
+	CALL:ShortMenu
+	ECHO.                   Installing *swganh_static* Database
+	ECHO.
+	ECHO.                              Please Wait
+	ECHO.
+
+	:: Create the schema
+	
+	cd "%PROJECT_BASE%swganh_static"
+		mysql --password=%db_pass% --host=%db_host% --user=%db_user% --default-character-set=utf8 < "create.sql"
+		
+	:: (swganh_static)
+	
+	cd "%PROJECT_BASE%"
+	cd "%PROJECT_BASE%swganh_static\scripts"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_static\functions"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_static\procedures"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 --comments < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+	GOTO:MainMenu
+	
+:SchemaSWGANH_ASTROMECH
+	CALL:ScreenClear
+	CALL:ShortMenu
+	ECHO.                Installing *swganh_astromech* Database
+	ECHO.
+	ECHO.                              Please Wait
+	ECHO.
+
+	:: Create the schema
+	
+	cd "%PROJECT_BASE%swganh_astromech"
+		mysql --password=%db_pass% --host=%db_host% --user=%db_user% --default-character-set=utf8 < "create.sql"
+		
+	:: (swganh_astromech)
+	
+	cd "%PROJECT_BASE%"
+	cd "%PROJECT_BASE%swganh_astromech\scripts"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_astromech\functions"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+		
+	cd "%PROJECT_BASE%swganh_astromech\procedures"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_astromech --default-character-set=utf8 --comments < "%%A"
+		ECHO. Installing %%A [Done]
+		)
+	GOTO:MainMenu
+
 	
 :SchemaSetup
 	GOTO:MainMenu
@@ -287,7 +468,7 @@ GOTO:MainMenu
 
 	:: Backup *ALL* Databases
 	
-	mysqldump --password=%db_pass% --host=%db_host% --user=%db_user% --databases galaxy galaxy_manager swganh_astromech swganh_logs --create-options --extended-insert --routines --dump-date --triggers --comments > swganh_complete.bak
+	mysqldump --password=%db_pass% --host=%db_host% --user=%db_user% --databases swganh_galaxy swganh_galaxy_manager swganh_astromech swganh_static --create-options --extended-insert --routines --dump-date --triggers --comments > swganh_complete.bak
 
 	ECHO.                           Backup Complete
 	ECHO.
@@ -306,7 +487,7 @@ GOTO:MainMenu
 
 	:: Backup account data
 	
-	mysqldump --password=%db_pass% --host=%db_host% --user=%db_user% galaxy account --extended-insert --create-options --dump-date --triggers --comments -r swganh_accounts.bak
+	mysqldump --password=%db_pass% --host=%db_host% --user=%db_user% swganh_galaxy_manager account --extended-insert --create-options --dump-date --triggers --comments -r swganh_accounts.bak
 
 	ECHO.                           Backup Complete
 	ECHO.
@@ -342,12 +523,12 @@ GOTO:MainMenu
 	CALL:ShortMenu
 	
 	ECHO. Project Base: %PROJECT_BASE%
-ECHO. Install Type Selected: %INSTALL_TYPE%
-ECHO. Backup Type Selected: %BACKUP_TYPE%
-ECHO.
-ECHO. User: %db_user%
-ECHO. Password: %db_pass%
-ECHO. IP: %db_host%
+	ECHO. Install Type Selected: %INSTALL_TYPE%
+	ECHO. Backup Type Selected: %BACKUP_TYPE%
+	ECHO.
+	ECHO. User: %db_user%
+	ECHO. Password: %db_pass%
+	ECHO. IP: %db_host%
 	CALL:sleep 5
 	GOTO:MainMenu
 
@@ -389,51 +570,10 @@ ECHO. IP: %db_host%
 :ScreenClear
 	CLS
 	GOTO:EOF
-	
-:ScreenIntro
-	CLS
-	ECHO.
-	ECHO.                MIIIIIIIIIIIINNNNNNNNNNNNNNNDIIIIIIIINNN
-	ECHO.                MIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNIIIINNN
-	ECHO.                MIIIIIIIIONNNNNNNNN,,NNNNNNNNNNNNNNNINNN
-	ECHO.                MIIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-	ECHO.                MIIIIIINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-	ECHO.                MIIIIIDNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-	ECHO.                MIIIIINNNNNNN=...............NNNNNNNNNNN
-	ECHO.                MIIIIIINNNN8NNNNN......N+NNNNNN...DNNNNN
-	ECHO.                MIIIIIIONNNNNNNN~,......DNNNNNNNNN..NNNN
-	ECHO.                MIIIIIINNNNNNNN.N....... NNNNNNNNN....NN
-	ECHO.                MIIIIINNNNNNN$.NN .........NNNNNN.....NN
-	ECHO.                MIIINNNNNNNN.~NN8DNZ..................NN
-	ECHO.                MINNNNNNNNN$NNNNNNNN............MN....NN
-	ECHO.                MIINNNNNNNNNNNNN...:NN...........MN...NN
-	ECHO.                MIINNNNNNNNNNNN,..... N..........N....NN
-	ECHO.                MIINNNNNNNNNNNN.........D.............NN
-	ECHO.                MIINNNNNNNNNNN8.......................NN
-	ECHO.                MIINNNNNNNNNN ........................NN
-	ECHO.                MIINNNNNNNND...NNN..................DNNN
-	ECHO.                M8N80NNNNNNM...NNNNN................~.NN
-	ECHO.                M0000NNNNNN ..NNNNNNN.................NN
-	ECHO.                M0NNNNNNNNNN..NNNNNNN . NNN .........=NN
-	ECHO.                M000NNNNNNNNN.NNNNNNNN..NNNN........NNNN
-	ECHO.                M00NNNNNNNNNNNNNNNNNN7.............NNNNN
-	ECHO.                M0000NNNNNNNNNNNNNNNNNN?.........NNNNNNN
-	ECHO.                M0000NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-	ECHO.                M00000000NNNNNNNNNNN..D..N..NDN.:NNM..NN
-	ECHO.                M00000000NNNNNNNN7,NN.N..N.N,,,8.Z.:NNNN
-	ECHO.                M00000000NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-	ECHO.                M88888888888888888888888888888888888888N
-	ECHO.
-	ECHO.                     SWG:ANH - Database Installer
-	ECHO.
-	ECHO.
-	CALL:sleep 1
-	GOTO:EOF
-	
 :ShortMenu
 	CLS
 	ECHO. ----------------------------------------------------------------------
-	ECHO.  SWGANH Database Install Script                              (v.0.03)
+	ECHO.  SWGANH Database Install Script                              (v.0.05)
 	ECHO. ----------------------------------------------------------------------
 	ECHO.  DB IP: %db_host%     DB Username: %db_user%    DB Password: %db_pass%
 	ECHO. ----------------------------------------------------------------------
