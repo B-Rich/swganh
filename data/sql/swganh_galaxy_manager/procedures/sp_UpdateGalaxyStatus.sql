@@ -22,15 +22,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
-use swganh_galaxy;
+use swganh_galaxy_manager;
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetSystemGalaxyName` $$
-CREATE PROCEDURE `sp_GetSystemGalaxyName`()
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_UpdateGalaxyStatus` $$
+CREATE PROCEDURE `sp_UpdateGalaxyStatus`(IN g_id INT, IN g_status INT)
 BEGIN
 
-  -- grab our galaxy name
-  SELECT galaxy_name FROM swganh_galaxy_manager.galaxy WHERE id = 1;
+	-- update our galaxy status
+    UPDATE swganh_galaxy_manager.galaxy SET galaxy_status = g_status, updated_at = NOW();
 
 END $$

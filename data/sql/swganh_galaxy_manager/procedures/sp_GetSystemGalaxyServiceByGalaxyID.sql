@@ -22,15 +22,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
-use swganh_galaxy;
+use swganh_galaxy_manager;
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_UpdateGalaxyStatus` $$
-CREATE PROCEDURE `sp_UpdateGalaxyStatus`(IN g_id INT, IN g_status INT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_GetSystemGalaxyServiceByGalaxyID` $$
+CREATE PROCEDURE `sp_GetSystemGalaxyServiceByGalaxyID`(IN g_id INT)
 BEGIN
 
-	-- update our galaxy status
-    UPDATE swganh_galaxy_manager.galaxy SET galaxy_status = g_status, updated_at = NOW();
+  -- Return our service details
+  SELECT id, galaxy_id, name, type, version, address, tcp_port, udp_port, ping_port, status, TIMESTAMP(last_pulse) as last_pulse_timestamp FROM swganh_galaxy_manager.service WHERE galaxy_id = g_id ORDER BY swganh_galaxy_manager.service.type;
 
 END $$

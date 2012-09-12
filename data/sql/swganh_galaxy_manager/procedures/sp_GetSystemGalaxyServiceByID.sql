@@ -22,15 +22,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
-use swganh_galaxy;
+use swganh_galaxy_manager;
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetSystemGalaxy` $$
-CREATE PROCEDURE `sp_GetSystemGalaxy`()
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_GetSystemGalaxyServiceByID` $$
+CREATE PROCEDURE `sp_GetSystemGalaxyServiceByID`(IN s_id INT)
 BEGIN
 
-  -- grab our galaxy details
-  SELECT * FROM swganh_galaxy_manager.galaxy ORDER BY name;
+  -- Return our service details by the specified ID
+  SELECT * FROM swganh_galaxy_manager.service WHERE id = s_id;
 
 END $$

@@ -27,13 +27,12 @@ Datastore::Datastore(shared_ptr<sql::Connection> connection)
 
 Datastore::~Datastore() {}
 
-std::shared_ptr<Galaxy> Datastore::findGalaxyByName(const std::string& name) const {
+std::shared_ptr<Galaxy> Datastore::findGalaxyByName(const std::string& name) const { 
     shared_ptr<Galaxy> galaxy = nullptr;
 
     try {
         std::unique_ptr<sql::PreparedStatement> statement(connection_->prepareStatement(
-            "SELECT * FROM galaxy "
-            "WHERE name = ? LIMIT 1"));
+			"CALL sp_GetSystemGalaxy(?);"));
 
         statement->setString(1, name);
 
@@ -47,9 +46,9 @@ std::shared_ptr<Galaxy> Datastore::findGalaxyByName(const std::string& name) con
         galaxy = make_shared<Galaxy>(
             result->getUInt("id"),
             result->getUInt("primary_id"),
-            result->getString("name"),
-            result->getString("version"),
-            static_cast<Galaxy::StatusType>(result->getInt("status")),
+            result->getString("galaxy_name"),
+            result->getString("galaxy_version"),
+            static_cast<Galaxy::StatusType>(result->getInt("galaxy_status")),
             result->getString("created_at"),
             result->getString("updated_at"));
     } catch(sql::SQLException &e) {
@@ -68,20 +67,12 @@ std::shared_ptr<Galaxy> Datastore::createGalaxy(
 
     try {
         std::unique_ptr<sql::PreparedStatement> statement(connection_->prepareStatement(
-            "INSERT INTO galaxy(name, version, status, created_at, updated_at) "
-            "VALUES(?, ?, ?, NOW(), NOW())"));
+            "CALL sp_UpdateGalaxyName(?,?,?);"));
 
         statement->setString(1, name);
         statement->setString(2, version);
         statement->setInt(3, 0);
-
-        // if the statement fails to service return a nullptr
-        if (statement->executeUpdate() <= 0) {
-            return nullptr;
-        }
-
-        statement.reset(connection_->prepareStatement(
-            "SELECT * FROM galaxy WHERE id = LAST_INSERT_ID()"));
+      
         std::unique_ptr<sql::ResultSet> result(statement->executeQuery());
 
         if (!result->next()) {
@@ -91,9 +82,9 @@ std::shared_ptr<Galaxy> Datastore::createGalaxy(
         galaxy = make_shared<Galaxy>(
             result->getUInt("id"),
             result->getUInt("primary_id"),
-            result->getString("name"),    
-            result->getString("version"),
-            static_cast<Galaxy::StatusType>(result->getInt("status")),
+            result->getString("galaxy_name"),    
+            result->getString("galaxy_version"),
+            static_cast<Galaxy::StatusType>(result->getInt("galaxy_status")),
             result->getString("created_at"),
             result->getString("updated_at"));
     } catch(sql::SQLException &e) {
@@ -107,8 +98,7 @@ void Datastore::saveGalaxyStatus(int32_t galaxy_id, int32_t status) const
 {
     try {
         std::unique_ptr<sql::PreparedStatement> statement(connection_->prepareStatement(
-			"update galaxy set status = ? , updated_at = NOW() "
-            "where id = ?"));
+			"CALL sp_UpdateGalaxyStatus(?,?);"));
 
         statement->setInt(1, status);
         statement->setInt(2, galaxy_id);
@@ -126,19 +116,7 @@ bool Datastore::createService(const Galaxy& galaxy, ServiceDescription& descript
 
     try {
         std::unique_ptr<sql::PreparedStatement> statement(connection_->prepareStatement(
-            "INSERT INTO service (galaxy_id, "
-                                 "name, "
-                                 "type, "
-                                 "version, "
-                                 "address, "
-                                 "tcp_port, "
-                                 "udp_port, "
-                                 "ping_port, "
-                                 "status, "
-                                 "last_pulse, "
-                                 "created_at, "
-                                 "updated_at) "
-            "VALUES(?, ?, ?, ?, INET_ATON(?), ?, ?, ?, ?, NOW(), NOW(), NOW())"));
+            "CALL sp_CreateService(?,?,?,?,?,?,?,?,?, NOW(), NOW(), NOW())"));
         
         uint32_t galaxy_id = galaxy.id();
 

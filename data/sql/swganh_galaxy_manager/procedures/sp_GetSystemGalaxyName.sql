@@ -1,10 +1,10 @@
-/*
+﻿/*
 ---------------------------------------------------------------------------------------
 This source file is part of SWG:ANH (Star Wars Galaxies - A New Hope - Server Emulator)
 
 For more information, visit http://www.swganh.com
 
-Copyright (c) 2006 - 2011 The SWG:ANH Team
+Copyright (c) 2006 - 2012 The SWG:ANH Team
 ---------------------------------------------------------------------------------------
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -22,25 +22,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+use swganh_galaxy_manager;
 
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+DELIMITER $$
 
---
--- Create database galaxy
---
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_GetSystemGalaxyName` $$
+CREATE PROCEDURE `sp_GetSystemGalaxyName`()
+BEGIN
 
-CREATE DATABASE IF NOT EXISTS galaxy CHARACTER SET utf8 COLLATE utf8_general_ci;
+  -- grab our galaxy name
+  SELECT galaxy_name FROM swganh_galaxy_manager.galaxy WHERE id = 1;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+END $$

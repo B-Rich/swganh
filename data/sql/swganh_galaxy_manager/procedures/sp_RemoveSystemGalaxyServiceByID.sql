@@ -22,11 +22,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ---------------------------------------------------------------------------------------
 */
 
-use swganh_galaxy;
+use swganh_galaxy_manager;
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_RemoveSystemGalaxyServiceByID` $$
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_RemoveSystemGalaxyServiceByID` $$
 CREATE PROCEDURE `sp_RemoveSystemGalaxyServiceByID`(IN s_id INT)
 BEGIN
 
