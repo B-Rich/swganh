@@ -29,7 +29,7 @@ DELIMITER $$
 CREATE PROCEDURE `sp_CharacterCreateXP`(IN character_id BIGINT, IN profession_id INT)
 BEGIN
 
-  -- Declare our Var(s)
+  -- Declare our var(s)
   DECLARE loopEnd INT DEFAULT 0;
   DECLARE xp_type_id INT;
   DECLARE cur_1 CURSOR FOR SELECT skills_base_xp_groups.xp_type_id FROM swganh_static.skills_base_xp_groups WHERE skills_base_xp_groups.skill_id = profession_id;

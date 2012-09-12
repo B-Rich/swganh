@@ -26,10 +26,11 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_GetSystemObject`(IN object_id BIGINT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_RemoveSystemGalaxyServiceByID` $$
+CREATE PROCEDURE `sp_RemoveSystemGalaxyServiceByID`(IN s_id INT)
 BEGIN
 
-  -- get our object
-  SELECT * FROM v_objects WHERE id = object_id;
+  -- Delete our service
+  DELETE FROM swganh_galaxy_manager.service WHERE id = s_id;
 
 END $$
