@@ -26,10 +26,11 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_GetSystemObject`(IN object_id BIGINT)
+CREATE PROCEDURE `sp_GetSystemIntangible`(IN object_id BIGINT)
 BEGIN
 
-  -- get our object
+  -- get our intangible data for the specified object
   SELECT * FROM v_objects WHERE id = object_id;
+  SELECT * FROM v_intangibles WHERE id = object_id;
 
 END $$

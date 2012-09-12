@@ -26,10 +26,11 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_GetSystemObject`(IN object_id BIGINT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetSystemGalaxy` $$
+CREATE PROCEDURE `sp_GetSystemGalaxy`()
 BEGIN
 
-  -- get our object
-  SELECT * FROM v_objects WHERE id = object_id;
+  -- grab our galaxy details
+  SELECT * FROM swganh_galaxy_manager.galaxy ORDER BY name;
 
 END $$

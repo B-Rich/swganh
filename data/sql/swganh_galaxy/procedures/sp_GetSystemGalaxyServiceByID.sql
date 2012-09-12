@@ -26,10 +26,11 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_GetSystemObject`(IN object_id BIGINT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetSystemGalaxyServiceByID` $$
+CREATE PROCEDURE `sp_GetSystemGalaxyServiceByID`(IN s_id INT)
 BEGIN
 
-  -- get our object
-  SELECT * FROM v_objects WHERE id = object_id;
+  -- Return our service details by the specified ID
+  SELECT * FROM swganh_galaxy_manager.service WHERE id = s_id;
 
 END $$
