@@ -90,6 +90,15 @@ options_description AppConfig::BuildConfigDescription() {
         ("resource_cache_size", boost::program_options::value<uint32_t>(&resource_cache_size),
             "Available cache size for the resource manager (in Megabytes)")
 
+		("db.static.host", boost::program_options::value<std::string>(&static_db.host),
+            "Host address for the static datastore")
+        ("db.static.schema", boost::program_options::value<std::string>(&static_db.schema),
+            "Schema name for the static datastore")
+        ("db.static.username", boost::program_options::value<std::string>(&static_db.username),
+            "Username for authentication with the static datastore")
+        ("db.static.password", boost::program_options::value<std::string>(&static_db.password),
+            "Password for authentication with the static datastore")
+
         ("db.galaxy_manager.host", boost::program_options::value<std::string>(&galaxy_manager_db.host),
             "Host address for the galaxy_manager datastore")
         ("db.galaxy_manager.schema", boost::program_options::value<std::string>(&galaxy_manager_db.schema),
@@ -170,6 +179,13 @@ void SwganhApp::Initialize(int argc, char* argv[]) {
     auto app_config = kernel_->GetAppConfig();
 
     // Initialize kernel resources    
+	kernel_->GetDatabaseManager()->registerStorageType(
+        "static",
+        app_config.static_db.schema,
+        app_config.static_db.host,
+        app_config.static_db.username,
+        app_config.static_db.password);
+
     kernel_->GetDatabaseManager()->registerStorageType(
         "galaxy_manager",
         app_config.galaxy_manager_db.schema,

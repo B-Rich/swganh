@@ -29,7 +29,7 @@ void SceneManager::LoadSceneDescriptionsFromDatabase(const std::shared_ptr<sql::
         auto statement = connection->createStatement();
 
         unique_ptr<ResultSet> result(statement->executeQuery(
-            "CALL sp_GetSceneDescriptions()"));
+            "CALL sp_GetStaticPlanets()"));
 
         while(result->next())
         {

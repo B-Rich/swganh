@@ -198,3 +198,21 @@ void ObjectFactory::LoadContainedObjects(
         }
     }
 }
+
+std::map<std::string, uint32_t> ObjectFactory::LoadObjectTemplates() 
+{
+	std::map<std::string, uint32_t> iff_templates;
+	//Load Object Templates
+	auto conn = db_manager_->getConnection("static");
+    auto statement = shared_ptr<sql::Statement>(conn->createStatement());
+    statement->execute("CALL sp_GetObjectTemplates();");
+	auto result = shared_ptr<sql::ResultSet>(statement->getResultSet());
+	
+	while(result->next())
+	{
+		std::string key = result->getString("iff_template");
+		uint32_t value = result->getUInt("object_type");
+		iff_templates.insert(make_pair(key, value));
+	}
+	return iff_templates;
+}
