@@ -29,6 +29,7 @@ DELIMITER $$
 CREATE PROCEDURE `sp_GetSystemObject`(IN object_id BIGINT)
 BEGIN
 
+  -- get our object
   SELECT * FROM v_objects WHERE id = object_id;
 
 END $$

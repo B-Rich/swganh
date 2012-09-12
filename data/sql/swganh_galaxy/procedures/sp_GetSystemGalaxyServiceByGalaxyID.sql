@@ -31,7 +31,6 @@ CREATE PROCEDURE `sp_GetSystemGalaxyServiceByGalaxyID`(IN g_id INT)
 BEGIN
 
   -- Return our service details
-
   SELECT id, galaxy_id, name, type, version, address, tcp_port, udp_port, ping_port, status, TIMESTAMP(last_pulse) as last_pulse_timestamp FROM swganh_galaxy_manager.service WHERE galaxy_id = g_id ORDER BY swganh_galaxy_manager.service.type;
 
 END $$

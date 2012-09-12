@@ -29,6 +29,7 @@ DELIMITER $$
 CREATE PROCEDURE `sp_GetSystemIntangible`(IN object_id BIGINT)
 BEGIN
 
+  -- get our intangible data for the specified object
   SELECT * FROM v_objects WHERE id = object_id;
   SELECT * FROM v_intangibles WHERE id = object_id;
 

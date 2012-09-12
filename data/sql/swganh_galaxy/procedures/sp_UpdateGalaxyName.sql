@@ -38,7 +38,8 @@ BEGIN
   SELECT COUNT(*) FROM swganh_galaxy_manager.galaxy WHERE galaxy_name = g_name INTO galaxy_check;
 
   IF galaxy_check IS NULL OR galaxy_check < 1 THEN
-    INSERT INTO swganh_galaxy_manager VALUES (1, g_name, g_version, g_status, NOW(), NOW());
+    INSERT INTO swganh_galaxy_manager.galaxy VALUES (1, g_name, g_version, g_status, NOW(), NOW());
+    SELECT * FROM swganh_galaxy_manager.galaxy WHERE galaxy_name = g_name;
   ELSE
     UPDATE swganh_galaxy_manager.galaxy SET galaxy_name = g_name, galaxy_version = g_version, galaxy_status = g_status, updated_at = NOW();
   END IF;

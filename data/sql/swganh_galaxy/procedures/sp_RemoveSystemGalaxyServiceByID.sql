@@ -31,7 +31,6 @@ CREATE PROCEDURE `sp_RemoveSystemGalaxyServiceByID`(IN s_id INT)
 BEGIN
 
   -- Delete our service
-
   DELETE FROM swganh_galaxy_manager.service WHERE id = s_id;
 
 END $$

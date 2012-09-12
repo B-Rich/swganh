@@ -30,8 +30,7 @@ DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetSystemGalaxyServiceByID` $$
 CREATE PROCEDURE `sp_GetSystemGalaxyServiceByID`(IN s_id INT)
 BEGIN
 
-  -- Return our service details
-
+  -- Return our service details by the specified ID
   SELECT * FROM swganh_galaxy_manager.service WHERE id = s_id;
 
 END $$
