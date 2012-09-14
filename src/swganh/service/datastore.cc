@@ -108,15 +108,12 @@ void Datastore::saveGalaxyStatus(int32_t galaxy_id, int32_t status) const
 }
 
 bool Datastore::createService(const Galaxy& galaxy, ServiceDescription& description) const {
-    shared_ptr<ServiceDescription> service = nullptr;
-
     try {
         std::unique_ptr<sql::PreparedStatement> statement(connection_->prepareStatement(
             "CALL sp_CreateGalaxyService(?,?,?,?,?,?,?,?,?, NOW(), NOW(), NOW());"));
         
         uint32_t galaxy_id = galaxy.id();
-
-        statement->setInt(1, galaxy_id);
+		statement->setInt(1, galaxy_id);
         statement->setString(2, description.name());
         statement->setString(3, description.type());
         statement->setString(4, description.version());
@@ -131,8 +128,8 @@ bool Datastore::createService(const Galaxy& galaxy, ServiceDescription& descript
         while (result->next())
 		{
 			description.id(result->getUInt("id"));
-			description.status(result->getInt("status"));
 			description.last_pulse(result->getString("last_heartbeat"));
+			description.status(-1);
 		} while (statement->getMoreResults());
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";

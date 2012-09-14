@@ -26,7 +26,7 @@ accountCreate:BEGIN
   DECLARE exit_code INT DEFAULT 1;
 
   -- generate our SALT
-  SET salt = CONCAT(NOW(), n_username);
+  SET salt = CONCAT(NOW(),n_username);
 
   SELECT SHA1(CONCAT(n_password, '{', salt, '}')) INTO saltedPASS;
 

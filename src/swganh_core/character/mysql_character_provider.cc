@@ -61,15 +61,14 @@ using boost::regex_search;
 MysqlCharacterProvider::MysqlCharacterProvider(KernelInterface* kernel)
     : CharacterProviderInterface()
     , kernel_(kernel) 
-{
-	auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");	
+{	
 }
 
 vector<CharacterData> MysqlCharacterProvider::GetCharactersForAccount(uint64_t account_id) {
     vector<CharacterData> characters;
 
     try {
-        auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
+        auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy_manager");
         auto statement = std::shared_ptr<sql::PreparedStatement>(
             conn->prepareStatement("CALL sp_ReturnAccountCharacters(?);")
             );

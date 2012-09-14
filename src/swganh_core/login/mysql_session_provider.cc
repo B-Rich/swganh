@@ -27,9 +27,9 @@ MysqlSessionProvider::MysqlSessionProvider(swganh::database::DatabaseManagerInte
 MysqlSessionProvider::~MysqlSessionProvider() {}
 
 uint64_t MysqlSessionProvider::GetPlayerId(uint32_t account_id) {
-    uint64_t player_id = 0;
 
-    try {
+	// TODO: Cleanup
+   /* try {
         string sql = "select id from player_account where reference_id = ?";
         auto conn = db_manager_->getConnection("galaxy");
         auto statement = shared_ptr<sql::PreparedStatement>(conn->prepareStatement(sql));
@@ -46,33 +46,27 @@ uint64_t MysqlSessionProvider::GetPlayerId(uint32_t account_id) {
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
-    }
+    }*/
 
-    return player_id;
+    return account_id;
 }
 
-bool MysqlSessionProvider::CreateGameSession(uint64_t player_id, uint32_t session_id) {
+bool MysqlSessionProvider::CreateGameSession(uint64_t account_id, uint32_t session_id) {
     bool updated = false;
     // create new game session 
     std::string game_session = boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::local_time())
         + boost::lexical_cast<std::string>(session_id);
 
     try {
-        string sql = "INSERT INTO player_session(player,session_key) VALUES (?,?)";
-        auto conn = db_manager_->getConnection("galaxy");
+        string sql = "CALL sp_CreateAccountSessionsByID(?,?);";
+        auto conn = db_manager_->getConnection("galaxy_manager");
         auto statement = shared_ptr<sql::PreparedStatement>(conn->prepareStatement(sql));
-        statement->setUInt64(1, player_id);
+        statement->setUInt64(1, account_id);
         statement->setString(2, game_session);
-        auto rows_updated = statement->executeUpdate();
+        updated = statement->execute();
         
-        if (rows_updated > 0) {
-           updated = true;
-            
-        } else {
-            LOG(warning) << "Couldn't create session for player " << player_id << endl;
-        }
-
-    } catch(sql::SQLException &e) {
+	} catch(sql::SQLException &e) {
+		LOG(warning) << "Couldn't create session for player " << account_id << endl;
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
     }
@@ -81,15 +75,11 @@ bool MysqlSessionProvider::CreateGameSession(uint64_t player_id, uint32_t sessio
 void MysqlSessionProvider::EndGameSession(uint64_t player_id)
 {
 	try {
-        string sql = "DELETE FROM player_session where player = ?";
-        auto conn = db_manager_->getConnection("galaxy");
+        string sql = "CALL sp_RemoveAccountSessionsByID(?);";
+        auto conn = db_manager_->getConnection("galaxy_manager");
         auto statement = shared_ptr<sql::PreparedStatement>(conn->prepareStatement(sql));
         statement->setUInt64(1, player_id);
-        auto rows_updated = statement->executeUpdate();
-        
-        if (rows_updated <= 0) {
-            LOG(warning) << "Couldn't delete session for player " << player_id << endl;
-        }
+        statement->execute();        
 
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
@@ -97,7 +87,9 @@ void MysqlSessionProvider::EndGameSession(uint64_t player_id)
     }
 }
 uint32_t MysqlSessionProvider::GetAccountId(uint64_t player_id) {
-    uint32_t account_id = 0;
+	return static_cast<uint32_t>(player_id);
+	// TODO: Fix up
+    /*uint32_t account_id = 0;
 
     try {
         string sql = "select reference_id from player_account where id = ?";
@@ -117,5 +109,5 @@ uint32_t MysqlSessionProvider::GetAccountId(uint64_t player_id) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
     }
-    return account_id;
+    return account_id;*/
 }
