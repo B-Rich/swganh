@@ -11,8 +11,8 @@ DELIMITER $$
 -- Definition for stored procedure `sp_RemoveAccountSessionsByID`
 --
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_RemoveAccountSessionsByID` $$
-CREATE PROCEDURE `sp_RemoveAccountSessionsByID`(IN n_account_id INT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_RemoveAccountSessionByID` $$
+CREATE PROCEDURE `sp_RemoveAccountSessionByID`(IN n_account_id INT)
 BEGIN
 
   -- remove sessions

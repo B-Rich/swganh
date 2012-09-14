@@ -11,6 +11,7 @@ DELIMITER $$
 -- Definition for stored procedure `sp_CreateAccount`
 --
 
+
 DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_CreateAccount` $$
 CREATE PROCEDURE `sp_CreateAccount`(IN n_username VARCHAR(32), IN n_password VARCHAR(128), IN n_email VARCHAR(128))
 accountCreate:BEGIN
@@ -26,7 +27,6 @@ accountCreate:BEGIN
 
   -- generate our SALT
   SET salt = CONCAT(NOW(),n_username);
-  
 
   SELECT SHA1(CONCAT(n_password, '{', salt, '}')) INTO saltedPASS;
 
