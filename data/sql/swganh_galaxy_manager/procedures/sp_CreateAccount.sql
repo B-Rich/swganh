@@ -17,11 +17,11 @@ accountCreate:BEGIN
 
   -- Declare var(s)
 
-  DECLARE check_acc INT;
   DECLARE account_id BIGINT;
   DECLARE salt VARCHAR(128);
   DECLARE saltedPASS VARCHAR(128);
   DECLARE check_acc_exists INT;
+  DECLARE check_length INT;
   DECLARE exit_code INT DEFAULT 1;
 
   -- generate our SALT
@@ -34,14 +34,23 @@ accountCreate:BEGIN
 
   IF check_acc_exists > 1 THEN
     SET exit_code = 0;
-    SELECT(exit_code);
+    SELECT exit_code;
     LEAVE accountCreate;
   END IF;
+  
+  -- check if username is empty
+  SELECT LENGTH(n_username) INTO check_length;
+  
+  IF check_length IS NULL or check_length < 3 THEN
+	SET exit_code = 0;
+	SELECT exit_code;
+	LEAVE accountCreate;
+  END IF;  
 
   -- get our new account id
-  SELECT MAX(id) FROM swganh_galaxy_manager.account INTO check_acc;
+  SELECT MAX(id) FROM swganh_galaxy_manager.account INTO account_id;
 
-  IF check_acc IS NULL or check_acc < 1 THEN
+  IF account_id IS NULL or account_id < 1 THEN
     SET account_id = 0;
   END IF;
 
