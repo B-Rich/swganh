@@ -108,15 +108,12 @@ void Datastore::saveGalaxyStatus(int32_t galaxy_id, int32_t status) const
 }
 
 bool Datastore::createService(const Galaxy& galaxy, ServiceDescription& description) const {
-    shared_ptr<ServiceDescription> service = nullptr;
-
     try {
         std::unique_ptr<sql::PreparedStatement> statement(connection_->prepareStatement(
             "CALL sp_CreateGalaxyService(?,?,?,?,?,?,?,?,?, NOW(), NOW(), NOW());"));
         
         uint32_t galaxy_id = galaxy.id();
-
-        statement->setInt(1, galaxy_id);
+		statement->setInt(1, galaxy_id);
         statement->setString(2, description.name());
         statement->setString(3, description.type());
         statement->setString(4, description.version());
