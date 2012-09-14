@@ -50,7 +50,7 @@ CREATE TABLE `service` (
   `udp_port` int(10) unsigned NOT NULL DEFAULT '0',
   `ping_port` int(10) unsigned NOT NULL DEFAULT '0',
   `version` int(10) unsigned NOT NULL DEFAULT '0',
-  `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `status` int(10) NOT NULL DEFAULT '0',
   `last_heartbeat` decimal(17,0) NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
