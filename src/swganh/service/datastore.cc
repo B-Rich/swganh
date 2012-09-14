@@ -262,9 +262,9 @@ list<Galaxy> Datastore::getGalaxyList() const {
             galaxy_list.push_back(Galaxy(
                 result->getUInt("id"),
                 result->getUInt("primary_id"),
-                result->getString("name"),
-                result->getString("version"),
-                static_cast<Galaxy::StatusType>(result->getInt("status")),
+                result->getString("galaxy_name"),
+                result->getString("galaxy_version"),
+                static_cast<Galaxy::StatusType>(result->getInt("galaxy_status")),
                 result->getString("created_at"),
                 result->getString("updated_at")));
         } while (statement->getMoreResults());
