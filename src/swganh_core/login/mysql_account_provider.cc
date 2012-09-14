@@ -89,7 +89,7 @@ uint32_t MysqlAccountProvider::FindBySessionKey(const string& session_key) {
         auto result_set = unique_ptr<sql::ResultSet>(statement->executeQuery());
 
         if (result_set->next()) {
-            account_id = result_set->getInt("account");
+            account_id = result_set->getInt("account_id");
 
         } else {
             LOG(warning) << "No account found for session_key: " << session_key << endl;
