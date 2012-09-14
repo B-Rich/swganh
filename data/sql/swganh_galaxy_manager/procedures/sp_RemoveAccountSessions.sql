@@ -7,11 +7,14 @@ USE swganh_galaxy_manager;
 
 DELIMITER $$
 
+--
+-- Definition for stored procedure `sp_RemoveAccountSessions`
+--
+
 DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_RemoveAccountSessions` $$
 CREATE PROCEDURE `sp_RemoveAccountSessions`()
 BEGIN
 
-  -- grab our galaxy population via sessions table
   TRUNCATE swganh_galaxy_manager.sessions;
 
 END $$

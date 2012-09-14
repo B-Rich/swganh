@@ -26,16 +26,28 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_GetCharacterNewName`(IN `species` VARCHAR(16), IN `gender` INT)
+CREATE PROCEDURE `sp_GetCharacterNewName`(IN `species` VARCHAR(64))
 BEGIN
 
   -- Declare our var(s)
   DECLARE new_firstname CHAR(32);
   DECLARE new_lastname CHAR(32);
   DECLARE race_id INT(8);
+  DECLARE shortSpecies VARCHAR(16);
+  DECLARE gender INT;
+  
+  -- get our short species name
+  SELECT sf_speciesShort(species) INTO shortSpecies;
 
-  -- get our race_id
-  SELECT id FROM swganh_static.race WHERE name = species INTO race_id;
+  -- get our race id
+  SELECT id FROM swganh_static.race WHERE race.name like shortSpecies into race_id;
+
+  -- get our gender
+  IF species LIKE '%female%' THEN
+    SET gender = 0;
+  ELSE
+    SET gender = 1;
+  END IF;
 
   -- get our random first & last name
   SELECT firstname FROM swganh_static.namegen_firstname WHERE namegen_firstname.species = race_id AND namegen_firstname.gender = gender ORDER BY RAND() LIMIT 1 INTO new_firstname;

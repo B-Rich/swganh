@@ -12,6 +12,6 @@ CREATE PROCEDURE `sp_GetSystemGalaxy`()
 BEGIN
 
   -- grab our galaxy details
-  SELECT * FROM swganh_galaxy_manager.galaxy ORDER BY name;
+  SELECT * FROM galaxy ORDER BY galaxy_name;
 
 END $$
