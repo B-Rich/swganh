@@ -16,6 +16,6 @@ CREATE PROCEDURE `sp_GetAccountByUsername`(IN n_username VARCHAR(32))
 BEGIN
 
   -- return the account_id
-  SELECT account_id, username, password, salt, enabled FROM swganh_galaxy_manager.account WHERE username = n_username;
+  SELECT id, username, password, salt, enabled FROM swganh_galaxy_manager.account WHERE username = n_username;
 
 END $$
