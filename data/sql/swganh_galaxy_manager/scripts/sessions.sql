@@ -34,31 +34,25 @@
 USE swganh_galaxy_manager;
 
 --
--- Table structure for table `account`
+-- Table structure for table `sessions`
 --
 
-DROP TABLE IF EXISTS `swganh_galaxy_manager`.`account`;
+DROP TABLE IF EXISTS `swganh_galaxy_manager`.`sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE  `swganh_galaxy_manager`.`account` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Account ID',
-  `username` varchar(32) NOT NULL DEFAULT '',
-  `email` varchar(128) NOT NULL DEFAULT '',
-  `password` varchar(128) NOT NULL DEFAULT '',
-  `salt` varchar(128) NOT NULL DEFAULT '',
-  `enabled` int(11) unsigned NOT NULL DEFAULT '0',
-  `locked` int(11) unsigned NOT NULL DEFAULT '0',
-  `expired` int(11) unsigned NOT NULL DEFAULT '0',
-  `max_characters` int(11) unsigned NOT NULL DEFAULT '0',
-  `last_login` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `created_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `updated_at` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
+CREATE TABLE  `swganh_galaxy_manager`.`sessions` (
+  `id` int(10) unsigned NOT NULL DEFAULT '0',
+  `account_id` bigint(11) unsigned NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `session` varchar(255) NOT NULL DEFAULT '',
+  KEY `Index 1` (`id`),
+  KEY `FK_sessions_account` (`account_id`),
+  CONSTRAINT `FK_sessions_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `account`
+-- Dumping data for table `sessions`
 --
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
