@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `swganh_galaxy_manager`.`sessions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE  `swganh_galaxy_manager`.`sessions` (
-  `id` int(10) unsigned NOT NULL DEFAULT '0',
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `account_id` bigint(11) unsigned NOT NULL,
   `timestamp` datetime NOT NULL,
   `session` varchar(255) NOT NULL DEFAULT '',
@@ -47,3 +47,18 @@ CREATE TABLE  `swganh_galaxy_manager`.`sessions` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2012-08-27  9:44:09
+
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               5.5.27-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL version:             7.0.0.4170
+-- Date/time:                    2012-09-14 03:35:12
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+-- Dumping structure for table swganh_galaxy_manager.sessions
