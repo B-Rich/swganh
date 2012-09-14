@@ -196,6 +196,10 @@ GOTO:MainMenu
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
+	cd "%PROJECT_BASE%swganh_static\procedures"
+		for /F %%A IN ('dir /b "*.sql" ^| sort') do (
+			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --comments < "%%A"
+		ECHO. Installing %%A [Done]
 	
 	:: (swganh_galaxy)
 	
