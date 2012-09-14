@@ -33,7 +33,7 @@ accountCreate:BEGIN
   -- check if account username exists
   SELECT COUNT(*) FROM swganh_galaxy_manager.account WHERE username = n_username INTO check_acc_exists;
 
-  IF check_acc_exists > 1 THEN
+  IF check_acc_exists > 0 THEN
     SET exit_code = 0;
     SELECT exit_code;
     LEAVE accountCreate;
