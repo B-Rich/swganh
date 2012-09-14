@@ -126,18 +126,12 @@ void ServiceDirectory::updateServiceStatus(int32_t new_status) {
     datastore_->saveService(active_service_);
 }
 
-bool ServiceDirectory::makePrimaryService(const ServiceDescription& service) {
-    boost::lock_guard<boost::mutex> lk(mutex_);
-    active_galaxy_.primary_id(service.id());
-    return true;
-}
-
 void ServiceDirectory::pulse() {
     boost::lock_guard<boost::mutex> lk(mutex_);
 
     if (active_service_.id()) {
         std::string last_pulse = "";
-        if (active_galaxy_.id() && active_galaxy_.primary_id() != active_service_.id()) {
+        if (active_galaxy_.id()) {
             last_pulse = getGalaxyTimestamp_();
         } else {
             last_pulse = boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::local_time());
@@ -166,7 +160,7 @@ ServiceList ServiceDirectory::getServiceSnapshot(const Galaxy& galaxy) {
 }
 
 std::string ServiceDirectory::getGalaxyTimestamp_() {    
-    auto service = datastore_->findServiceById(active_galaxy_.primary_id());
+    auto service = datastore_->findServiceById(active_galaxy_.id());
 
     if (!service) {
         return boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::local_time());

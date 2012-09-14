@@ -42,7 +42,6 @@ std::shared_ptr<Galaxy> Datastore::findGalaxyByName(const std::string& name) con
 		{
 			galaxy = make_shared<Galaxy>(
 				result->getUInt("id"),
-				result->getUInt("primary_id"),
 				result->getString("galaxy_name"),
 				result->getString("galaxy_version"),
 				static_cast<Galaxy::StatusType>(result->getInt("galaxy_status")),
@@ -52,7 +51,7 @@ std::shared_ptr<Galaxy> Datastore::findGalaxyByName(const std::string& name) con
 
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
-        LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
+        LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();		
     }
 
     return galaxy;
@@ -78,7 +77,6 @@ std::shared_ptr<Galaxy> Datastore::createGalaxy(
 		{
 			galaxy = make_shared<Galaxy>(
 				result->getUInt("id"),
-				result->getUInt("primary_id"),
 				result->getString("galaxy_name"),    
 				result->getString("galaxy_version"),
 				static_cast<Galaxy::StatusType>(result->getInt("galaxy_status")),
@@ -179,7 +177,6 @@ std::shared_ptr<Galaxy> Datastore::findGalaxyById(uint32_t id) const {
 		{
 			galaxy = make_shared<Galaxy>(
 				result->getUInt("id"),
-				result->getUInt("primary_id"),
 				result->getString("name"),
 				result->getString("version"),
 				static_cast<Galaxy::StatusType>(result->getInt("status")),
@@ -261,7 +258,6 @@ list<Galaxy> Datastore::getGalaxyList() const {
         while (result->next()) {
             galaxy_list.push_back(Galaxy(
                 result->getUInt("id"),
-                result->getUInt("primary_id"),
                 result->getString("galaxy_name"),
                 result->getString("galaxy_version"),
                 static_cast<Galaxy::StatusType>(result->getInt("galaxy_status")),
