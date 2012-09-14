@@ -27,11 +27,11 @@ USE swganh_galaxy_manager;
 DELIMITER $$
 
 --
--- Definition for stored procedure `sp_RemoveAccountSessionsByKey`
+-- Definition for stored procedure `sp_RemoveAccountSessionByKey`
 --
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_RemoveAccountSessionsByKey` $$
-CREATE PROCEDURE `sp_RemoveAccountSessionsByKey`(IN n_session_key VARCHAR(32))
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_RemoveAccountSessionByKey` $$
+CREATE PROCEDURE `sp_RemoveAccountSessionByKey`(IN n_session_key VARCHAR(32))
 BEGIN
 
   -- remove sessions
