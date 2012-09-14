@@ -14,6 +14,6 @@ BEGIN
 	INSERT INTO service (galaxy_id, service_name, service_type, service_address, tcp_port, udp_port, ping_port, version, status, last_heartbeat, created_at, updated_at) VALUES (g_id, s_name, s_type, INET_ATON(s_address), s_tcp, s_udp, s_ping, s_version, s_status, s_heartbeat, s_created, s_updated);
 
 	-- return our service id
-	SELECT id FROM service WHERE service_name = s_name AND galaxy_id = g_id;
+	SELECT id, last_heartbeat FROM service WHERE service_name = s_name AND galaxy_id = g_id;
 
 END $$
