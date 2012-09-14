@@ -3,7 +3,7 @@
 	See file LICENSE or go to http://swganh.com/LICENSE
 */
 
-use swganh_galaxy_manager;
+USE swganh_galaxy_manager;
 
 DELIMITER $$
 
