@@ -30,7 +30,7 @@ accountCreate:BEGIN
   SELECT SHA1(CONCAT(n_password, '{', salt, '}')) INTO saltedPASS;
 
   -- check if account username exists
-  SELECT COUNT(*) FROM swganh_galaxy_manager.accounts WHERE username = n_username INTO check_acc_exists;
+  SELECT COUNT(*) FROM swganh_galaxy_manager.account WHERE username = n_username INTO check_acc_exists;
 
   IF check_acc_exists > 1 THEN
     SET exit_code = 0;
@@ -39,7 +39,7 @@ accountCreate:BEGIN
   END IF;
 
   -- get our new account id
-  SELECT MAX(id) FROM swganh_galaxy_manager.accounts INTO check_acc;
+  SELECT MAX(id) FROM swganh_galaxy_manager.account INTO check_acc;
 
   IF check_acc IS NULL or check_acc < 1 THEN
     SET account_id = 0;
