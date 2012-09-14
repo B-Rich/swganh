@@ -11,6 +11,12 @@ script_directory = @PROJECT_SOURCE_DIR@/data/scripts
 
 resource_cache_size = 500
 
+[db.static]
+host = localhost
+schema = swganh_static
+username = swganh
+password = swganh
+
 [db.galaxy_manager]
 host = localhost
 schema = swganh_galaxy_manager

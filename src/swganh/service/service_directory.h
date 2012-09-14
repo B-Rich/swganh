@@ -57,8 +57,6 @@ public:
     void updateService(const ServiceDescription& service);
     void updateServiceStatus(int32_t new_status);
     
-    bool makePrimaryService(const ServiceDescription& service);
-
     void pulse();
     
     GalaxyList getGalaxySnapshot();

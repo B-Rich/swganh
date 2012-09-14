@@ -11,14 +11,12 @@ Galaxy::Galaxy()
 
 Galaxy::Galaxy(
     uint32_t id, 
-    uint32_t primary_id, 
     const std::string& name, 
     const std::string& version,
     Galaxy::StatusType status, 
     const std::string& created_at, 
     const std::string& updated_at)
     : id_(id)
-    , primary_id_(primary_id)
     , name_(name)
     , status_(status)
     , created_at_(created_at)
@@ -27,7 +25,6 @@ Galaxy::Galaxy(
 
 Galaxy::Galaxy(const Galaxy& other) {
     id_ = other.id_;
-    primary_id_ = other.primary_id_;
     name_ = other.name_;
     version_ = other.version_;
     status_ = other.status_;
@@ -37,7 +34,6 @@ Galaxy::Galaxy(const Galaxy& other) {
 
 Galaxy::Galaxy(Galaxy&& other) {
     id_ = other.id_;
-    primary_id_ = other.primary_id_;
     name_ = std::move(other.name_);
     version_ = std::move(other.version_);
     status_ = other.status_;
@@ -47,7 +43,6 @@ Galaxy::Galaxy(Galaxy&& other) {
 
 void Galaxy::swap(Galaxy& other) {
     std::swap(other.id_, id_);
-    std::swap(other.primary_id_, primary_id_);
     std::swap(other.name_, name_);
     std::swap(other.version_, version_);
     std::swap(other.status_, status_);
@@ -62,14 +57,6 @@ Galaxy& Galaxy::operator=(Galaxy other) {
 
 uint32_t Galaxy::id() const {
     return id_;
-}
-
-uint32_t Galaxy::primary_id() const {
-    return primary_id_;
-}
-
-void Galaxy::primary_id(uint32_t primary_id) {
-    primary_id_ = primary_id;
 }
 
 const std::string& Galaxy::name() const {

@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <map>
 
 namespace swganh {
 namespace object {
@@ -56,6 +57,12 @@ namespace object {
          * @return the object type
          */
         virtual uint32_t LookupType(uint64_t object_id) const = 0;
+		
+		/**
+		 * Loads the object iff templates
+		 *
+		 */
+		virtual std::map<std::string, uint32_t> LoadObjectTemplates() = 0;
 
     };
 

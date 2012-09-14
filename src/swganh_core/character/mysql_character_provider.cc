@@ -62,46 +62,7 @@ MysqlCharacterProvider::MysqlCharacterProvider(KernelInterface* kernel)
     : CharacterProviderInterface()
     , kernel_(kernel) 
 {
-	auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
-
-	// Load each table of restricted names.
-	auto statement = std::shared_ptr<sql::PreparedStatement>(
-		conn->prepareStatement("SELECT * FROM `name_profane`;")
-		);
-
-	auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
-	while(result_set->next())
-	{
-		profane_names_.push_back(result_set->getString("name"));
-	}
-
-	statement.reset(conn->prepareStatement("SELECT * FROM `name_reserved`;"));
-	result_set.reset(statement->executeQuery());
-	while(result_set->next())
-	{
-		reserved_names_.push_back(result_set->getString("name"));
-	}
-
-	statement.reset(conn->prepareStatement("SELECT * FROM `name_fictionally_reserved`;"));
-	result_set.reset(statement->executeQuery());
-	while(result_set->next())
-	{
-		fictionally_reserved_names_.push_back(result_set->getString("name"));
-	}
-
-	statement.reset(conn->prepareStatement("SELECT * FROM `name_racially_inappropriate`;"));
-	result_set.reset(statement->executeQuery());
-	while(result_set->next())
-	{
-        racially_inappropriate_.push_back(result_set->getString("name"));
-	}
-
-	statement.reset(conn->prepareStatement("SELECT * FROM `name_developer`;"));	
-	result_set.reset(statement->executeQuery());
-	while(result_set->next())
-	{
-		developer_names_.push_back(result_set->getString("name"));
-	}
+	auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");	
 }
 
 vector<CharacterData> MysqlCharacterProvider::GetCharactersForAccount(uint64_t account_id) {
@@ -390,38 +351,4 @@ uint64_t MysqlCharacterProvider::GetCharacterIdByName(const string& name)
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
     }
     return character_id;
-}
-
-std::tuple<bool, std::string> MysqlCharacterProvider::IsNameAllowed(std::string name)
-{
-	// Convert name to lower-case.
-	boost::to_lower(name);
-
-	// Run name through filters.
-	for(std::string restricted_name : profane_names_) {
-		if(regex_search(name, regex(restricted_name)))
-			return std::tuple<bool, std::string>(false, "name_declined_profane");
-	}
-
-	for(std::string restricted_name : reserved_names_) {
-		if(regex_search(name, regex(restricted_name)))
-			return std::tuple<bool, std::string>(false, "name_declined_reserved");
-	}
-
-	for(std::string restricted_name : fictionally_reserved_names_) {
-		if(regex_search(name, regex(restricted_name)))
-			return std::tuple<bool, std::string>(false, "name_declined_fictionally_reserved");
-	}
-
-	for(std::string restricted_name : racially_inappropriate_) {
-		if(regex_search(name, regex(restricted_name)))
-			return std::tuple<bool, std::string>(false, "name_declined_racially_inappropriate");
-	}
-
-	for(std::string restricted_name : developer_names_) {
-		if(regex_search(name, regex(restricted_name)))
-			return std::tuple<bool, std::string>(false, "name_declined_developer");
-	}
-	
-	return std::tuple<bool, std::string>(true, " ");
 }

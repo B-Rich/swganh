@@ -58,20 +58,6 @@ ObjectManager::ObjectManager(swganh::app::SwganhKernel* kernel)
 
 	//Load slot definitions
 	slot_definition_ = kernel->GetResourceManager()->GetResourceByName<SlotDefinitionVisitor>("abstract/slot/slot_definition/slot_definitions.iff");
-
-	//Load Object Templates
-	auto conn = kernel->GetDatabaseManager()->getConnection("galaxy");
-    auto statement = shared_ptr<sql::Statement>(conn->createStatement());
-    statement->execute("SELECT i.iff_template, i.object_type FROM iff_templates i WHERE i.object_type != 0;");
-	auto result = shared_ptr<sql::ResultSet>(statement->getResultSet());
-
-	while(result->next())
-	{
-		std::string key = result->getString("iff_template");
-		uint32_t value = result->getUInt("object_type");
-		type_lookup_.insert(make_pair(key, value));
-	}
-
 }
 
 ObjectManager::~ObjectManager()
@@ -231,6 +217,10 @@ shared_ptr<Object> ObjectManager::CreateObjectFromTemplate(const string& templat
 		return nullptr;
 	}
 
+	if (type_lookup_.size() == 0)
+	{
+		type_lookup_ = factories_[0]->LoadObjectTemplates();
+	}
 	//Then make sure we actually can create an object of this type
 	shared_ptr<Object> created_object;
     auto template_itr = type_lookup_.find(template_name);

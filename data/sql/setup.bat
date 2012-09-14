@@ -196,7 +196,6 @@ GOTO:MainMenu
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
-	
 	:: (swganh_galaxy)
 	
 	cd "%PROJECT_BASE%"
@@ -342,7 +341,6 @@ GOTO:MainMenu
 			mysql --password=%db_pass% --host=%db_host% --user=%db_user% --database=swganh_static --default-character-set=utf8 < "%%A"
 		ECHO. Installing %%A [Done]
 		)
-		
 	GOTO:MainMenu
 	
 :SchemaSWGANH_ASTROMECH

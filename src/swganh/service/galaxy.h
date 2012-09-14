@@ -24,15 +24,13 @@ public:
     * the data store.
     *
     * @param id The id of the galaxy in the data store.
-    * @param primary_id The id of the primary process for this galaxy.
     * @param name The name of the galaxy.
     * @param status The current status of the galaxy.
     * @param created_at The timestamp indicating the time the galaxy was first created.
     * @param updated_at The last time this galaxy was modified manually.
     */
     Galaxy(uint32_t id, 
-            uint32_t primary_id, 
-            const std::string& name, 
+			const std::string& name, 
             const std::string& version,
             Galaxy::StatusType status, 
             const std::string& created_at, 
@@ -55,13 +53,7 @@ public:
     * @return Returns the id of the galaxy in the data store.
     */
     uint32_t id() const;
-        
-    /*! Returns the id of the primary process for this galaxy.
-    *
-    * @return Returns the id of the primary process for this galaxy.
-    */
-    uint32_t primary_id() const;
-        
+    
     /*! Returns the name of the galaxy.
     *
     * @return Returns the name of the galaxy.
@@ -106,10 +98,7 @@ public:
 private:
     friend class ServiceDirectory;
     
-    void primary_id(uint32_t primary_id);
-    
     uint32_t id_;
-    uint32_t primary_id_;
     std::string name_;
     std::string version_;
     Galaxy::StatusType status_;
