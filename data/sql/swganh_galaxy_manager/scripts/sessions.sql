@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `swganh_galaxy_manager`.`sessions`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE  `swganh_galaxy_manager`.`sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `account_id` bigint(11) unsigned NOT NULL,
+  `account_id` bigint(20) unsigned NOT NULL,
   `timestamp` datetime NOT NULL,
   `session` varchar(255) NOT NULL DEFAULT '',
   KEY `Index 1` (`id`),
