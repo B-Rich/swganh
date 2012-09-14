@@ -12,6 +12,6 @@ CREATE PROCEDURE `sp_GetGalaxyPopulation`()
 BEGIN
 
   -- grab our galaxy population via sessions table
-  SELECT COUNT(*) FROM swganh_galaxy_manager.sessions WHERE galaxy_id = 1;
+  SELECT COUNT(*) FROM swganh_galaxy_manager.sessions WHERE id = 1;
 
 END $$

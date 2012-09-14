@@ -27,8 +27,8 @@ uint32_t MysqlGalaxyProvider::GetPopulation()
 {
 	uint32_t population = 0;
     try {
-        string sql = "call sp_GetPopulation();";
-        auto conn = db_manager_->getConnection("galaxy");
+        string sql = "call sp_GetGalaxyPopulation();";
+        auto conn = db_manager_->getConnection("galaxy_manager");
         auto statement = shared_ptr<sql::Statement>(conn->createStatement());
         auto result_set = unique_ptr<sql::ResultSet>(statement->executeQuery(sql));
 

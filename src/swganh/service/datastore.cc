@@ -128,8 +128,8 @@ bool Datastore::createService(const Galaxy& galaxy, ServiceDescription& descript
         while (result->next())
 		{
 			description.id(result->getUInt("id"));
-			description.status(result->getInt("status"));
 			description.last_pulse(result->getString("last_heartbeat"));
+			description.status(-1);
 		} while (statement->getMoreResults());
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
