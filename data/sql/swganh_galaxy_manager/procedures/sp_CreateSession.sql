@@ -8,11 +8,11 @@ USE swganh_galaxy_manager;
 DELIMITER $$
 
 --
--- Definition for stored procedure `sp_CreateAccountSessionsByID`
+-- Definition for stored procedure `sp_CreateSession`
 --
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_CreateAccountSessionByID` $$
-CREATE PROCEDURE `sp_CreateAccountSessionByID`(IN n_account_id INT, IN n_session_key VARCHAR(128))
+DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_CreateSession` $$
+CREATE PROCEDURE `sp_CreateSession`(IN n_account_id INT, IN n_session_key VARCHAR(128))
 BEGIN
 
   -- insert new session
