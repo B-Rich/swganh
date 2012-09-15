@@ -12,7 +12,7 @@ DELIMITER $$
 --
 
 DROP PROCEDURE IF EXISTS `swganh_galaxy_manager`.`sp_CreateSession` $$
-CREATE PROCEDURE `sp_CreateSession`(IN n_account_id INT, IN n_session_key VARCHAR(128))
+CREATE PROCEDURE `sp_CreateSession`(IN n_account_id INT, IN n_session_key VARCHAR(128), IN n_session_type INT)
 BEGIN
 
   -- insert new session
