@@ -26,12 +26,22 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetStaticPlanets` $$
-CREATE PROCEDURE `sp_GetStaticPlanets`()
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetCharacterIdByName` $$
+CREATE PROCEDURE `sp_GetCharacterIdByName`(IN n_custom_name VARCHAR(82))
 BEGIN
 
-  -- return our planets (scenes)
-  SELECT id, name, name AS label, ' ' AS description, terrain_file AS terrain  FROM swganh_static.planet;
+  -- Declare var(s)
+  DECLARE s_firstname VARCHAR(30);
+  DECLARE s_lastname VARCHAR(50);
 
+  -- get our first / last name
+  SET s_firstname = SUBSTRING(n_custom_name, 1, INSTR(n_custom_name, ' ') - 1);
+  SET s_lastname = SUBSTRING(n_custom_name, INSTR(n_custom_name, ' ') + 1);
+
+  -- debug
+  -- SELECT s_firstname, s_lastname, n_custom_name;
+
+  -- return the ID for the character
+  SELECT id FROM swganh_galaxy.characters WHERE firstname = s_firstname AND lastname = s_lastname;
 
 END $$
