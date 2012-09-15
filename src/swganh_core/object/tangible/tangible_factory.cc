@@ -86,7 +86,7 @@ void TangibleFactory::CreateTangible(const shared_ptr<Tangible>& tangible, const
                 tangible->SetOptionsMask(result->getUInt("options_bitmask"));
                 tangible->SetIncapTimer(result->getUInt("incap_timer"));
                 tangible->SetConditionDamage(result->getUInt("condition_damage"));
-                tangible->SetMaxCondition(result->getUInt("max_condition"));
+                tangible->SetMaxCondition(result->getUInt("condition_max"));
                 tangible->SetStatic(result->getBoolean("is_static"));
             }
         }
@@ -106,7 +106,7 @@ shared_ptr<Object> TangibleFactory::CreateObjectFromStorage(uint64_t object_id)
         auto statement = shared_ptr<sql::Statement>(conn->createStatement());
         
         stringstream ss;
-        ss << "CALL sp_GetTangible(" << object_id << ");";   
+        ss << "CALL sp_GetSystemTangible(" << object_id << ");";   
 
         statement->execute(ss.str());
         CreateTangible(tangible, statement);  

@@ -138,7 +138,7 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
         auto statement = shared_ptr<sql::Statement>(conn->createStatement());
         unique_ptr<sql::ResultSet> result;
         stringstream ss;
-        ss << "CALL sp_GetCreature(" << object_id << ");" ;
+        ss << "CALL sp_GetSystemCreature(" << object_id << ");" ;
         statement->execute(ss.str());
         CreateTangible(creature, statement);
         
@@ -147,15 +147,15 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
             result.reset(statement->getResultSet());
             while (result->next())
             {
-                creature->SetOwnerId(result->getUInt64("owner_id"));
+                creature->SetOwnerId(result->getUInt64("parent_id"));
                 creature->SetListenToId(result->getUInt64("musician_id"));
-                creature->SetBankCredits(result->getUInt("bank_credits"));
-                creature->SetCashCredits(result->getUInt("cash_credits"));
+                creature->SetBankCredits(result->getUInt("credits_bank"));
+                creature->SetCashCredits(result->getUInt("credits_cash"));
                 creature->SetPosture((Posture)result->getUInt("posture"));
                 creature->SetFactionRank(result->getUInt("faction_rank"));
                 creature->SetScale(static_cast<float>(result->getDouble("scale")));
                 creature->SetBattleFatigue(result->getUInt("battle_fatigue"));
-                creature->SetStateBitmask(result->getUInt("state"));
+                //creature->SetStateBitmask(result->getUInt("state"));
                 creature->SetAccelerationMultiplierBase(static_cast<float>(result->getDouble("acceleration_base")));
                 creature->SetAccelerationMultiplierModifier(static_cast<float>(result->getDouble("acceleration_modifier")));
                 creature->SetSpeedMultiplierBase(static_cast<float>(result->getDouble("speed_base")));

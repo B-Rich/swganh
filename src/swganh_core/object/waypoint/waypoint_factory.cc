@@ -136,7 +136,7 @@ shared_ptr<Object> WaypointFactory::CreateObjectFromStorage(uint64_t object_id)
         auto conn = db_manager_->getConnection("galaxy");
         auto statement = shared_ptr<sql::Statement>(conn->createStatement());
         stringstream ss;
-        ss << "CALL sp_GetWaypoint(" << object_id << ");";
+        ss << "CALL sp_GetSystemWaypoint(" << object_id << ");";
         auto result = shared_ptr<sql::ResultSet>(statement->executeQuery(ss.str()));
         CreateBaseObjectFromStorage(waypoint, result);
         if (statement->getMoreResults())

@@ -120,7 +120,7 @@ shared_ptr<Object> PlayerFactory::CreateObjectFromStorage(uint64_t object_id)
         auto statement = shared_ptr<sql::Statement>(conn->createStatement());
         
         stringstream ss;
-        ss << "CALL sp_GetPlayer(" << object_id << ");";
+        ss << "CALL sp_GetSystemPlayer(" << object_id << ");";
 
         auto result = shared_ptr<sql::ResultSet>(statement->executeQuery(ss.str()));
         CreateBaseObjectFromStorage(player, result);

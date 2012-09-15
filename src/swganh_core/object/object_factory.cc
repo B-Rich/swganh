@@ -99,26 +99,28 @@ void ObjectFactory::CreateBaseObjectFromStorage(const shared_ptr<Object>& object
         result->next();
         // Set Event Dispatcher
         object->SetEventDispatcher(event_dispatcher_);
-        object->SetSceneId(result->getUInt("scene_id"));
-        object->SetPosition(glm::vec3(result->getDouble("x_position"),result->getDouble("y_position"), result->getDouble("z_position")));
+        object->SetSceneId(result->getUInt("planet_id"));
+        object->SetPosition(glm::vec3(result->getDouble("x"),result->getDouble("y"), result->getDouble("z")));
         object->SetOrientation(glm::quat(
-            static_cast<float>(result->getDouble("x_orientation")),
-            static_cast<float>(result->getDouble("y_orientation")),
-            static_cast<float>(result->getDouble("z_orientation")), 
-            static_cast<float>(result->getDouble("w_orientation")))
+            static_cast<float>(result->getDouble("oX")),
+            static_cast<float>(result->getDouble("oY")),
+            static_cast<float>(result->getDouble("oZ")), 
+            static_cast<float>(result->getDouble("oW")))
             );
 
         object->SetComplexity(static_cast<float>(result->getDouble("complexity")));
-        object->SetStfName(result->getString("stf_name_file"),
-                           result->getString("stf_name_string"));
+        object->SetStfName(result->getString("stf_name_file_id"),
+                           result->getString("stf_name_string_id"));
         string custom_string = result->getString("custom_name");
         object->SetCustomName(wstring(begin(custom_string), end(custom_string)));
         object->SetVolume(result->getUInt("volume"));
-        object->SetTemplate(result->getString("iff_template"));
-		object->SetArrangementId(result->getInt("arrangement_id"));
-
+        object->SetTemplate(result->getString("iff_template_text"));
+		//object->SetArrangementId(result->getInt("arrangement_id"));
+		object->SetArrangementId(-2);
+		
 		auto permissions_objects_ = object_manager_->GetPermissionsMap();
-		auto permissions_itr = permissions_objects_.find(result->getInt("permission_type"));
+		//result->getInt("permission_type")
+		auto permissions_itr = permissions_objects_.find(5);
 		if(permissions_itr != permissions_objects_.end())
 		{
 			object->SetPermissions(permissions_itr->second);
