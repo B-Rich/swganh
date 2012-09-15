@@ -83,12 +83,12 @@ vector<CharacterData> MysqlCharacterProvider::GetCharactersForAccount(uint64_t a
             while (result_set->next())
             {
                 CharacterData character;
-                character.character_id = result_set->getUInt64("id");
+                character.character_id = result_set->getUInt64(1);
 
-                string custom_name = result_set->getString("custom_name");
+                string custom_name = result_set->getString(2);
                 character.name = std::wstring(custom_name.begin(), custom_name.end());
 
-                std::string non_shared_template = result_set->getString("iff_template");
+                std::string non_shared_template = result_set->getString(3);
 				if (non_shared_template.size() > 30)
 				{
 					non_shared_template.erase(23, 7);
@@ -196,16 +196,16 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
         std::wstring first_name = m[2].str();
         std::wstring last_name = m[4].str();
 
-        std::wstring custom_name = first_name;
+        /*std::wstring custom_name = first_name;
         if (!last_name.empty())
         {
             custom_name += L" " + last_name;
-        }
+        }*/
 
         auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
 
         std::unique_ptr<sql::PreparedStatement> statement(conn->prepareStatement(
-            "CALL sp_CharacterCreate(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @output)"));
+            "CALL sp_CharacterCreate(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"));
 
         DLOG(info) << "Creating character with location " << account_id;
 
@@ -213,19 +213,17 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
         statement->setUInt(2, kernel_->GetServiceDirectory()->galaxy().id());
         statement->setString(3, string(first_name.begin(), first_name.end()));
         statement->setString(4, string(last_name.begin(), last_name.end()));
-        statement->setString(5, string(custom_name.begin(), custom_name.end()));
-        statement->setString(6, character_info.starting_profession);
-        statement->setString(7, character_info.start_location);
-        statement->setDouble(8, character_info.height);
-        statement->setString(9, character_info.biography);
-        statement->setString(10, character_info.character_customization);
-        statement->setString(11, character_info.hair_object);
-        statement->setString(12, character_info.hair_customization);
-        statement->setString(13, character_info.player_race_iff);
+        //statement->setString(5, string(custom_name.begin(), custom_name.end()));
+        statement->setString(5, character_info.starting_profession);
+        statement->setString(6, character_info.start_location);
+        statement->setDouble(7, character_info.height);
+        statement->setString(8, character_info.biography);
+        statement->setString(9, character_info.character_customization);
+        statement->setString(10, character_info.hair_object);
+        statement->setString(11, character_info.hair_customization);
+        statement->setString(12, character_info.player_race_iff);
 
-        statement->execute();
-
-        statement.reset(conn->prepareStatement("SELECT @output as _object_id"));
+        //statement.reset(conn->prepareStatement("SELECT @output as _object_id"));
 
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
         if (result_set->next())
@@ -238,7 +236,7 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
                 return make_tuple(0, setCharacterCreateErrorCode_(static_cast<uint32_t>(char_id)));
             }
             return make_tuple(char_id, "");
-        }
+        } while (statement->getMoreResults());
     }
     catch(sql::SQLException &e)
     {

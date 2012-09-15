@@ -52,7 +52,6 @@ uint64_t MysqlSessionProvider::GetPlayerId(uint32_t account_id) {
 }
 
 bool MysqlSessionProvider::CreateGameSession(uint64_t account_id, uint32_t session_id) {
-    bool updated = false;
     // create new game session 
     std::string game_session = boost::posix_time::to_simple_string(boost::posix_time::microsec_clock::local_time())
         + boost::lexical_cast<std::string>(session_id);
@@ -64,14 +63,14 @@ bool MysqlSessionProvider::CreateGameSession(uint64_t account_id, uint32_t sessi
         statement->setUInt64(1, account_id);
         statement->setString(2, game_session);
 		statement->setInt(3, 2);
-        updated = statement->execute();
-        
+        statement->execute();
+        while (statement->getMoreResults());
 	} catch(sql::SQLException &e) {
 		LOG(warning) << "Couldn't create session for player " << account_id << endl;
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
     }
-    return updated;
+    return true;
 }
 void MysqlSessionProvider::EndGameSession(uint64_t player_id)
 {
