@@ -9,8 +9,10 @@ DELIMITER $$
 
 CREATE PROCEDURE `sp_GetSystemCreature`(IN object_id BIGINT)
 BEGIN
-  call sp_GetSystemTangible(object_id);
+
   -- get our creature
+  SELECT * FROM v_objects WHERE id = object_id;
+  SELECT * FROM v_tangibles WHERE id = object_id;
   SELECT * FROM v_creatures WHERE id = object_id;
 
 END $$

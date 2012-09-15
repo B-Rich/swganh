@@ -157,7 +157,7 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
                 creature->SetBattleFatigue(result->getUInt("battle_fatigue"));
                 //creature->SetStateBitmask(result->getUInt("state"));
                 creature->SetAccelerationMultiplierBase(static_cast<float>(result->getDouble("acceleration_base")));
-                creature->SetAccelerationMultiplierModifier(static_cast<float>(result->getDouble("acceleration_modifier")));
+                //creature->SetAccelerationMultiplierModifier(static_cast<float>(result->getDouble("acceleration_modifier")));
                 creature->SetSpeedMultiplierBase(static_cast<float>(result->getDouble("speed_base")));
                 creature->SetSpeedMultiplierModifier(static_cast<float>(result->getDouble("speed_modifier")));
                 creature->SetRunSpeed(static_cast<float>(result->getDouble("run_speed")));
@@ -168,7 +168,7 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
                 creature->SetWaterModifierPercent(static_cast<float>(result->getDouble("water_modifier_percent")));
                 creature->SetCombatLevel(result->getUInt("combat_level"));
                 creature->SetAnimation(result->getString("animation"));
-                creature->SetMoodAnimation(result->getString("mood_animation"));
+                //creature->SetMoodAnimation(result->getString("mood_animation"));
 
                 /// @TODO: Find a better place for this.
                 if (creature->GetMoodAnimation().compare("none") == 0)
