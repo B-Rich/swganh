@@ -16,6 +16,6 @@ CREATE PROCEDURE `sp_CreateAccountSessionByID`(IN n_account_id INT, IN n_session
 BEGIN
 
   -- insert new session
-  INSERT INTO swganh_galaxy_manager.sessions VALUES (NULL, n_account_id, NOW(), n_session_key);
+  INSERT INTO swganh_galaxy_manager.sessions VALUES (NULL, n_account_id, n_session_type, n_session_key, NOW());
 
 END $$

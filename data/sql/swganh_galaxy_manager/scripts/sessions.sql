@@ -26,10 +26,13 @@ DROP TABLE IF EXISTS `swganh_galaxy_manager`.`sessions`;
 CREATE TABLE  `swganh_galaxy_manager`.`sessions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `account_id` bigint(20) unsigned NOT NULL,
-  `timestamp` datetime NOT NULL,
+  `session_type` int(11) unsigned NOT NULL,
   `session` varchar(255) NOT NULL DEFAULT '',
-  KEY `Index 1` (`id`),
+  `timestamp` datetime NOT NULL,
+  KEY `Index1` (`id`),
   KEY `FK_sessions_account` (`account_id`),
+  KEY `FK_session_type` (`session_type`),
+  CONSTRAINT `FK_session_type` FOREIGN KEY (`session_type`) REFERENCES `session_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_sessions_account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
