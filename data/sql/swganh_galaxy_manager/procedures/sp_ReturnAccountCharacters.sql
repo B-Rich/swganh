@@ -15,7 +15,6 @@ BEGIN
   SELECT
     characters.id,
     CONCAT(firstname, ' ', characters.lastname),
-    character_attributes.object_template_id,
     swganh_static.objects.object_string
   FROM
     swganh_galaxy.characters

@@ -98,7 +98,7 @@ vector<CharacterData> MysqlCharacterProvider::GetCharactersForAccount(uint64_t a
                 character.galaxy_id = kernel_->GetServiceDirectory()->galaxy().id();
                 character.status = 1;
                 characters.push_back(character);
-            } statement->close();
+            } while(statement->getMoreResults());
         }
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";

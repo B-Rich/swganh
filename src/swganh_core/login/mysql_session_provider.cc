@@ -74,7 +74,7 @@ bool MysqlSessionProvider::CreateGameSession(uint64_t account_id, uint32_t sessi
 void MysqlSessionProvider::EndGameSession(uint64_t player_id)
 {
 	try {
-        string sql = "CALL sp_RemoveAccountSessionsByID(?);";
+        string sql = "CALL sp_RemoveAccountSessionByID(?);";
         auto conn = db_manager_->getConnection("galaxy_manager");
         auto statement = shared_ptr<sql::PreparedStatement>(conn->prepareStatement(sql));
         statement->setUInt64(1, player_id);

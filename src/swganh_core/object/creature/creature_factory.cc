@@ -181,27 +181,27 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
                 creature->SetWeaponId(result->getUInt64("weapon_id"));
                 creature->SetMoodId(result->getUInt("mood_id"));
                 creature->SetPerformanceId(result->getUInt("performance_id"));
-                creature->SetDisguise(result->getString("disguise_template"));
+                //creature->SetDisguise(result->getString("disguise_template"));
 
-                creature->SetStatCurrent(HEALTH, result->getUInt("current_health"));
-                creature->SetStatCurrent(STRENGTH, result->getUInt("current_strength"));
-                creature->SetStatCurrent(CONSTITUTION, result->getUInt("current_constitution"));
-                creature->SetStatCurrent(ACTION, result->getUInt("current_action"));
-                creature->SetStatCurrent(QUICKNESS, result->getUInt("current_quickness"));
-                creature->SetStatCurrent(STAMINA, result->getUInt("current_stamina"));
-                creature->SetStatCurrent(MIND, result->getUInt("current_mind"));
-                creature->SetStatCurrent(FOCUS, result->getUInt("current_focus"));
-                creature->SetStatCurrent(WILLPOWER, result->getUInt("current_willpower"));
+                creature->SetStatCurrent(HEALTH, result->getUInt("health_current"));
+                creature->SetStatCurrent(STRENGTH, result->getUInt("strength_current"));
+                creature->SetStatCurrent(CONSTITUTION, result->getUInt("constitution_current"));
+                creature->SetStatCurrent(ACTION, result->getUInt("action_current"));
+                creature->SetStatCurrent(QUICKNESS, result->getUInt("quickness_current"));
+                creature->SetStatCurrent(STAMINA, result->getUInt("stamina_current"));
+                creature->SetStatCurrent(MIND, result->getUInt("mind_current"));
+                creature->SetStatCurrent(FOCUS, result->getUInt("focus_current"));
+                creature->SetStatCurrent(WILLPOWER, result->getUInt("willpower_current"));
 
-                creature->SetStatMax(HEALTH, result->getUInt("max_health"));
-                creature->SetStatMax(STRENGTH, result->getUInt("max_strength"));
-                creature->SetStatMax(CONSTITUTION, result->getUInt("max_constitution"));
-                creature->SetStatMax(ACTION, result->getUInt("max_action"));
-                creature->SetStatMax(QUICKNESS, result->getUInt("max_quickness"));
-                creature->SetStatMax(STAMINA, result->getUInt("max_stamina"));
-                creature->SetStatMax(MIND, result->getUInt("max_mind"));
-                creature->SetStatMax(FOCUS, result->getUInt("max_focus"));
-                creature->SetStatMax(WILLPOWER, result->getUInt("max_willpower"));
+                creature->SetStatMax(HEALTH, result->getUInt("health_max"));
+                creature->SetStatMax(STRENGTH, result->getUInt("strength_max"));
+                creature->SetStatMax(CONSTITUTION, result->getUInt("constitution_max"));
+                creature->SetStatMax(ACTION, result->getUInt("action_max"));
+                creature->SetStatMax(QUICKNESS, result->getUInt("quickness_max"));
+                creature->SetStatMax(STAMINA, result->getUInt("stamina_max"));
+                creature->SetStatMax(MIND, result->getUInt("mind_max"));
+                creature->SetStatMax(FOCUS, result->getUInt("focus_max"));
+                creature->SetStatMax(WILLPOWER, result->getUInt("willpower_max"));
 
                 creature->SetStatWound(HEALTH, result->getUInt("health_wounds"));
                 creature->SetStatWound(STRENGTH, result->getUInt("strength_wounds"));
@@ -213,7 +213,7 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
                 creature->SetStatWound(FOCUS, result->getUInt("focus_wounds"));
                 creature->SetStatWound(WILLPOWER, result->getUInt("willpower_wounds"));
 
-                creature->SetStatBase(HEALTH, result->getUInt("health_wounds"));
+                /*creature->SetStatBase(HEALTH, result->getUInt("health_wounds"));
                 creature->SetStatBase(STRENGTH, result->getUInt("strength_wounds"));
                 creature->SetStatBase(CONSTITUTION, result->getUInt("constitution_wounds"));
                 creature->SetStatBase(ACTION, result->getUInt("action_wounds"));
@@ -221,7 +221,7 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
                 creature->SetStatBase(STAMINA, result->getUInt("stamina_wounds"));
                 creature->SetStatBase(MIND, result->getUInt("mind_wounds"));
                 creature->SetStatBase(FOCUS, result->getUInt("focus_wounds"));
-                creature->SetStatBase(WILLPOWER, result->getUInt("willpower_wounds"));
+                creature->SetStatBase(WILLPOWER, result->getUInt("willpower_wounds"));*/
             }
         }
         
