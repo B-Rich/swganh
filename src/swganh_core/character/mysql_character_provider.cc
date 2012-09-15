@@ -144,9 +144,9 @@ std::wstring MysqlCharacterProvider::GetRandomNameRequest(const std::string& bas
             std::wstring wstr(str.begin(), str.end());
 			wstr.append(L" ");
 			wstr.append(surname.begin(), surname.end());
+			while (statement->getMoreResults());
             return wstr;
-        }
-		while (statement->getMoreResults());
+        }		
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
@@ -236,7 +236,7 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
                 return make_tuple(0, setCharacterCreateErrorCode_(static_cast<uint32_t>(char_id)));
             }
             return make_tuple(char_id, "");
-        } while (statement->getMoreResults());
+        }
     }
     catch(sql::SQLException &e)
     {
