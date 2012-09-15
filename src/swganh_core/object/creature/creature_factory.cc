@@ -265,7 +265,7 @@ void CreatureFactory::LoadSkills_(
 
         while (result->next())
         {
-            skill_name = result->getString("name");
+            skill_name = result->getString("skill_name");
 
             creature->AddSkill(skill_name);
         }
@@ -286,8 +286,8 @@ void CreatureFactory::LoadSkillMods_(
 
         while (result->next())
         {
-            skill_mod_name = result->getString("name");
-            skill_mod_value = result->getUInt("value");
+            skill_mod_name = result->getString("skillmod_name");
+            skill_mod_value = result->getUInt("skillmod_value");
 
             creature->AddSkillMod( 
                 SkillMod(skill_mod_name, skill_mod_value, 0)
@@ -300,7 +300,7 @@ void CreatureFactory::LoadSkillCommands_(
     const shared_ptr<Creature>& creature, 
     const shared_ptr<sql::Statement>& statement)
 {
-     // Check for contained objects        
+     // Check for skill commands       
     if (statement->getMoreResults())
     {
         unique_ptr<sql::ResultSet> result(statement->getResultSet());
