@@ -38,7 +38,7 @@ shared_ptr<Account> MysqlAccountProvider::FindByUsername(string username) {
         statement->setString(1, username);
         auto result_set = unique_ptr<sql::ResultSet>(statement->executeQuery());
 
-        if (result_set->next()) {
+        if(result_set->next()) {
             account = make_shared<Account>(true);
 
             account->account_id(result_set->getInt("id"));
@@ -88,8 +88,10 @@ uint32_t MysqlAccountProvider::FindBySessionKey(const string& session_key) {
         statement->setString(1, session_key);
         auto result_set = unique_ptr<sql::ResultSet>(statement->executeQuery());
 
-        if (result_set->next()) {
+        if(result_set->next()) {
             account_id = result_set->getInt("account_id");
+
+			while (statement->getMoreResults());
 
         } else {
             LOG(warning) << "No account found for session_key: " << session_key << endl;
@@ -137,6 +139,7 @@ bool MysqlAccountProvider::AutoRegisterAccount(std::string username, std::string
 			if(results->getUInt64(1) > 0)
 				success = true;
 		}
+		while (statement->getMoreResults());
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();

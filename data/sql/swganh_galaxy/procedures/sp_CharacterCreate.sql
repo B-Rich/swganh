@@ -26,7 +26,7 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_CharacterCreate`(IN `account_id` INT, IN `galaxy_id` INT, IN `firstname` char(30), IN `lastname` char(50), IN `profession` char(64), IN `city` char(32), IN `scale` FLOAT, IN `biography` text(2048), IN `appearance_customization` BLOB, IN `hair_model` CHAR(64), IN `hair_customization` BLOB, IN `base_model_string` CHAR(64)
+CREATE PROCEDURE `sp_CharacterCreate`(IN `account_id` INT, IN `galaxy_id` INT, IN `firstname` char(30), IN `lastname` char(50), IN `profession` char(64), IN `city` char(32), IN `scale` FLOAT, IN `biography` text(2048), IN `appearance_customization` BLOB, IN `hair_model` CHAR(64), IN `hair_customization` BLOB, IN `base_model_string` CHAR(64), OUT `character_id` BIGINT
     )
 charCreate:BEGIN
 
@@ -35,7 +35,6 @@ charCreate:BEGIN
   DECLARE gender INT;
   DECLARE nameCheck INT;
   DECLARE shortSpecies VARCHAR(32);
-  DECLARE character_id BIGINT;
   DECLARE new_player_id BIGINT;
   DECLARE inventory_id BIGINT;
   DECLARE datapad_id BIGINT;
@@ -61,7 +60,7 @@ charCreate:BEGIN
 
   DECLARE t_id INT;
   DECLARE t_species VARCHAR(16);
-  DECLARE t_profession VARCHAR(16);
+  DECLARE t_profession VARCHAR(64);
   DECLARE longHair VARCHAR(64);
   
   -- get our short species name
@@ -160,8 +159,6 @@ charCreate:BEGIN
   -- SELECT 'Profession ----> ', profession;
   -- SELECT 'Gender --------> ', gender;
   -- SELECT 'Location ------> ', planet, spawn_x, spawn_y, spawn_z;
-  -- SELECT 'HAM -----------> ', health, strength, constitution, action, quickness, stamina, mind, focus, willpower;
-
-  SELECT character_id;
+  -- SELECT 'HAM -----------> ', health, strength, constitution, action, quickness, stamina, mind, focus, willpower;  
 
 END $$

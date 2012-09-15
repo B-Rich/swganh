@@ -36,7 +36,7 @@ uint64_t MysqlSessionProvider::GetPlayerId(uint32_t account_id) {
         statement->setUInt(1, account_id);
         auto result_set = unique_ptr<sql::ResultSet>(statement->executeQuery());
         
-        if (result_set->next()) {
+        while(result_set->next()) {
             player_id = result_set->getUInt64("id");
             
         } else {
@@ -63,8 +63,7 @@ bool MysqlSessionProvider::CreateGameSession(uint64_t account_id, uint32_t sessi
         statement->setUInt64(1, account_id);
         statement->setString(2, game_session);
 		statement->setInt(3, 2);
-        statement->execute();
-        while (statement->getMoreResults());
+        statement->execute();        
 	} catch(sql::SQLException &e) {
 		LOG(warning) << "Couldn't create session for player " << account_id << endl;
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
@@ -98,7 +97,7 @@ uint32_t MysqlSessionProvider::GetAccountId(uint64_t player_id) {
         statement->setUInt64(1, player_id);
         auto result_set = unique_ptr<sql::ResultSet>(statement->executeQuery());
         
-        if (result_set->next()) {
+        while(result_set->next()) {
             account_id = result_set->getUInt("reference_id");
             
         } else {

@@ -98,7 +98,7 @@ vector<CharacterData> MysqlCharacterProvider::GetCharactersForAccount(uint64_t a
                 character.galaxy_id = kernel_->GetServiceDirectory()->galaxy().id();
                 character.status = 1;
                 characters.push_back(character);
-            } while (statement->getMoreResults());
+            } statement->close();
         }
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
@@ -118,10 +118,11 @@ bool MysqlCharacterProvider::DeleteCharacter(uint64_t character_id, uint64_t acc
         statement->setUInt64(1, character_id);
         statement->setUInt64(2, account_id);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
-        if (result_set->next())
+        while(result_set->next())
         {
            rows_updated = result_set->getInt(1);
         }
+		while (statement->getMoreResults());
     }
      catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
@@ -137,15 +138,16 @@ std::wstring MysqlCharacterProvider::GetRandomNameRequest(const std::string& bas
             );
         statement->setString(1, base_model);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
-        if (result_set->next())
+        if(result_set->next())
         {
             std::string str = result_set->getString(1);
 			std::string surname = result_set->getString(2);
             std::wstring wstr(str.begin(), str.end());
 			wstr.append(L" ");
 			wstr.append(surname.begin(), surname.end());
-			while (statement->getMoreResults());
-            return wstr;
+			statement->close();
+			result_set->close();
+			return wstr;
         }		
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
@@ -162,10 +164,11 @@ uint16_t MysqlCharacterProvider::GetMaxCharacters(uint64_t account_id) {
             );
         statement->setUInt64(1, account_id);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
-        if (result_set->next())
+        while(result_set->next())
         {
             max_chars = result_set->getUInt(1);
-        } while(statement->getMoreResults());
+        }
+		while(statement->getMoreResults());
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
@@ -205,7 +208,7 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
         auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
 
         std::unique_ptr<sql::PreparedStatement> statement(conn->prepareStatement(
-            "CALL sp_CharacterCreate(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"));
+            "CALL sp_CharacterCreate(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @output);"));
 
         DLOG(info) << "Creating character with location " << account_id;
 
@@ -223,10 +226,13 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
         statement->setString(11, character_info.hair_customization);
         statement->setString(12, character_info.player_race_iff);
 
-        //statement.reset(conn->prepareStatement("SELECT @output as _object_id"));
+		statement->execute();
+
+        statement.reset(conn->prepareStatement("SELECT @output as _object_id"));
 
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
-        if (result_set->next())
+		
+        while(result_set->next())
         {
             uint64_t char_id = result_set->getUInt64(1);
             if (char_id < 1002)
@@ -237,6 +243,7 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
             }
             return make_tuple(char_id, "");
         }
+		result_set->close();
     }
     catch(sql::SQLException &e)
     {
@@ -342,7 +349,7 @@ uint64_t MysqlCharacterProvider::GetCharacterIdByName(const string& name)
         statement->setString(1, name);
         statement->setUInt(2, swganh::object::Player::type);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
-        if (result_set->next())
+        while (result_set->next())
         {
            character_id = result_set->getUInt64(1);
         } while(statement->getMoreResults());
