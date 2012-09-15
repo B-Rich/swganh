@@ -104,11 +104,12 @@ uint32_t MysqlAccountProvider::FindBySessionKey(const string& session_key) {
 bool MysqlAccountProvider::CreateAccountSession(uint32_t account_id, const std::string& session_key) {
     bool success = false;
     try {
-        string sql = "CALL sp_CreateAccountSessionByID(?,?);";
+        string sql = "CALL sp_CreateSession(?,?,?);";
         auto conn = db_manager_->getConnection("galaxy_manager");
         auto statement = shared_ptr<sql::PreparedStatement>(conn->prepareStatement(sql));
         statement->setUInt64(1, account_id);
         statement->setString(2, session_key);
+		statement->setInt(3, 1);
         auto rows_updated = statement->executeUpdate();
         if (rows_updated > 0)
             success = true;

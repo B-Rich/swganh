@@ -126,7 +126,7 @@ void CharacterService::HandleClientRandomNameRequest_(
 {
     ClientRandomNameResponse response;
     response.player_race_iff = message->player_race_iff;
-
+	
     response.random_name = character_provider_->GetRandomNameRequest(message->player_race_iff);
     if (response.random_name.length() > 0) {
         response.stf_file = "ui";

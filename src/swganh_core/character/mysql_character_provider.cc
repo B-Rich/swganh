@@ -133,7 +133,7 @@ std::wstring MysqlCharacterProvider::GetRandomNameRequest(const std::string& bas
     try {
         auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
         auto statement = std::shared_ptr<sql::PreparedStatement>(
-            conn->prepareStatement("CALL sp_CharacterNameCreate(?);")
+            conn->prepareStatement("CALL sp_GetCharacterName(?);")
             );
         statement->setString(1, base_model);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
@@ -143,6 +143,7 @@ std::wstring MysqlCharacterProvider::GetRandomNameRequest(const std::string& bas
             std::wstring wstr(str.begin(), str.end());
             return wstr;
         }
+		while (statement->getMoreResults());
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();

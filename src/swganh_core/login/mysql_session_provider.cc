@@ -58,11 +58,12 @@ bool MysqlSessionProvider::CreateGameSession(uint64_t account_id, uint32_t sessi
         + boost::lexical_cast<std::string>(session_id);
 
     try {
-        string sql = "CALL sp_CreateAccountSessionsByID(?,?);";
+        string sql = "CALL sp_CreateSession(?,?,?);";
         auto conn = db_manager_->getConnection("galaxy_manager");
         auto statement = shared_ptr<sql::PreparedStatement>(conn->prepareStatement(sql));
         statement->setUInt64(1, account_id);
         statement->setString(2, game_session);
+		statement->setInt(3, 2);
         updated = statement->execute();
         
 	} catch(sql::SQLException &e) {
