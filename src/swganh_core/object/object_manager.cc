@@ -73,6 +73,11 @@ void ObjectManager::RegisterObjectType(uint32_t object_type, const shared_ptr<Ob
     }
 
     factories_.insert(make_pair(object_type, factory));
+
+	if (type_lookup_.size() == 0)
+	{
+		LoadObjectTemplates();
+	}
 }
 
 void ObjectManager::UnregisterObjectType(uint32_t object_type)
@@ -217,10 +222,6 @@ shared_ptr<Object> ObjectManager::CreateObjectFromTemplate(const string& templat
 		return nullptr;
 	}
 
-	if (type_lookup_.size() == 0)
-	{
-		type_lookup_ = factories_[0]->LoadObjectTemplates();
-	}
 	//Then make sure we actually can create an object of this type
 	shared_ptr<Object> created_object;
     auto template_itr = type_lookup_.find(template_name);
@@ -383,4 +384,9 @@ void ObjectManager::PrepareToAccomodate(uint32_t delta)
 {
 	boost::lock_guard<boost::shared_mutex> lg(object_map_mutex_);
 	object_map_.reserve(object_map_.size() + delta);
+}
+
+void ObjectManager::LoadObjectTemplates()
+{
+	type_lookup_ = factories_[0]->LoadObjectTemplates();
 }

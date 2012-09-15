@@ -301,7 +301,9 @@ namespace object {
          */
         void RegisterMessageBuilder(uint32_t object_type, std::shared_ptr<ObjectMessageBuilder> message_builder);
 
-		void ObjectManager::AddContainerPermissionType_(swganh::object::PermissionType type, swganh::object::ContainerPermissionsInterface* ptr);
+		void AddContainerPermissionType_(swganh::object::PermissionType type, swganh::object::ContainerPermissionsInterface* ptr);
+
+		void LoadObjectTemplates();
 
         swganh::app::SwganhKernel* kernel_;
 

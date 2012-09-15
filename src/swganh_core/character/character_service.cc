@@ -99,7 +99,7 @@ void CharacterService::HandleClientCreateCharacter_(
 	{
 		ClientCreateCharacterFailed failed;
 		failed.stf_file = "ui";
-		failed.error_string = name_check_error_code;
+		failed.error_string = error_code;
 		client->SendTo(failed);
 		return; // Bail out of character creation.
 	}

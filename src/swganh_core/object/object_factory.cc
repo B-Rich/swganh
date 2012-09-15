@@ -30,7 +30,7 @@ ObjectFactory::ObjectFactory(DatabaseManagerInterface* db_manager,
                              swganh::EventDispatcher* event_dispatcher)
     : db_manager_(db_manager)
     , event_dispatcher_(event_dispatcher)
-{	
+{		
 }
 
 uint32_t ObjectFactory::PersistObject(const shared_ptr<Object>& object)
@@ -203,14 +203,14 @@ std::map<std::string, uint32_t> ObjectFactory::LoadObjectTemplates()
 {
 	std::map<std::string, uint32_t> iff_templates;
 	//Load Object Templates
-	auto conn = db_manager_->getConnection("static");
+	auto conn = db_manager_->getConnection("galaxy");
     auto statement = shared_ptr<sql::Statement>(conn->createStatement());
-    statement->execute("CALL sp_GetObjectTemplates();");
+    statement->execute("CALL sp_GetSystemObjectList();");
 	auto result = shared_ptr<sql::ResultSet>(statement->getResultSet());
 	
 	while(result->next())
 	{
-		std::string key = result->getString("iff_template");
+		std::string key = result->getString("object_string");
 		uint32_t value = result->getUInt("object_type");
 		iff_templates.insert(make_pair(key, value));
 	}

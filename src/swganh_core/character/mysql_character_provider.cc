@@ -133,14 +133,17 @@ std::wstring MysqlCharacterProvider::GetRandomNameRequest(const std::string& bas
     try {
         auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
         auto statement = std::shared_ptr<sql::PreparedStatement>(
-            conn->prepareStatement("CALL sp_GetCharacterName(?);")
+            conn->prepareStatement("CALL sp_GetCharacterNewName(?);")
             );
         statement->setString(1, base_model);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
         if (result_set->next())
         {
             std::string str = result_set->getString(1);
+			std::string surname = result_set->getString(2);
             std::wstring wstr(str.begin(), str.end());
+			wstr.append(L" ");
+			wstr.append(surname.begin(), surname.end());
             return wstr;
         }
 		while (statement->getMoreResults());
@@ -150,19 +153,19 @@ std::wstring MysqlCharacterProvider::GetRandomNameRequest(const std::string& bas
     }
     return L"";
 }
-uint16_t MysqlCharacterProvider::GetMaxCharacters(uint64_t player_id) {
+uint16_t MysqlCharacterProvider::GetMaxCharacters(uint64_t account_id) {
     uint16_t max_chars = 2;
     try {
-        auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
+        auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy_manager");
         auto statement = std::shared_ptr<sql::PreparedStatement>(
-            conn->prepareStatement("SELECT max_characters from player_account where id = ?")
+            conn->prepareStatement("call sp_GetAccountMaxCharacters(?);")
             );
-        statement->setUInt64(1, player_id);
+        statement->setUInt64(1, account_id);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
         if (result_set->next())
         {
             max_chars = result_set->getUInt(1);
-        }
+        } while(statement->getMoreResults());
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
         LOG(error) << "MySQL Error: (" << e.getErrorCode() << ": " << e.getSQLState() << ") " << e.what();
@@ -336,15 +339,15 @@ uint64_t MysqlCharacterProvider::GetCharacterIdByName(const string& name)
     try {
         auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
         auto statement = std::unique_ptr<sql::PreparedStatement>(
-            conn->prepareStatement("SELECT id FROM object where custom_name like ? and type_id = ?;")
+            conn->prepareStatement("call sp_GetCharacterIDByName(?);")
             );
-        statement->setString(1, name + '%');
+        statement->setString(1, name);
         statement->setUInt(2, swganh::object::Player::type);
         auto result_set = std::unique_ptr<sql::ResultSet>(statement->executeQuery());
         if (result_set->next())
         {
            character_id = result_set->getUInt64(1);
-        }
+        } while(statement->getMoreResults());
 
     } catch(sql::SQLException &e) {
         LOG(error) << "SQLException at " << __FILE__ << " (" << __LINE__ << ": " << __FUNCTION__ << ")";
