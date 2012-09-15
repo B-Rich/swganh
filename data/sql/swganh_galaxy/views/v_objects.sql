@@ -46,7 +46,9 @@ SET character_set_client = utf8;
   `stf_name_file_id` varchar(255),
   `stf_name_string_id` varchar(255),
   `custom_name` varchar(255),
-  `volume` bigint(20)
+  `volume` bigint(20),
+  `type_id` int(11)
+  
 ) ENGINE=MyISAM */;
 
 USE `swganh_galaxy`;
