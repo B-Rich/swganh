@@ -1,4 +1,4 @@
--- ---------------------------------------------------------------------------------------
+﻿-- ---------------------------------------------------------------------------------------
 -- This source file is part of SWG:ANH (Star Wars Galaxies - A New Hope - Server Emulator)
 --
 -- For more information, visit http://www.swganh.com
@@ -44,7 +44,7 @@ CREATE TABLE `character_appearance` (
   `character_id` bigint(20) unsigned NOT NULL,
   `scale` int(11) unsigned NOT NULL DEFAULT '0',
   `customization` blob NOT NULL,
-  `hair_model` int(11) unsigned NOT NULL,
+  `hair_model` int(11) unsigned,
   `hair_id` bigint(20) unsigned NOT NULL,
   `customization_hair` blob NOT NULL,
   `mood_id` int(11) unsigned NOT NULL DEFAULT '0',
