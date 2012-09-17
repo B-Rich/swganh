@@ -16,6 +16,7 @@ charCreate:BEGIN
   DECLARE gender INT;
   DECLARE nameCheck INT;
   DECLARE shortSpecies VARCHAR(32);
+  DECLARE character_id BIGINT;
   DECLARE new_player_id BIGINT;
   DECLARE inventory_id BIGINT;
   DECLARE datapad_id BIGINT;
@@ -41,7 +42,7 @@ charCreate:BEGIN
 
   DECLARE t_id INT;
   DECLARE t_species VARCHAR(16);
-  DECLARE t_profession VARCHAR(64);
+  DECLARE t_profession VARCHAR(16);
   DECLARE longHair VARCHAR(64);
   
   -- get our short species name
@@ -73,14 +74,14 @@ charCreate:BEGIN
   IF character_id IS NULL OR character_id < 8589934592 THEN
     SET character_id = 8589934593;
   END IF;
-  
+
   -- get our player id
   SELECT MAX(player_id) FROM swganh_galaxy.characters INTO new_player_id;
 
   IF new_player_id IS NULL OR new_player_id < 17179869184 THEN
     SET new_player_id = 17179869184;
   END IF;
-  
+
   SET new_player_id = new_player_id + 1;
 
   -- get our other required IDs (inventory, datapad, hair)
@@ -92,9 +93,13 @@ charCreate:BEGIN
   SELECT id FROM swganh_static.objects WHERE object_string LIKE REPLACE('object/creature/player/twilek_male.iff', 'object/creature/player/', 'object/creature/player/shared_') INTO object_type_id;
   
   -- create our character hair
-  IF hair_model != '' THEN
+  IF hair_model IS NOT NULL OR hair_model != '' THEN
     SET longHair = REPLACE(hair_model, '/hair_', '/shared_hair_');  	
     SELECT id FROM swganh_static.objects WHERE swganh_static.objects.object_string LIKE longHair INTO hair_type_id;
+  END IF;
+
+  IF hair_model IS NULL OR hair_model = '' THEN
+    SET hair_type_id = 0;
 	END IF;
 
   -- get our location details
@@ -140,6 +145,8 @@ charCreate:BEGIN
   -- SELECT 'Profession ----> ', profession;
   -- SELECT 'Gender --------> ', gender;
   -- SELECT 'Location ------> ', planet, spawn_x, spawn_y, spawn_z;
-  -- SELECT 'HAM -----------> ', health, strength, constitution, action, quickness, stamina, mind, focus, willpower;  
+  -- SELECT 'HAM -----------> ', health, strength, constitution, action, quickness, stamina, mind, focus, willpower;
+
+  SELECT character_id;
 
 END $$

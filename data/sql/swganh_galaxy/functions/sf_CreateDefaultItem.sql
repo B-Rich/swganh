@@ -39,11 +39,13 @@ BEGIN
   -- Declare our cursor (iterate through attributes)
   DECLARE cur1 CURSOR FOR
     SELECT
-      swganh_static.item_family_attribute_defaults.attribute_id,
-      swganh_static.item_family_attribute_defaults.attribute_value,
-      swganh_static.item_family_attribute_defaults.attribute_order
-    FROM swganh_static.item_family_attribute_defaults
-    WHERE swganh_static.item_family_attribute_defaults.family_id = family_id AND swganh_static.item_family_attribute_defaults.item_type_id = type_id;
+      swganh_static.object_default_attributes.attribute_id,
+      swganh_static.object_default_attributes.attribute_value,
+      swganh_static.object_default_attributes.attribute_order
+    FROM
+      swganh_static.object_default_attributes
+    WHERE
+      swganh_static.object_default_attributes.family_id = family_id AND swganh_static.object_default_attributes.item_type_id = type_id;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET loopEnd = 1;
 
   -- get our next id for items
