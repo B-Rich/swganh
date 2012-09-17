@@ -44,6 +44,8 @@ charCreate:BEGIN
   DECLARE t_species VARCHAR(16);
   DECLARE t_profession VARCHAR(16);
   DECLARE longHair VARCHAR(64);
+  DECLARE arrangement_id INT DEFAULT -2;
+  DECLARE permission_type INT DEFAULT 5;
   
   -- get our short species name
   SELECT sf_speciesShort(base_model_string) INTO shortSpecies;
@@ -88,6 +90,7 @@ charCreate:BEGIN
   SET inventory_id = character_id + 2;
   SET datapad_id = character_id + 4;
   SET hair_id = character_id + 6;
+  SET bank_id = character_id + 8;
 
   -- get our object_type_id
   SELECT id FROM swganh_static.objects WHERE object_string LIKE REPLACE('object/creature/player/twilek_male.iff', 'object/creature/player/', 'object/creature/player/shared_') INTO object_type_id;
@@ -109,11 +112,11 @@ charCreate:BEGIN
   SELECT * FROM swganh_static.starting_attributes WHERE starting_attributes.species = shortSpecies AND starting_attributes.profession = profession INTO t_id, t_species, t_profession, health, strength, constitution, action, quickness, stamina, mind, focus, willpower;
 
   -- create our character
-  INSERT INTO characters VALUES (character_id, new_player_id, account_id, 1, firstname, lastname, gender, race_id, planet, 0, spawn_x, spawn_y, spawn_z, 0, 0, 0, 0, NOW(), 0, 0, 0, NOW(), NOW());
-  INSERT INTO character_appearance VALUES (character_id, scale, appearance_customization, hair_type_id, hair_id, hair_customization, 0);
+  INSERT INTO characters VALUES (character_id, new_player_id, account_id, 1, firstname, lastname, gender, race_id, planet, 0, spawn_x, spawn_y, spawn_z, 0, 0, 0, 0, NOW(), 0, 0, 0, permission_type, arrangement_id, arrangement_id, NOW(), NOW());
+  INSERT INTO character_appearance VALUES (character_id, scale, appearance_customization, hair_type_id, hair_id, hair_customization, -2, 0);
   INSERT INTO character_attributes VALUES (character_id, health, strength, constitution, action, quickness, stamina, mind, focus, willpower, health, strength, constitution, action, quickness, stamina, mind, focus, willpower, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 0, 100, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, profession, 0, object_type_id, object_type_id, object_type_id);
   INSERT INTO character_flags VALUES (character_id, 0, 0, 0, 0, 0);
-  INSERT INTO character_credits VALUES (character_id, 0, 10000, 10000);
+  INSERT INTO character_credits VALUES (character_id, bank_id, arrangement_id, 10000, 10000);
   
   -- create our biography
   INSERT INTO character_biographies VALUES (character_id, biography);
@@ -124,8 +127,8 @@ charCreate:BEGIN
   INSERT INTO character_faction VALUES (character_id, 3, 0);  -- imperial
 
   -- create our inventory / datapad
-  INSERT INTO inventories VALUES (inventory_id, character_id, 10708);
-  INSERT INTO datapads VALUES (datapad_id, character_id, 7233);
+  INSERT INTO inventories VALUES (inventory_id, character_id, 10708, arrangement_id, 6);
+  INSERT INTO datapads VALUES (datapad_id, character_id, 7233, arrangement_id, 6);
 
   -- get our starting skill (profession)
   SELECT skill_id FROM swganh_static.skills WHERE skills.skill_name like profession INTO profession_id;
@@ -146,7 +149,5 @@ charCreate:BEGIN
   -- SELECT 'Gender --------> ', gender;
   -- SELECT 'Location ------> ', planet, spawn_x, spawn_y, spawn_z;
   -- SELECT 'HAM -----------> ', health, strength, constitution, action, quickness, stamina, mind, focus, willpower;
-
-  SELECT character_id;
 
 END $$

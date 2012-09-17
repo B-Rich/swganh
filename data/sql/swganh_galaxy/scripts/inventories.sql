@@ -37,13 +37,13 @@ USE swganh_galaxy;
 -- Table structure for table `inventories`
 --
 
-DROP TABLE IF EXISTS `inventories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `inventories` (
+DROP TABLE IF EXISTS `swganh_galaxy`.`inventories`;
+CREATE TABLE  `swganh_galaxy`.`inventories` (
   `id` bigint(20) unsigned NOT NULL,
   `parent_id` bigint(20) unsigned NOT NULL,
   `inventory_type` int(11) unsigned NOT NULL,
+  `arrangement_id` int(11) NOT NULL DEFAULT '-2',
+  `permission_type` int(11) unsigned NOT NULL DEFAULT '6',
   PRIMARY KEY (`id`),
   KEY `FK_inventories_swganh_static.inventory_type` (`inventory_type`),
   KEY `FK_inventories_owner_id` (`parent_id`),

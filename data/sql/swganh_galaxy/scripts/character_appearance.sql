@@ -37,16 +37,15 @@ USE swganh_galaxy;
 -- Table structure for table `character_appearance`
 --
 
-DROP TABLE IF EXISTS `character_appearance`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `character_appearance` (
+DROP TABLE IF EXISTS `swganh_galaxy`.`character_appearance`;
+CREATE TABLE  `swganh_galaxy`.`character_appearance` (
   `character_id` bigint(20) unsigned NOT NULL,
   `scale` int(11) unsigned NOT NULL DEFAULT '0',
   `customization` blob NOT NULL,
-  `hair_model` int(11) unsigned,
+  `hair_model` int(11) unsigned DEFAULT NULL,
   `hair_id` bigint(20) unsigned NOT NULL,
   `customization_hair` blob NOT NULL,
+  `hair_arrangement_id` int(11) NOT NULL DEFAULT '-2',
   `mood_id` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`character_id`),
   KEY `FK_character_appearance_swganh_static.mood_type` (`mood_id`),

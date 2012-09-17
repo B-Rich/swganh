@@ -37,10 +37,8 @@ USE swganh_galaxy;
 -- Table structure for table `characters`
 --
 
-DROP TABLE IF EXISTS `characters`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `characters` (
+DROP TABLE IF EXISTS `swganh_galaxy`.`characters`;
+CREATE TABLE  `swganh_galaxy`.`characters` (
   `id` bigint(20) unsigned NOT NULL COMMENT 'Character ID',
   `player_id` bigint(20) unsigned NOT NULL COMMENT 'Player ID',
   `account_id` int(11) unsigned DEFAULT NULL COMMENT 'Account ID',
@@ -62,6 +60,9 @@ CREATE TABLE `characters` (
   `total_playtime` bigint(20) unsigned DEFAULT '0',
   `csr` int(10) unsigned DEFAULT '0',
   `jedi_state` int(11) DEFAULT NULL,
+  `permission_type` int(11) DEFAULT '5' COMMENT 'Server Permission Type',
+  `arrangement_id` int(11) DEFAULT '1' COMMENT 'Arrangement ID',
+  `player_arrangement_id` int(11) DEFAULT '1' COMMENT 'Player Arrangement ID',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),

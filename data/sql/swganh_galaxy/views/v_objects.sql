@@ -59,4 +59,187 @@ USE `swganh_galaxy`;
 
 DROP TABLE IF EXISTS `v_objects`;
 DROP VIEW IF EXISTS `v_objects`;
-CREATE VIEW `v_objects` AS select `swganh_galaxy`.`characters`.`id` AS `id`,`swganh_galaxy`.`characters`.`planet_id` AS `planet_id`,`swganh_galaxy`.`characters`.`parent_id` AS `parent_id`,`swganh_static`.`objects`.`object_string` AS `iff_template_text`,`swganh_galaxy`.`characters`.`x` AS `x`,`swganh_galaxy`.`characters`.`y` AS `y`,`swganh_galaxy`.`characters`.`z` AS `z`,`swganh_galaxy`.`characters`.`oX` AS `oX`,`swganh_galaxy`.`characters`.`oY` AS `oY`,`swganh_galaxy`.`characters`.`oZ` AS `oZ`,`swganh_galaxy`.`characters`.`oW` AS `oW`,0 AS `complexity`,`swganh_static`.`objects`.`objectName_1` AS `stf_name_file_id`,`swganh_static`.`objects`.`objectName_2` AS `stf_name_string_id`,concat(`swganh_galaxy`.`characters`.`firstname`,' ',`swganh_galaxy`.`characters`.`lastname`) AS `custom_name`,0 AS `volume` from ((`swganh_galaxy`.`characters` left join `swganh_galaxy`.`character_attributes` on((`swganh_galaxy`.`characters`.`id` = `swganh_galaxy`.`character_attributes`.`character_id`))) left join `swganh_static`.`objects` on((`swganh_galaxy`.`character_attributes`.`object_template_id` = `swganh_static`.`objects`.`id`))) union select `swganh_galaxy`.`characters`.`player_id` AS `id`,`swganh_galaxy`.`characters`.`planet_id` AS `planet_id`,`swganh_galaxy`.`characters`.`id` AS `parent_id`,`swganh_static`.`objects`.`object_string` AS `iff_template_text`,`swganh_galaxy`.`characters`.`x` AS `x`,`swganh_galaxy`.`characters`.`y` AS `y`,`swganh_galaxy`.`characters`.`z` AS `z`,`swganh_galaxy`.`characters`.`oX` AS `oX`,`swganh_galaxy`.`characters`.`oY` AS `oY`,`swganh_galaxy`.`characters`.`oZ` AS `oZ`,`swganh_galaxy`.`characters`.`oW` AS `oW`,0 AS `complexity`,`swganh_static`.`objects`.`objectName_1` AS `stf_name_file_id`,`swganh_static`.`objects`.`objectName_2` AS `stf_name_string_id`,concat(`swganh_galaxy`.`characters`.`firstname`,' ',`swganh_galaxy`.`characters`.`lastname`) AS `custom_name`,0 AS `volume` from ((`swganh_galaxy`.`characters` left join `swganh_galaxy`.`character_attributes` on((`swganh_galaxy`.`characters`.`id` = `swganh_galaxy`.`character_attributes`.`character_id`))) left join `swganh_static`.`objects` on((`swganh_galaxy`.`character_attributes`.`object_template_id` = `swganh_static`.`objects`.`id`))) union select `swganh_galaxy`.`character_appearance`.`hair_id` AS `id`,`swganh_galaxy`.`characters`.`planet_id` AS `planet_id`,`swganh_galaxy`.`characters`.`id` AS `parent_id`,`swganh_static`.`objects`.`object_string` AS `iff_template_text`,`swganh_galaxy`.`characters`.`x` AS `x`,`swganh_galaxy`.`characters`.`y` AS `y`,`swganh_galaxy`.`characters`.`z` AS `z`,`swganh_galaxy`.`characters`.`oX` AS `oX`,`swganh_galaxy`.`characters`.`oY` AS `oY`,`swganh_galaxy`.`characters`.`oZ` AS `oZ`,`swganh_galaxy`.`characters`.`oW` AS `oW`,0 AS `complexity`,`swganh_static`.`objects`.`objectName_1` AS `stf_name_file_id`,`swganh_static`.`objects`.`objectName_2` AS `stf_name_string_id`,concat(`swganh_galaxy`.`characters`.`firstname`,' ',`swganh_galaxy`.`characters`.`lastname`) AS `custom_name`,0 AS `volume` from ((`swganh_galaxy`.`characters` left join `swganh_galaxy`.`character_appearance` on((`swganh_galaxy`.`characters`.`id` = `swganh_galaxy`.`character_appearance`.`character_id`))) left join `swganh_static`.`objects` on((`swganh_galaxy`.`character_appearance`.`hair_model` = `swganh_static`.`objects`.`id`))) union select `swganh_galaxy`.`inventories`.`id` AS `id`,0 AS `planet_id`,`swganh_galaxy`.`inventories`.`parent_id` AS `parent_id`,`swganh_static`.`objects`.`object_string` AS `iff_template_text`,0 AS `x`,0 AS `y`,0 AS `z`,0 AS `oX`,0 AS `oY`,0 AS `oZ`,0 AS `oW`,0 AS `complexity`,`swganh_static`.`objects`.`objectName_1` AS `stf_name_file_id`,`swganh_static`.`objects`.`objectName_2` AS `stf_name_string_id`,'' AS `custom_name`,0 AS `volume` from (`swganh_galaxy`.`inventories` left join `swganh_static`.`objects` on((`swganh_galaxy`.`inventories`.`inventory_type` = `swganh_static`.`objects`.`id`))) union select `swganh_galaxy`.`datapads`.`id` AS `id`,0 AS `planet_id`,`swganh_galaxy`.`datapads`.`parent_id` AS `parent_id`,`swganh_static`.`objects`.`object_string` AS `iff_template_text`,0 AS `x`,0 AS `y`,0 AS `z`,0 AS `oX`,0 AS `oY`,0 AS `oZ`,0 AS `oW`,0 AS `complexity`,`swganh_static`.`objects`.`objectName_1` AS `stf_name_file_id`,`swganh_static`.`objects`.`objectName_2` AS `stf_name_string_id`,'' AS `custom_name`,0 AS `volume` from (`swganh_galaxy`.`datapads` left join `swganh_static`.`objects` on((`swganh_galaxy`.`datapads`.`datapad_type` = `swganh_static`.`objects`.`id`))) union select `swganh_galaxy`.`items`.`id` AS `id`,`swganh_galaxy`.`items`.`planet_id` AS `planet_id`,`swganh_galaxy`.`items`.`parent_id` AS `parent_id`,`swganh_static`.`item_types`.`object_string` AS `iff_template_text`,`swganh_galaxy`.`items`.`x` AS `x`,`swganh_galaxy`.`items`.`y` AS `y`,`swganh_galaxy`.`items`.`z` AS `z`,`swganh_galaxy`.`items`.`oX` AS `oX`,`swganh_galaxy`.`items`.`oY` AS `oY`,`swganh_galaxy`.`items`.`oZ` AS `oZ`,`swganh_galaxy`.`items`.`oW` AS `oW`,0 AS `complexity`,`swganh_static`.`item_types`.`stf_file` AS `stf_name_file_id`,`swganh_static`.`item_types`.`stf_name` AS `stf_name_string_id`,`swganh_galaxy`.`items`.`custom_name` AS `custom_name`,1 AS `volume` from (`swganh_galaxy`.`items` left join `swganh_static`.`item_types` on((`swganh_galaxy`.`items`.`item_type` = `swganh_static`.`item_types`.`id`)));
+CREATE VIEW `v_objects` AS 
+
+-- characters
+	
+SELECT 
+	characters.id AS id,
+	characters.planet_id AS planet_id,
+	characters.parent_id AS parent_id,
+	swganh_static.objects.object_string AS iff_template_text,
+	characters.x AS x,
+	characters.y AS y,
+	characters.z AS z,
+	characters.oX AS oX,
+	characters.oY AS oY,
+	characters.oZ AS oZ,
+	characters.oW AS oW,
+	0 AS complexity,
+	swganh_static.objects.objectName_1 AS stf_name_file_id,
+	swganh_static.objects.objectName_2 AS stf_name_string_id,
+	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
+	characters.arrangement_id AS arrangement_id,
+	characters.permission_type AS permission_type,
+	0 AS volume
+FROM characters
+  LEFT JOIN character_attributes ON (characters.id = character_attributes.character_id)
+  LEFT JOIN swganh_static.objects ON (character_attributes.object_template_id = swganh_static.objects.id)
+
+UNION
+
+	-- players
+
+SELECT
+	characters.player_id AS id,
+	characters.planet_id AS planet_id,
+	characters.id AS parent_id,
+	swganh_static.objects.object_string AS iff_template_text,
+	characters.x AS x,
+	characters.y AS y,
+	characters.z AS z,
+	characters.oX AS oX,
+	characters.oY AS oY,
+	characters.oZ AS oZ,
+	characters.oW AS oW,
+	0 AS complexity,
+	swganh_static.objects.objectName_1 AS stf_name_file_id,
+	swganh_static.objects.objectName_2 AS stf_name_string_id,
+	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
+	characters.player_arrangement_id AS arrangement_id,
+	5 AS permission_type,
+	0 AS volume
+FROM characters
+  LEFT JOIN character_attributes ON (characters.id = character_attributes.character_id)
+  LEFT JOIN swganh_static.objects ON (character_attributes.object_template_id = swganh_static.objects.id)
+
+UNION
+
+	-- hair
+
+SELECT
+	character_appearance.hair_id AS id,
+	characters.planet_id AS planet_id,
+	characters.id AS parent_id,
+	swganh_static.objects.object_string AS iff_template_text,
+	characters.x AS x,
+	characters.y AS y,
+	characters.z AS z,
+	characters.oX AS oX,
+	characters.oY AS oY,
+	characters.oZ AS oZ,
+	characters.oW AS oW,
+	0 AS complexity,
+	swganh_static.objects.objectName_1 AS stf_name_file_id,
+	swganh_static.objects.objectName_2 AS stf_name_string_id,
+	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
+	character_appearance.hair_arrangement_id AS arrangement_id,
+	1 AS permission_type,
+	0 AS volume
+FROM characters
+  LEFT JOIN character_appearance ON (characters.id = character_appearance.character_id)
+  LEFT JOIN swganh_static.objects ON (character_appearance.hair_model = swganh_static.objects.id)	
+
+UNION
+
+	-- inventories
+
+SELECT 
+	inventories.id AS id,
+	0 AS planet_id,
+	inventories.parent_id AS parent_id,
+	swganh_static.objects.object_string AS iff_template_text,
+	0 AS x,
+	0 AS y,
+	0 AS z,
+	0 AS oX,
+	0 AS oY,
+	0 AS oZ,
+	0 AS oW,
+	0 AS complexity,
+	swganh_static.objects.objectName_1 AS stf_name_file_id,
+	swganh_static.objects.objectName_2 AS stf_name_string_id,
+	'' AS custom_name,
+	inventories.arrangement_id AS arrangement_id,
+	inventories.permission_type AS permission_type,
+	0 AS volume
+FROM inventories
+  LEFT JOIN swganh_static.objects ON (inventories.inventory_type = swganh_static.objects.id)
+
+UNION
+
+	-- datapads
+
+SELECT 
+	datapads.id AS id,
+	0 AS planet_id,
+	datapads.parent_id AS parent_id,
+	swganh_static.objects.object_string AS iff_template_text,
+	0 AS x,
+	0 AS y,
+	0 AS z,
+	0 AS oX,
+	0 AS oY,
+	0 AS oZ,
+	0 AS oW,
+	0 AS complexity,
+	swganh_static.objects.objectName_1 AS stf_name_file_id,
+	swganh_static.objects.objectName_2 AS stf_name_string_id,
+	'' AS custom_name,
+	datapads.arrangement_id AS arrangement_id,
+	datapads.permission_type AS permission_type,
+	0 AS volume
+FROM datapads
+  LEFT JOIN swganh_static.objects ON (datapads.datapad_type = swganh_static.objects.id)
+
+UNION
+
+	-- banks
+	
+SELECT 
+	character_credits.bank_id AS id,
+	0 AS planet_id,
+	characters.id AS parent_id,
+	'object/tangible/bank/shared_character_bank.iff' AS iff_template_text,
+	0 AS x,
+	0 AS y,
+	0 AS z,
+	0 AS oX,
+	0 AS oY,
+	0 AS oZ,
+	0 AS oW,
+	0 AS complexity,
+	'item_n' AS stf_name_file_id,
+	'bank' AS stf_name_string_id,
+	'' AS custom_name,
+	character_credits.bank_arrangement_id AS arrangement_id,
+	6 AS permission_type,
+	0 AS volume
+FROM characters
+  LEFT JOIN character_credits ON (characters.id = character_credits.character_id)
+
+UNION
+
+	-- items
+
+SELECT 
+	items.id AS id,
+	items.planet_id AS planet_id,
+	items.parent_id AS parent_id,
+	swganh_static.objects.object_string AS iff_template_text,
+	items.x AS x,
+	items.y AS y,
+	items.z AS z,
+	items.oX AS oX,
+	items.oY AS oY,
+	items.oZ AS oZ,
+	items.oW AS oW,
+	0 AS complexity,
+	swganh_static.objects.objectName_1 AS stf_name_file_id,
+	swganh_static.objects.objectName_2 AS stf_name_string_id,
+	items.custom_name AS custom_name,
+	items.arrangement_type AS arrangement_id,
+	items.permission_type AS permission_type,
+	1 AS volume
+FROM items
+  LEFT JOIN swganh_static.objects ON (items.item_type = swganh_static.objects.id) 

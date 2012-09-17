@@ -37,10 +37,8 @@ USE swganh_galaxy;
 -- Table structure for table `items`
 --
 
-DROP TABLE IF EXISTS `items`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `items` (
+DROP TABLE IF EXISTS `swganh_galaxy`.`items`;
+CREATE TABLE  `swganh_galaxy`.`items` (
   `id` bigint(20) unsigned NOT NULL COMMENT 'Item ID',
   `parent_id` bigint(20) unsigned NOT NULL COMMENT 'Item Owner',
   `item_family` int(11) unsigned NOT NULL COMMENT 'Item Family Type',
@@ -53,14 +51,15 @@ CREATE TABLE `items` (
   `oY` float unsigned NOT NULL COMMENT 'Orientation Y',
   `oZ` float unsigned NOT NULL COMMENT 'Orientation Z',
   `oW` float unsigned NOT NULL COMMENT 'Orientation W',
-  `condition_damage` int(10) unsigned NOT NULL COMMENT 'Item Damage',
-  `condition_max` int(10) unsigned NOT NULL COMMENT 'Item Condition Max',
+  `condition_damage` int(11) unsigned NOT NULL COMMENT 'Item Damage',
+  `condition_max` int(11) unsigned NOT NULL COMMENT 'Item Condition Max',
   `custom_name` varchar(255) DEFAULT NULL COMMENT 'Item Custom Name',
+  `arrangement_type` int(11) DEFAULT '-2',
+  `permission_type` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_items_swganh_static.item_families` (`item_family`),
   KEY `FK_items_swganh_static.item_types` (`item_type`),
-  CONSTRAINT `FK_items_swganh_static.item_families` FOREIGN KEY (`item_family`) REFERENCES `swganh_static`.`item_families` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_items_swganh_static.item_types` FOREIGN KEY (`item_type`) REFERENCES `swganh_static`.`item_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_items_swganh_static.item_types` FOREIGN KEY (`item_type`) REFERENCES `swganh_static`.`objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

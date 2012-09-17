@@ -37,12 +37,11 @@ USE swganh_galaxy;
 -- Table structure for table `character_credits`
 --
 
-DROP TABLE IF EXISTS `character_credits`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `character_credits` (
+DROP TABLE IF EXISTS `swganh_galaxy`.`character_credits`;
+CREATE TABLE  `swganh_galaxy`.`character_credits` (
   `character_id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `bank_id` bigint(20) DEFAULT NULL,
+  `bank_arrangement_id` int(11) DEFAULT '-2',
   `credits_cash` bigint(20) DEFAULT NULL,
   `credits_bank` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`character_id`),
