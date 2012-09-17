@@ -58,7 +58,7 @@ BEGIN
   SET item_id = item_id + 1;
 
   -- create our item
-  INSERT INTO swganh_galaxy.items VALUES (item_id, parent_id, family_id, type_id, 99, in_x, in_y, in_z, 0, 0, 0, 1, 100, 0, customName);
+  INSERT INTO swganh_galaxy.items VALUES (item_id, parent_id, family_id, type_id, 99, in_x, in_y, in_z, 0, 0, 0, 1, 100, 0, customName, -2, 1);
 
   -- create our item attributes
   OPEN cur1;
