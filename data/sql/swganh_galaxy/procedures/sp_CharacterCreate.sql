@@ -16,7 +16,6 @@ charCreate:BEGIN
   DECLARE gender INT;
   DECLARE nameCheck INT;
   DECLARE shortSpecies VARCHAR(32);
-  DECLARE character_id BIGINT;
   DECLARE new_player_id BIGINT;
   DECLARE inventory_id BIGINT;
   DECLARE datapad_id BIGINT;
