@@ -115,12 +115,10 @@ void ObjectFactory::CreateBaseObjectFromStorage(const shared_ptr<Object>& object
         object->SetCustomName(wstring(begin(custom_string), end(custom_string)));
         object->SetVolume(result->getUInt("volume"));
         object->SetTemplate(result->getString("iff_template_text"));
-		//object->SetArrangementId(result->getInt("arrangement_id"));
-		object->SetArrangementId(-2);
+		object->SetArrangementId(result->getInt("arrangement_id"));
 		
 		auto permissions_objects_ = object_manager_->GetPermissionsMap();
-		//result->getInt("permission_type")
-		auto permissions_itr = permissions_objects_.find(5);
+		auto permissions_itr = permissions_objects_.find(result->getInt("permission_type"));
 		if(permissions_itr != permissions_objects_.end())
 		{
 			object->SetPermissions(permissions_itr->second);

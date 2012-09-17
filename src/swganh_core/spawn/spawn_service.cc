@@ -36,7 +36,7 @@ SpawnService::SpawnService(SwganhKernel* kernel) : kernel_(kernel)
 		auto simulation_service = kernel_->GetServiceManager()->GetService<SimulationServiceInterface>("SimulationService");
 		
 		LOG(info) << "SpawnService: Loading static objects for planet: " << real_event->scene_label;
-
+		return;
 		//Load objects from snapshot	
 		std::string snapshot_filename = "snapshot/"+real_event->scene_label+".ws";
 		auto snapshot_visitor = kernel_->GetResourceManager()->GetResourceByName<WsVisitor>(snapshot_filename, false);
