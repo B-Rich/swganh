@@ -60,7 +60,6 @@ USE `swganh_galaxy`;
 DROP TABLE IF EXISTS `v_objects`;
 DROP VIEW IF EXISTS `v_objects`;
 CREATE VIEW `v_objects` AS 
-
 -- characters
 	
 SELECT 
@@ -81,6 +80,7 @@ SELECT
 	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
 	characters.arrangement_id AS arrangement_id,
 	characters.permission_type AS permission_type,
+	swganh_static.objects.id AS type_id,
 	0 AS volume
 FROM characters
   LEFT JOIN character_attributes ON (characters.id = character_attributes.character_id)
@@ -108,6 +108,7 @@ SELECT
 	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
 	characters.player_arrangement_id AS arrangement_id,
 	5 AS permission_type,
+	swganh_static.objects.id AS type_id,
 	0 AS volume
 FROM characters
   LEFT JOIN character_attributes ON (characters.id = character_attributes.character_id)
@@ -135,10 +136,12 @@ SELECT
 	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
 	character_appearance.hair_arrangement_id AS arrangement_id,
 	1 AS permission_type,
+	swganh_static.objects.id AS type_id,
 	0 AS volume
 FROM characters
   LEFT JOIN character_appearance ON (characters.id = character_appearance.character_id)
-  LEFT JOIN swganh_static.objects ON (character_appearance.hair_model = swganh_static.objects.id)	
+  LEFT JOIN swganh_static.objects ON (character_appearance.hair_model = swganh_static.objects.id)
+WHERE character_appearance.hair_model IS NOT NULL		
 
 UNION
 
@@ -162,6 +165,7 @@ SELECT
 	'' AS custom_name,
 	inventories.arrangement_id AS arrangement_id,
 	inventories.permission_type AS permission_type,
+	swganh_static.objects.id AS type_id,
 	0 AS volume
 FROM inventories
   LEFT JOIN swganh_static.objects ON (inventories.inventory_type = swganh_static.objects.id)
@@ -188,6 +192,7 @@ SELECT
 	'' AS custom_name,
 	datapads.arrangement_id AS arrangement_id,
 	datapads.permission_type AS permission_type,
+	swganh_static.objects.id AS type_id,
 	0 AS volume
 FROM datapads
   LEFT JOIN swganh_static.objects ON (datapads.datapad_type = swganh_static.objects.id)
@@ -214,6 +219,7 @@ SELECT
 	'' AS custom_name,
 	character_credits.bank_arrangement_id AS arrangement_id,
 	6 AS permission_type,
+	8571 AS type_id,
 	0 AS volume
 FROM characters
   LEFT JOIN character_credits ON (characters.id = character_credits.character_id)
@@ -240,6 +246,7 @@ SELECT
 	items.custom_name AS custom_name,
 	items.arrangement_type AS arrangement_id,
 	items.permission_type AS permission_type,
+	swganh_static.objects.id AS type_id,
 	1 AS volume
 FROM items
   LEFT JOIN swganh_static.objects ON (items.item_type = swganh_static.objects.id) 
