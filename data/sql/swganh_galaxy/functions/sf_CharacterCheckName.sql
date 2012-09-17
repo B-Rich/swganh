@@ -260,7 +260,7 @@ checkName:BEGIN
   -- 15 - name_declined_too_fast (set to 1 minute now, server setting @ launch should be 15 minutes)
 
   SET total = 0;
-  SELECT created_at FROM swganh_galaxy.`characters` WHERE created_at > NOW() - INTERVAL 1 MINUTE AND account_id = acc_id INTO total;
+  SELECT COUNT(created_at) FROM swganh_galaxy.`characters` WHERE created_at > NOW() - INTERVAL 1 MINUTE AND account_id = acc_id INTO total;
 
   IF total > 0 THEN SET error_id = 15;
     RETURN error_id;
