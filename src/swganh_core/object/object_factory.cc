@@ -180,7 +180,7 @@ void ObjectFactory::LoadContainedObjects(
         while (result->next())
         {
             contained_id = result->getUInt64("id");
-            contained_type = result->getUInt("type_id");
+            contained_type = result->getUInt("object_type");
 
             auto contained_object = object_manager_->CreateObjectFromStorage(contained_id, contained_type);
 

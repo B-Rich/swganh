@@ -1,25 +1,6 @@
-/*
----------------------------------------------------------------------------------------
-This source file is part of SWG:ANH (Star Wars Galaxies - A New Hope - Server Emulator)
-
-For more information, visit http://www.swganh.com
-
-Copyright (c) 2006 - 2012 The SWG:ANH Team
----------------------------------------------------------------------------------------
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
----------------------------------------------------------------------------------------
+/* 
+	This file is part of SWGANH which is released under the MIT license.
+	See file LICENSE or go to http://swganh.com/LICENSE
 */
 
 --
@@ -47,7 +28,7 @@ SET character_set_client = utf8;
   `stf_name_string_id` varchar(255),
   `custom_name` varchar(255),
   `volume` bigint(20),
-  `type_id` int(11)
+  `object_type` int(11)
   
 ) ENGINE=MyISAM */;
 
@@ -62,6 +43,7 @@ DROP VIEW IF EXISTS `v_objects`;
 CREATE VIEW `v_objects` AS 
 -- characters
 	
+
 SELECT 
 	characters.id AS id,
 	characters.planet_id AS planet_id,
@@ -80,12 +62,13 @@ SELECT
 	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
 	characters.arrangement_id AS arrangement_id,
 	characters.permission_type AS permission_type,
-	swganh_static.objects.id AS type_id,
+    swganh_static.object_types.object_type,
 	0 AS volume
 FROM characters
   LEFT JOIN character_attributes ON (characters.id = character_attributes.character_id)
   LEFT JOIN swganh_static.objects ON (character_attributes.object_template_id = swganh_static.objects.id)
-
+  LEFT JOIN swganh_static.object_types ON ( swganh_static.objects.object_type = swganh_static.object_types.id)
+  
 UNION
 
 	-- players
@@ -108,11 +91,12 @@ SELECT
 	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
 	characters.player_arrangement_id AS arrangement_id,
 	5 AS permission_type,
-	swganh_static.objects.id AS type_id,
+	swganh_static.object_types.object_type,
 	0 AS volume
 FROM characters
   LEFT JOIN character_attributes ON (characters.id = character_attributes.character_id)
   LEFT JOIN swganh_static.objects ON (character_attributes.object_template_id = swganh_static.objects.id)
+  LEFT JOIN swganh_static.object_types ON ( swganh_static.objects.object_type = swganh_static.object_types.id)
 
 UNION
 
@@ -136,11 +120,12 @@ SELECT
 	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
 	character_appearance.hair_arrangement_id AS arrangement_id,
 	1 AS permission_type,
-	swganh_static.objects.id AS type_id,
+	swganh_static.object_types.object_type,
 	0 AS volume
 FROM characters
   LEFT JOIN character_appearance ON (characters.id = character_appearance.character_id)
   LEFT JOIN swganh_static.objects ON (character_appearance.hair_model = swganh_static.objects.id)
+  LEFT JOIN swganh_static.object_types ON ( swganh_static.objects.object_type = swganh_static.object_types.id)
 WHERE character_appearance.hair_model IS NOT NULL		
 
 UNION
@@ -165,10 +150,11 @@ SELECT
 	'' AS custom_name,
 	inventories.arrangement_id AS arrangement_id,
 	inventories.permission_type AS permission_type,
-	swganh_static.objects.id AS type_id,
+	swganh_static.object_types.object_type,
 	0 AS volume
 FROM inventories
   LEFT JOIN swganh_static.objects ON (inventories.inventory_type = swganh_static.objects.id)
+  LEFT JOIN swganh_static.object_types ON ( swganh_static.objects.object_type = swganh_static.object_types.id)
 
 UNION
 
@@ -192,10 +178,11 @@ SELECT
 	'' AS custom_name,
 	datapads.arrangement_id AS arrangement_id,
 	datapads.permission_type AS permission_type,
-	swganh_static.objects.id AS type_id,
+	swganh_static.object_types.object_type,
 	0 AS volume
 FROM datapads
   LEFT JOIN swganh_static.objects ON (datapads.datapad_type = swganh_static.objects.id)
+  LEFT JOIN swganh_static.object_types ON ( swganh_static.objects.object_type = swganh_static.object_types.id)
 
 UNION
 
@@ -219,7 +206,7 @@ SELECT
 	'' AS custom_name,
 	character_credits.bank_arrangement_id AS arrangement_id,
 	6 AS permission_type,
-	8571 AS type_id,
+	1230261839 AS object_type,
 	0 AS volume
 FROM characters
   LEFT JOIN character_credits ON (characters.id = character_credits.character_id)
@@ -246,7 +233,8 @@ SELECT
 	items.custom_name AS custom_name,
 	items.arrangement_type AS arrangement_id,
 	items.permission_type AS permission_type,
-	swganh_static.objects.id AS type_id,
+	swganh_static.object_types.object_type,
 	1 AS volume
 FROM items
   LEFT JOIN swganh_static.objects ON (items.item_type = swganh_static.objects.id) 
+  LEFT JOIN swganh_static.object_types ON ( swganh_static.objects.object_type = swganh_static.object_types.id)
