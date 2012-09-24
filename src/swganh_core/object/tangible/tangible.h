@@ -91,7 +91,7 @@ public:
 
     // TANO
     virtual uint32_t GetType() const { return Tangible::type; }
-    const static uint32_t type = 0x54414e4f;
+    const static uint32_t type = 1413566031;
 
     Tangible();
     Tangible(const std::string& customization, std::vector<uint32_t> component_customization, uint32_t bitmask_options,

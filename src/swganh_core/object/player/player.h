@@ -300,7 +300,7 @@ public:
      * @return The type of the object.
      */    
     virtual uint32_t GetType() const { return Player::type; }
-    const static uint32_t type = 0x504c4159;
+    const static uint32_t type = 1347174745;
 
     /**
      * @return The status flags for the player object.

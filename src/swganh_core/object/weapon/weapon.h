@@ -15,7 +15,7 @@ public:
 
     // WEAO
     virtual uint32_t GetType() const;
-    const static uint32_t type = 0x6AAC0CFE;    
+    const static uint32_t type = 1789660414;    
 };
     
 }}  // namespace swganh::object

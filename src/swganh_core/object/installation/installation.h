@@ -122,7 +122,7 @@ public:
      * @return The type of this object instance.
      */
     uint32_t GetType() const;
-    const static uint32_t type = 0x2FB6FB8C;
+    const static uint32_t type = 1229869903;
 
     /**
      * @return True if the installation is active, false if not.

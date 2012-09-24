@@ -92,7 +92,7 @@ public:
     uint16_t GetCapacity();
 
     uint32_t GetType() const { return type; }
-    const static uint32_t type = 0x47525550;
+    const static uint32_t type = 1196578128;
 
 private:
 	typedef swganh::ValueEvent<std::shared_ptr<Group>> GroupEvent;

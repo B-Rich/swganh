@@ -19,7 +19,7 @@ public:
 
     // STAO
     uint32_t GetType() const;
-    const static uint32_t type = 0x5354414F;
+    const static uint32_t type = 1398030671;
 };
 
 }}  // namespace swganh::object_obj

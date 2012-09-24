@@ -31,7 +31,7 @@ public:
     typedef WaypointMessageBuilder MessageBuilderType;
 
     virtual uint32_t GetType() const { return Waypoint::type; }
-    const static uint32_t type = 0x57415950;
+    const static uint32_t type = 1463900496;
 
 
     Waypoint();

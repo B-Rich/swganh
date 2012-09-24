@@ -23,7 +23,7 @@ class Ship : public swganh::object::Object
 public:
     // SHIP
     uint32_t GetType() const;
-    const static uint32_t type = 0x6FB799E0; 
+    const static uint32_t type = 1874303456; 
     
 private:
     std::vector<ShipList<float>> energy_drain_;                     // update 1
