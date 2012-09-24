@@ -92,7 +92,7 @@ charCreate:BEGIN
   SET bank_id = character_id + 8;
 
   -- get our object_type_id
-  SELECT id FROM swganh_static.objects WHERE object_string LIKE REPLACE('object/creature/player/twilek_male.iff', 'object/creature/player/', 'object/creature/player/shared_') INTO object_type_id;
+  SELECT id FROM swganh_static.objects WHERE object_string REPLACE('object/creature/player/', 'object/creature/player/shared_') INTO object_type_id;
   
   -- create our character hair
   IF hair_model IS NOT NULL OR hair_model != '' THEN
