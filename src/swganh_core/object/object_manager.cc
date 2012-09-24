@@ -181,7 +181,7 @@ shared_ptr<Object> ObjectManager::GetObjectByCustomName(const wstring& custom_na
 
 shared_ptr<Object> ObjectManager::CreateObjectFromStorage(uint64_t object_id)
 {
-    shared_ptr<Object> object;
+    shared_ptr<Object> object = nullptr;
     
     if (factories_.size() == 0)
         return object;
