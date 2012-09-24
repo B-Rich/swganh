@@ -77,7 +77,7 @@ SELECT
 	characters.player_id AS id,
 	characters.planet_id AS planet_id,
 	characters.id AS parent_id,
-	swganh_static.objects.object_string AS iff_template_text,
+	'object/player/shared_player.iff' AS iff_template_text,
 	characters.x AS x,
 	characters.y AS y,
 	characters.z AS z,
@@ -91,7 +91,7 @@ SELECT
 	CONCAT(characters.firstname, ' ', characters.lastname) AS custom_name,
 	characters.player_arrangement_id AS arrangement_id,
 	5 AS permission_type,
-	swganh_static.object_types.object_type,
+	1347174745 AS object_type,
 	0 AS volume
 FROM characters
   LEFT JOIN character_attributes ON (characters.id = character_attributes.character_id)
