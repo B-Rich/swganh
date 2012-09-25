@@ -1,42 +1,9 @@
-﻿-- ---------------------------------------------------------------------------------------
--- This source file is part of SWG:ANH (Star Wars Galaxies - A New Hope - Server Emulator)
---
--- For more information, visit http://www.swganh.com
---
--- Copyright (c) 2006 - 2012 The SWG:ANH Team
--- ---------------------------------------------------------------------------------------
--- This library is free software; you can redistribute it and/or
--- modify it under the terms of the GNU Lesser General Public
--- License as published by the Free Software Foundation; either
--- version 2.1 of the License, or (at your option) any later version.
---
--- This library is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--- Lesser General Public License for more details.
---
--- You should have received a copy of the GNU Lesser General Public
--- License along with this library; if not, write to the Free Software
--- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
--- ---------------------------------------------------------------------------------------
+/* 
+	This file is part of SWGANH which is released under the MIT license.
+	See file LICENSE or go to http://swganh.com/LICENSE
+*/
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-USE swganh_static;
-
---
--- Table structure for table `objects`
---
-
+-- Dumping structure for table swganh_static.objects
 DROP TABLE IF EXISTS `objects`;
 CREATE TABLE IF NOT EXISTS `objects` (
   `id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -58,10 +25,8 @@ CREATE TABLE IF NOT EXISTS `objects` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `objects`
---
-
+-- Dumping data for table swganh_static.objects: ~15,139 rows (approximately)
+DELETE FROM `objects`;
 /*!40000 ALTER TABLE `objects` DISABLE KEYS */;
 INSERT INTO `objects` (`id`, `object_string`, `objectName_1`, `objectName_2`, `detailedDescription_1`, `detailedDescription_2`, `lookAtText_1`, `lookAtText_2`, `object_type`, `bazaar_category`, `equip_slots`, `equip_restrictions`, `is_sittable`, `container`, `crate_size`, `crate_type`) VALUES
 	(2, 'object/battlefield_marker/shared_battlefield_marker.iff', 'battlefield', 'battlefield_marker_name', '', '', 'battlefield', 'battlefield_marker_name', 0, 0, 0, 0, 0, 0, 0, 0),
@@ -15921,15 +15886,3 @@ INSERT INTO `objects` (`id`, `object_string`, `objectName_1`, `objectName_2`, `d
 	(15853, 'object/weapon/ranged/turret/shared_turret_block_large.iff', 'weapon_name', 'turret_wpn', 'weapon_name', 'turret_wpn', 'string_id_table', '', 16, 0, 0, 0, 0, 0, 0, 0),
 	(15854, 'object/weapon/ranged/vehicle/shared_vehicle_atst_ranged.iff', 'obj_n', 'unknown_weapon', 'string_id_table', '', 'string_id_table', '', 16, 0, 0, 0, 0, 0, 0, 0),
 	(15855, 'object/weapon/trap/shared_eqp_weapon_auto_laser_trap.iff', 'wpn_d', 'laser trap', 'string_id_table', '', 'string_id_table', '', 16, 0, 0, 0, 0, 0, 0, 0);
-/*!40000 ALTER TABLE `objects` ENABLE KEYS */;
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

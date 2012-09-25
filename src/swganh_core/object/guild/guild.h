@@ -61,7 +61,7 @@ public:
     swganh::messages::containers::NetworkList<GuildTag> GetGuildList();
 
     virtual uint32_t GetType() const { return type; }
-    const static uint32_t type = 0x444C4947;
+    const static uint32_t type = 1145850183;
 
 private:
 	typedef swganh::ValueEvent<std::shared_ptr<Guild>> GuildEvent;

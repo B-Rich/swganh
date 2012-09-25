@@ -22,7 +22,7 @@ public:
     typedef BuildingMessageBuilder MessageBuilderType;
 
     uint32_t GetType() const;
-    const static uint32_t type = 0x4255494f;
+    const static uint32_t type = 1112885583;
 
 private:
 

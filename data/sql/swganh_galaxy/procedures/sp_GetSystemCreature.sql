@@ -22,5 +22,7 @@ BEGIN
   SELECT sm.skillmod_name, csm.skillmod_value FROM character_skill_mods csm
   INNER JOIN swganh_static.skillmods sm ON sm.skillmod_id = csm.skillmod_id
   WHERE csm.character_id = object_id;
+  
+  CALL sp_GetContainedObjects(object_id);
 
 END $$

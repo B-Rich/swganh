@@ -364,7 +364,7 @@ public:
 
     // CREO
     uint32_t GetType() const;
-    const static uint32_t type = 0x4352454F;
+    const static uint32_t type = 1129465167;
 
     // Bank Credits
     void SetBankCredits(uint32_t bank_credits);

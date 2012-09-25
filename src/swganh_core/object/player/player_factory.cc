@@ -225,7 +225,7 @@ void PlayerFactory::LoadXP_(shared_ptr<Player> player, const std::shared_ptr<sql
             auto result = unique_ptr<sql::ResultSet>(statement->getResultSet());
             while (result->next())
             {
-                player->AddExperience(XpData(result->getString("name"), result->getUInt("value")));
+                player->AddExperience(XpData(result->getString("xp_type"), result->getUInt("value")));
 
             }
         }

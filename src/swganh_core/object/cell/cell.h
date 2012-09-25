@@ -15,7 +15,7 @@ class Cell : public swganh::object::Intangible {
 public:
     // SCLT
     virtual uint32_t GetType() const { return Cell::type; }
-    const static uint32_t type = 0x53434c54;
+    const static uint32_t type = 1396919380;
 
     /**
     * @brief Gets the current cell number

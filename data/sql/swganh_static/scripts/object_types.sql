@@ -1,24 +1,7 @@
--- ---------------------------------------------------------------------------------------
--- This source file is part of SWG:ANH (Star Wars Galaxies - A New Hope - Server Emulator)
---
--- For more information, visit http://www.swganh.com
---
--- Copyright (c) 2006 - 2012 The SWG:ANH Team
--- ---------------------------------------------------------------------------------------
--- This library is free software; you can redistribute it and/or
--- modify it under the terms of the GNU Lesser General Public
--- License as published by the Free Software Foundation; either
--- version 2.1 of the License, or (at your option) any later version.
---
--- This library is distributed in the hope that it will be useful,
--- but WITHOUT ANY WARRANTY; without even the implied warranty of
--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
--- Lesser General Public License for more details.
---
--- You should have received a copy of the GNU Lesser General Public
--- License along with this library; if not, write to the Free Software
--- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
--- ---------------------------------------------------------------------------------------
+/* 
+	This file is part of SWGANH which is released under the MIT license.
+	See file LICENSE or go to http://swganh.com/LICENSE
+*/
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -55,15 +38,15 @@ CREATE TABLE IF NOT EXISTS `object_types` (
 LOCK TABLES `object_types` WRITE;
 /*!40000 ALTER TABLE `object_types` DISABLE KEYS */;
 INSERT INTO `object_types` (`id`, `object_type`, `description`) VALUES
-	(1, 1112885583, 'building'),
-	(2, 1129465167, 'creature'),
-	(3, 1145850183, 'guild'),
-	(4, 1178818900, 'factory_crate'),
-	(5, 1196578128, 'group'),
-	(6, 1229869903, 'installation'),
-	(7, 1230261839, 'intangible'),
-	(8, 1296651087, 'mission'),
-	(9, 1297302351, 'manufacture_schematic'),
+	(1,  1112885583, 'building'),
+	(2,  1129465167, 'creature'),
+	(3,  1145850183, 'guild'),
+	(4,  1178818900, 'factory_crate'),
+	(5,  1196578128, 'group'),
+	(6,  1229869903, 'installation'),
+	(7,  1230261839, 'intangible'),
+	(8,  1296651087, 'mission'),
+	(9,  1297302351, 'manufacture_schematic'),
 	(10, 1347174745, 'player'),
 	(11, 1380142671, 'resource_container'),
 	(12, 1396919380, 'cell'),

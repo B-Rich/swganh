@@ -27,7 +27,7 @@ public:
      * @return The type of this object instance.
      */
     virtual uint32_t GetType() const { return Intangible::type; }
-    const static uint32_t type = 0x494E534F;
+    const static uint32_t type = 1230261839;
     
 	uint32_t GetGenericInt();
 	void SetGenericInt(uint32_t generic_int);

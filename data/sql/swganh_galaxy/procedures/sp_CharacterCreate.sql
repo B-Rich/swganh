@@ -6,7 +6,7 @@
 use swganh_galaxy;
 
 DELIMITER $$
-
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_CharacterCreate`$$
 CREATE PROCEDURE `sp_CharacterCreate`(IN `account_id` INT, IN `galaxy_id` INT, IN `firstname` char(30), IN `lastname` char(50), IN `profession` char(64), IN `city` char(32), IN `scale` FLOAT, IN `biography` text(2048), IN `appearance_customization` BLOB, IN `hair_model` CHAR(64), IN `hair_customization` BLOB, IN `base_model_string` CHAR(64), OUT `character_id` BIGINT
     )
 charCreate:BEGIN
@@ -39,8 +39,8 @@ charCreate:BEGIN
   DECLARE hair_type_id INT;
   DECLARE hair_id BIGINT;
   DECLARE t_id INT;
-  DECLARE t_species VARCHAR(16);
-  DECLARE t_profession VARCHAR(16);
+  DECLARE t_species VARCHAR(32);
+  DECLARE t_profession VARCHAR(32);
   DECLARE longHair VARCHAR(64);
   DECLARE arrangement_id INT DEFAULT -2;
   DECLARE permission_type INT DEFAULT 5;
@@ -91,7 +91,7 @@ charCreate:BEGIN
   SET bank_id = character_id + 8;
 
   -- get our object_type_id
-  SELECT id FROM swganh_static.objects WHERE object_string LIKE REPLACE('object/creature/player/twilek_male.iff', 'object/creature/player/', 'object/creature/player/shared_') INTO object_type_id;
+  SELECT id FROM swganh_static.objects WHERE object_string LIKE REPLACE(base_model_string, 'object/creature/player/', 'object/creature/player/shared_') INTO object_type_id;
   
   -- create our character hair
   IF hair_model IS NOT NULL OR hair_model != '' THEN
@@ -126,7 +126,7 @@ charCreate:BEGIN
 
   -- create our inventory / datapad
   INSERT INTO inventories VALUES (inventory_id, character_id, 10708, arrangement_id, 6);
-  INSERT INTO datapads VALUES (datapad_id, character_id, 7233, arrangement_id, 6);
+  INSERT INTO datapads VALUES (datapad_id, character_id, 9357, arrangement_id, 6);
 
   -- get our starting skill (profession)
   SELECT skill_id FROM swganh_static.skills WHERE skills.skill_name like profession INTO profession_id;
@@ -138,7 +138,7 @@ charCreate:BEGIN
   END IF;
 
   -- create the starting items
-  CALL sp_CharacterCreateStartingItems(inventory_id, race_id, profession_id - 1, gender);
+  CALL sp_CharacterCreateStartingItems(inventory_id, race_id, profession_id - 1, gender, planet);
 
   -- Debug
   -- SELECT 'Character ID --> ', character_id;

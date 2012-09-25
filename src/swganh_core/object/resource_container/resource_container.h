@@ -24,7 +24,7 @@ public:
         uint32_t current_quantity, uint64_t global_resource_id, uint32_t max_quantity, std::string resource_type, std::wstring name);
 
     virtual uint32_t GetType() const { return ResourceContainer::type; }
-    const static uint32_t type = 0x52434e4f;
+    const static uint32_t type = 1380142671;
 
     uint32_t GetCurrentQuantity();
     void SetCurrentQuantity(uint32_t quantity);

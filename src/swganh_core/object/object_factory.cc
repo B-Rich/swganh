@@ -115,12 +115,10 @@ void ObjectFactory::CreateBaseObjectFromStorage(const shared_ptr<Object>& object
         object->SetCustomName(wstring(begin(custom_string), end(custom_string)));
         object->SetVolume(result->getUInt("volume"));
         object->SetTemplate(result->getString("iff_template_text"));
-		//object->SetArrangementId(result->getInt("arrangement_id"));
-		object->SetArrangementId(-2);
+		object->SetArrangementId(result->getInt("arrangement_id"));
 		
 		auto permissions_objects_ = object_manager_->GetPermissionsMap();
-		//result->getInt("permission_type")
-		auto permissions_itr = permissions_objects_.find(5);
+		auto permissions_itr = permissions_objects_.find(result->getInt("permission_type"));
 		if(permissions_itr != permissions_objects_.end())
 		{
 			object->SetPermissions(permissions_itr->second);
@@ -182,19 +180,25 @@ void ObjectFactory::LoadContainedObjects(
         while (result->next())
         {
             contained_id = result->getUInt64("id");
-            contained_type = result->getUInt("type_id");
+            contained_type = result->getUInt("object_type");
 
             auto contained_object = object_manager_->CreateObjectFromStorage(contained_id, contained_type);
-
-			if(contained_object->GetArrangementId() == -2)
+			if (contained_object && contained_object->GetObjectId() != 0)
 			{
-				//This object has never been loaded before and needs to be put into the default slot.
-				object->AddObject(nullptr, contained_object);
+				if(contained_object->GetArrangementId() == -2)
+				{
+					//This object has never been loaded before and needs to be put into the default slot.
+					object->AddObject(nullptr, contained_object);
+				}
+				else 
+				{
+					//Put it back where it was persisted
+					object->AddObject(nullptr, contained_object, contained_object->GetArrangementId());
+				}
 			}
-			else 
+			else
 			{
-				//Put it back where it was persisted
-				object->AddObject(nullptr, contained_object, contained_object->GetArrangementId());
+				LOG(warning) << "Contained Object " << contained_id << " not able to be created with object_type " << contained_type;
 			}
 
         }

@@ -111,7 +111,7 @@ public:
      * @return The type of the object.
      */    
     uint32_t GetType() const;
-    const static uint32_t type = 0x4D53434F;
+    const static uint32_t type = 1297302351;
 
     /** 
      * @return The number of factory runs available on the schematic.

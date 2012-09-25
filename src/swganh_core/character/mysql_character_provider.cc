@@ -242,8 +242,8 @@ tuple<uint64_t, string> MysqlCharacterProvider::CreateCharacter(const ClientCrea
                 return make_tuple(0, setCharacterCreateErrorCode_(static_cast<uint32_t>(char_id)));
             }
             return make_tuple(char_id, "");
-        }
-		result_set->close();
+        } while(statement->getMoreResults());
+		
     }
     catch(sql::SQLException &e)
     {
