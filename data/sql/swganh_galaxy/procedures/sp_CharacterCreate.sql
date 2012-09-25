@@ -38,7 +38,6 @@ charCreate:BEGIN
   DECLARE object_type_id INT;
   DECLARE hair_type_id INT;
   DECLARE hair_id BIGINT;
-
   DECLARE t_id INT;
   DECLARE t_species VARCHAR(16);
   DECLARE t_profession VARCHAR(16);
