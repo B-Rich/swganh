@@ -7,7 +7,8 @@ use swganh_galaxy;
 
 DELIMITER $$
 
-CREATE PROCEDURE `sp_CharacterCreateStartingItems`(IN `inventory_id` BIGINT, IN `race_id` INT, IN `profession_id` INT, IN `gender_id` INT, IN `planet_id` INT)
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_CharacterCreateStartingItems` $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_CharacterCreateStartingItems`(IN `inventory_id` BIGINT, IN `character_id` BIGINT, IN `race_id` INT, IN `profession_id` INT, IN `gender_id` INT)
 BEGIN
 
   -- Declare var(s)
@@ -29,7 +30,7 @@ BEGIN
         IF NOT loopEnd THEN
             IF new_family_id = 7 THEN  -- clothing                                           
 
-              SELECT sf_CreateDefaultItem(new_family_id, new_type_id, inventory_id, planet_id, 0, 0, 0, new_custom_name) INTO tmp_id;
+              SELECT sf_CreateDefaultItem(new_family_id, new_type_id, character_id, 99, 0, 0, 0, new_custom_name) INTO tmp_id;
 
               UPDATE item_attributes SET attribute_value = '1' WHERE item_id = tmp_id AND attribute_id = 11;
 

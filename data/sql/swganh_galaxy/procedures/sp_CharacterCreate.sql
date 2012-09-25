@@ -138,7 +138,7 @@ charCreate:BEGIN
   END IF;
 
   -- create the starting items
-  CALL sp_CharacterCreateStartingItems(inventory_id, race_id, profession_id - 1, gender, planet);
+  CALL sp_CharacterCreateStartingItems(inventory_id, character_id, race_id, profession_id - 1, gender, planet);
 
   -- Debug
   -- SELECT 'Character ID --> ', character_id;
