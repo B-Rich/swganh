@@ -127,7 +127,7 @@ charCreate:BEGIN
 
   -- create our inventory / datapad
   INSERT INTO inventories VALUES (inventory_id, character_id, 10708, arrangement_id, 6);
-  INSERT INTO datapads VALUES (datapad_id, character_id, 7233, arrangement_id, 6);
+  INSERT INTO datapads VALUES (datapad_id, character_id, 9357, arrangement_id, 6);
 
   -- get our starting skill (profession)
   SELECT skill_id FROM swganh_static.skills WHERE skills.skill_name like profession INTO profession_id;

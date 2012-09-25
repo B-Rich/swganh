@@ -206,7 +206,7 @@ SELECT
 	'' AS custom_name,
 	character_credits.bank_arrangement_id AS arrangement_id,
 	6 AS permission_type,
-	1230261839 AS object_type,
+	1413566031 AS object_type,
 	0 AS volume
 FROM characters
   LEFT JOIN character_credits ON (characters.id = character_credits.character_id)
