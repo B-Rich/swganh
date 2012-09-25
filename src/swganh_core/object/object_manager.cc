@@ -110,8 +110,6 @@ shared_ptr<Object> ObjectManager::LoadObjectById(uint64_t object_id)
 
         boost::lock_guard<boost::shared_mutex> lg(object_map_mutex_);
         object_map_.insert(make_pair(object_id, object));
-		
-		LoadContainedObjects(object);
     }
 
     return object;
@@ -127,18 +125,9 @@ shared_ptr<Object> ObjectManager::LoadObjectById(uint64_t object_id, uint32_t ob
 
         boost::lock_guard<boost::shared_mutex> lg(object_map_mutex_);
         object_map_.insert(make_pair(object_id, object));
-
-		LoadContainedObjects(object);		
-    }
+	}
 
     return object;
-}
-
-void ObjectManager::LoadContainedObjects(std::shared_ptr<Object> object)
-{	
-	object->ViewObjects(nullptr, 0, true, [&](shared_ptr<Object> contained_object){
-		object_map_.insert(make_pair(contained_object->GetObjectId(), contained_object));
-	});
 }
 
 shared_ptr<Object> ObjectManager::GetObjectById(uint64_t object_id)
@@ -195,6 +184,9 @@ shared_ptr<Object> ObjectManager::CreateObjectFromStorage(uint64_t object_id)
         throw InvalidObjectType("Cannot create object for an unregistered type.");
     }
     object = find_iter->second->CreateObjectFromStorage(object_id);
+	// Load Contained Objects
+	if (object != nullptr)
+		find_iter->second->LoadContainedObjects(object);
 
     return object;
 }
@@ -208,7 +200,12 @@ shared_ptr<Object> ObjectManager::CreateObjectFromStorage(uint64_t object_id, ui
         throw InvalidObjectType("Cannot create object for an unregistered type.");
     }
 
-    return find_iter->second->CreateObjectFromStorage(object_id);
+	auto object = find_iter->second->CreateObjectFromStorage(object_id);
+	// Load Contained Objects
+	if (object != nullptr)
+		find_iter->second->LoadContainedObjects(object);
+
+	return object;
 }
 
 shared_ptr<Object> ObjectManager::CreateObjectFromTemplate(const string& template_name, 

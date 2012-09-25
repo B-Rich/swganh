@@ -166,43 +166,49 @@ uint32_t ObjectFactory::LookupType(uint64_t object_id) const
 }
 
 void ObjectFactory::LoadContainedObjects(
-    const shared_ptr<Object>& object,
-    const shared_ptr<Statement>& statement)
+    const shared_ptr<Object>& object)
 {
-    // Check for contained objects        
-    if (statement->getMoreResults())
-    {
-        unique_ptr<ResultSet> result(statement->getResultSet());
+	auto conn = db_manager_->getConnection("galaxy");
+    auto statement = conn->prepareStatement("CALL sp_GetContainedObjects(?);");
+    statement->setUInt64(1, object->GetObjectId());
+    
+	auto result = unique_ptr<sql::ResultSet>(statement->executeQuery());   
+	uint64_t contained_id;
+	uint64_t parent_id;
+	uint32_t contained_type;
 
-        uint64_t contained_id;
-        uint32_t contained_type;
-
-        while (result->next())
-        {
-            contained_id = result->getUInt64("id");
-            contained_type = result->getUInt("object_type");
-
-            auto contained_object = object_manager_->CreateObjectFromStorage(contained_id, contained_type);
-			if (contained_object && contained_object->GetObjectId() != 0)
+	while (result->next())
+	{
+		// parent_object
+		parent_id = result->getUInt64("parent_id");
+		contained_id = result->getUInt64("id");
+		contained_type = result->getUInt("object_type");
+		auto parent_object = object_manager_->LoadObjectById(parent_id);
+		// if still null, then set to current object?
+		if (parent_object == nullptr)
+		{
+			parent_object = object;
+		}
+		auto contained_object = object_manager_->CreateObjectFromStorage(contained_id, contained_type);
+		if (contained_object && contained_object->GetObjectId() != 0)
+		{
+			if(contained_object->GetArrangementId() == -2)
 			{
-				if(contained_object->GetArrangementId() == -2)
-				{
-					//This object has never been loaded before and needs to be put into the default slot.
-					object->AddObject(nullptr, contained_object);
-				}
-				else 
-				{
-					//Put it back where it was persisted
-					object->AddObject(nullptr, contained_object, contained_object->GetArrangementId());
-				}
+				//This object has never been loaded before and needs to be put into the default slot.
+				parent_object->AddObject(nullptr, contained_object);
 			}
-			else
+			else 
 			{
-				LOG(warning) << "Contained Object " << contained_id << " not able to be created with object_type " << contained_type;
+				//Put it back where it was persisted
+				parent_object->AddObject(nullptr, contained_object, contained_object->GetArrangementId());
 			}
+		}
+		else
+		{
+			LOG(warning) << "Contained Object " << contained_id << " not able to be created with object_type " << contained_type;
+		}
 
-        }
-    }
+	}
 }
 
 std::map<std::string, uint32_t> ObjectFactory::LoadObjectTemplates() 

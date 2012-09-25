@@ -227,9 +227,7 @@ shared_ptr<Object> CreatureFactory::CreateObjectFromStorage(uint64_t object_id)
         
         LoadSkills_(creature, statement);
         LoadSkillMods_(creature, statement);
-        //LoadSkillCommands_(creature, statement);
-
-		LoadContainedObjects(creature, statement);
+        //LoadSkillCommands_(creature, statement);		
     }
     catch(sql::SQLException &e)
     {

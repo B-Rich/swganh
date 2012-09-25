@@ -64,6 +64,8 @@ namespace object {
 		 */
 		virtual std::map<std::string, uint32_t> LoadObjectTemplates() = 0;
 
+		virtual void LoadContainedObjects(std::shared_ptr<swganh::object::Object> object) = 0;
+
     };
 
 }}  // namespace swganh::object
