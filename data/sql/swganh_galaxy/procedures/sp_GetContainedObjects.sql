@@ -6,11 +6,23 @@
 use swganh_galaxy;
 
 DELIMITER $$
-DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetContainedObjects` $$
-CREATE PROCEDURE `sp_GetContainedObjects`(IN object_id BIGINT)
-BEGIN
 
-  -- get a list of our contained objects
-  SELECT id, object_type FROM v_objects WHERE parent_id = object_id;
+DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetContainedObjects` $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetContainedObjects`(IN parent BIGINT)
+BEGIN
+  DECLARE n INT;
+
+  DROP TABLE IF EXISTS `zzChildren`;
+  CREATE TABLE `zzChildren` (
+    id BIGINT NOT NULL
+  ) ENGINE = MEMORY;
+
+  -- check if object is a container
+  SELECT COUNT(*) FROM swganh_galaxy.v_objects WHERE parent_id = parent INTO n;
+
+  IF n <> 0 THEN CALL sp_GetSubChildren(parent);
+  END IF;
+
+  SELECT t1.parent_id, t1.id, t1.object_type FROM v_objects AS t1 JOIN zzchildren USING(id);
 
 END $$
