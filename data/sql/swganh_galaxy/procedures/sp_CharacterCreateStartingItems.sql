@@ -8,7 +8,8 @@ use swganh_galaxy;
 DELIMITER $$
 
 DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_CharacterCreateStartingItems` $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_CharacterCreateStartingItems`(IN `inventory_id` BIGINT, IN `character_id` BIGINT, IN `race_id` INT, IN `profession_id` INT, IN `gender_id` INT, IN `planet_id` INT)
+CREATE PROCEDURE `sp_CharacterCreateStartingItems`(IN `inventory_id` BIGINT, IN `character_id` BIGINT, IN `race_id` INT, IN `profession_id` INT, IN `gender_id` INT, IN planet_id INT)
+
 BEGIN
 
   -- Declare var(s)

@@ -24,7 +24,7 @@ BEGIN
     END IF;
     INSERT INTO zzChildren VALUES (n);
 
-    CALL sp_GetSubChildren(n);
+    CALL sp_GetContainedSubObjects(n);
 
   END LOOP get_childs_fetch_loop;
   CLOSE cur;
