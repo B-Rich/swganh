@@ -214,11 +214,11 @@ int32_t Object::__InternalInsert(std::shared_ptr<Object> object, int32_t arrange
 	{
 		// Remove object in existing slot
 		removed_object = slot_descriptor_[arrangement_id]->insert_object(object);
-		if (removed_object)
-		{
-			// Transfer it out, put it in the place the replacing object came from
-			removed_object->__InternalTransfer(nullptr, removed_object, object->GetContainer());
-		}
+		//if (removed_object)
+		//{
+		//	// Transfer it out, put it in the place the replacing object came from
+		//	removed_object->__InternalTransfer(nullptr, removed_object, object->GetContainer());
+		//}
 	}
 	else
 	{
@@ -227,11 +227,11 @@ int32_t Object::__InternalInsert(std::shared_ptr<Object> object, int32_t arrange
 		{
 			// Remove object in existing slot
 			removed_object = slot_descriptor_[i]->insert_object(object);			
-			if (removed_object)
-			{
-				// Transfer it out, put it in the place the replacing object came from
-				removed_object->__InternalTransfer(nullptr, removed_object, object->GetContainer());
-			}
+			//if (removed_object)
+			//{
+			//	// Transfer it out, put it in the place the replacing object came from
+			//	removed_object->__InternalTransfer(nullptr, removed_object, object->GetContainer());
+			//}
 		}
 	}
 	object->SetArrangementId(arrangement_id);

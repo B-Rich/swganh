@@ -10,6 +10,7 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetContainedObjects` $$
 CREATE PROCEDURE `sp_GetContainedObjects`(IN parent BIGINT)
 BEGIN
+
   DECLARE n INT;
 
   DROP TABLE IF EXISTS `zzChildren`;

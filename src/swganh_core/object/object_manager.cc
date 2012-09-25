@@ -107,9 +107,13 @@ shared_ptr<Object> ObjectManager::LoadObjectById(uint64_t object_id)
     if (!object)
     {
         object = CreateObjectFromStorage(object_id);
-
-        boost::lock_guard<boost::shared_mutex> lg(object_map_mutex_);
-        object_map_.insert(make_pair(object_id, object));
+		{
+			boost::lock_guard<boost::shared_mutex> lg(object_map_mutex_);
+			object_map_.insert(make_pair(object_id, object));
+		}
+		// Load Contained Objects if we're at the top level
+		if (object != nullptr && object->GetContainer() == nullptr)
+			factories_[0]->LoadContainedObjects(object);
     }
 
     return object;
@@ -122,9 +126,13 @@ shared_ptr<Object> ObjectManager::LoadObjectById(uint64_t object_id, uint32_t ob
     if (!object)
     {
         object = CreateObjectFromStorage(object_id, object_type);
-
-        boost::lock_guard<boost::shared_mutex> lg(object_map_mutex_);
-        object_map_.insert(make_pair(object_id, object));
+		{
+			boost::lock_guard<boost::shared_mutex> lg(object_map_mutex_);
+			object_map_.insert(make_pair(object_id, object));
+		}
+		// Load Contained Objects if we're at the top level
+		if (object != nullptr && object->GetContainer() == nullptr)
+			factories_[0]->LoadContainedObjects(object);
 	}
 
     return object;
@@ -184,10 +192,7 @@ shared_ptr<Object> ObjectManager::CreateObjectFromStorage(uint64_t object_id)
         throw InvalidObjectType("Cannot create object for an unregistered type.");
     }
     object = find_iter->second->CreateObjectFromStorage(object_id);
-	// Load Contained Objects
-	if (object != nullptr)
-		find_iter->second->LoadContainedObjects(object);
-
+	
     return object;
 }
 
@@ -199,13 +204,7 @@ shared_ptr<Object> ObjectManager::CreateObjectFromStorage(uint64_t object_id, ui
     {
         throw InvalidObjectType("Cannot create object for an unregistered type.");
     }
-
-	auto object = find_iter->second->CreateObjectFromStorage(object_id);
-	// Load Contained Objects
-	if (object != nullptr)
-		find_iter->second->LoadContainedObjects(object);
-
-	return object;
+	return find_iter->second->CreateObjectFromStorage(object_id);
 }
 
 shared_ptr<Object> ObjectManager::CreateObjectFromTemplate(const string& template_name, 

@@ -168,11 +168,12 @@ uint32_t ObjectFactory::LookupType(uint64_t object_id) const
 void ObjectFactory::LoadContainedObjects(
     const shared_ptr<Object>& object)
 {
+	std::stringstream ss;
 	auto conn = db_manager_->getConnection("galaxy");
-    auto statement = conn->prepareStatement("CALL sp_GetContainedObjects(?);");
-    statement->setUInt64(1, object->GetObjectId());
+    auto statement = conn->createStatement();
+	ss << "CALL sp_GetContainedObjects(" << object->GetObjectId() << ");";
     
-	auto result = unique_ptr<sql::ResultSet>(statement->executeQuery());   
+	auto result = unique_ptr<sql::ResultSet>(statement->executeQuery(ss.str()));   
 	uint64_t contained_id;
 	uint64_t parent_id;
 	uint32_t contained_type;
@@ -189,7 +190,7 @@ void ObjectFactory::LoadContainedObjects(
 		{
 			parent_object = object;
 		}
-		auto contained_object = object_manager_->CreateObjectFromStorage(contained_id, contained_type);
+		auto contained_object = object_manager_->LoadObjectById(contained_id, contained_type);
 		if (contained_object && contained_object->GetObjectId() != 0)
 		{
 			if(contained_object->GetArrangementId() == -2)
