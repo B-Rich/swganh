@@ -8,7 +8,7 @@ use swganh_galaxy;
 DELIMITER $$
 
 DROP PROCEDURE IF EXISTS `swganh_galaxy`.`sp_GetContainedSubObjects` $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetContainedSubObjects`(IN parent BIGINT)
+CREATE PROCEDURE `sp_GetContainedSubObjects`(IN parent BIGINT)
 BEGIN
   DECLARE n BIGINT;
   DECLARE done INT DEFAULT 0;

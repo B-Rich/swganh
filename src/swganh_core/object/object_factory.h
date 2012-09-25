@@ -65,7 +65,7 @@ namespace object {
 		virtual std::map<std::string, uint32_t> LoadObjectTemplates();
         virtual void RegisterEventHandlers(){}
         void SetTreArchive(swganh::tre::TreArchive* tre_archive);
-		void LoadContainedObjects(const std::shared_ptr<Object>& object);
+		virtual void LoadContainedObjects(const std::shared_ptr<Object>& object);
     protected:        
         ObjectManager* object_manager_;
         swganh::database::DatabaseManagerInterface* db_manager_;   
