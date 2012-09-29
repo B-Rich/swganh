@@ -39,7 +39,7 @@ uint32_t ObjectFactory::PersistObject(const shared_ptr<Object>& object)
     try {
         auto conn = db_manager_->getConnection("galaxy");
         auto statement = shared_ptr<sql::PreparedStatement>
-            (conn->prepareStatement("CALL sp_PersistObject(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"));
+            (conn->prepareStatement("CALL sp_PersistObject(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"));
         counter = PersistObject(object, statement);
         // Now execute the update
         statement->executeUpdate();
@@ -85,6 +85,7 @@ uint32_t ObjectFactory::PersistObject(const shared_ptr<Object>& object, const sh
         prepared_statement->setUInt(counter++, object->GetVolume());
 		prepared_statement->setInt(counter++, object->GetArrangementId());
 		prepared_statement->setInt(counter++, object->GetPermissions()->GetType());
+		prepared_statement->setInt(counter++, object->GetType());
     }
     catch(sql::SQLException &e)
     {
