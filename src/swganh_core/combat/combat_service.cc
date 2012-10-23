@@ -231,6 +231,7 @@ bool CombatService::InitiateCombat(
 	if (weapon)
 	{
 		int range_ok = weapon->GetAttribute<int32_t>("range");
+		range_ok >  0 ? range_ok : 25;
 		if (range_ok > 0 && attacker->InRange(target->GetPosition(), (float)(range_ok)))
 		{
 			SystemMessage::Send(attacker, OutOfBand("cbt_spam", "out_of_range_single"), false, false);
