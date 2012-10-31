@@ -25,6 +25,14 @@ namespace statics
 		bool going_down;
 	};
 
+	struct CloneData
+	{
+		std::string city;
+		uint64_t parent_id;
+		glm::vec3 vec;
+		glm::quat quat;
+	};
+
 	class StaticServiceInterface : public swganh::service::ServiceInterface
 	{
 	public:
@@ -43,6 +51,12 @@ namespace statics
 		 * @return a map of pairs of base, modifier
 		 */
 		virtual std::map<std::string, std::pair<uint32_t, uint32_t>> GetSkillMods(const std::shared_ptr<swganh::object::Creature>& creature) = 0;
+
+
+		 /*
+		 * @brief get CloneData for a given scene
+		 */
+		virtual std::vector<std::shared_ptr<CloneData>> GetCloneData(uint32_t scene_id) = 0;
 
 	};
 }

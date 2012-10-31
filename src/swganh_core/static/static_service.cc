@@ -211,13 +211,33 @@ void StaticService::_loadCells(SimulationServiceInterface* simulation_service, s
 	}
 }
 
+std::vector<std::shared_ptr<CloneData>> StaticService::GetCloneData(uint32_t scene_id)
+{
+	return clone_data_[scene_id];
+}
+
 void StaticService::_loadCloneLocations(SimulationServiceInterface* simulation_service, std::unique_ptr<sql::ResultSet> result,
 	uint32_t scene_id, std::string scene_name)
 {
+	std::vector<std::shared_ptr<CloneData>> scene_clone_data;
 	while(result->next())
 	{
 		//TODO: Fill me in
+		CloneData clone_data;
+		clone_data.city = result->getString("city");
+		clone_data.parent_id = result->getUInt64("parentId");
+		clone_data.quat.x = (float)result->getDouble("oX");
+		clone_data.quat.y = (float)result->getDouble("oY");
+		clone_data.quat.z = (float)result->getDouble("oZ");
+		clone_data.quat.w = (float)result->getDouble("oW");
+		clone_data.vec.x = (float)result->getDouble("cell_x");
+		clone_data.vec.y = (float)result->getDouble("cell_y");
+		clone_data.vec.z = (float)result->getDouble("cell_z");
+
+		scene_clone_data.push_back(std::make_shared<CloneData>(clone_data));
+		
 	}
+	clone_data_[scene_id] = scene_clone_data;
 }
 
 void StaticService::_loadTerminals(SimulationServiceInterface* simulation_service, std::unique_ptr<sql::ResultSet> result,

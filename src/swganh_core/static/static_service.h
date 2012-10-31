@@ -61,6 +61,8 @@ namespace statics
 		 */
 		std::map<std::string, std::pair<uint32_t, uint32_t>> GetSkillMods(const std::shared_ptr<swganh::object::Creature>& creature);
 
+		
+		virtual std::vector<std::shared_ptr<CloneData>> GetCloneData(uint32_t scene_id);
 	private:
 
 		void _loadBuildings(swganh::simulation::SimulationServiceInterface* simulation_service, std::unique_ptr<sql::ResultSet> result,
@@ -84,6 +86,7 @@ namespace statics
 
 		swganh::app::SwganhKernel* kernel_;
 
+		std::map<uint32_t, std::vector<std::shared_ptr<CloneData>>> clone_data_;
 		std::map<uint64_t, std::vector<std::shared_ptr<ElevatorData>>> elevator_lookup_;
 		SkillManager skill_mod_manager_;
 
