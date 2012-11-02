@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/ship/components/weapon/shared_wpn_corellian_ag1g_laser.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/ship/components/weapon/shared_wpn_corellian_ag1g_laser.iff"
-		result.attribute_template_id = 8
-		result.stfName("space/space_item","wpn_corellian_ag1g_laser_n")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Tangible()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/tangible/ship/components/weapon/shared_wpn_corellian_ag1g_laser.iff"
+		result.attribute_template_id = 8
+		result.stfName("space/space_item","wpn_corellian_ag1g_laser_n")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

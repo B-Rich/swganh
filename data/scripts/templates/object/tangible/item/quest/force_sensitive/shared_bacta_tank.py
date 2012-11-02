@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/item/quest/force_sensitive/shared_bacta_tank.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/item/quest/force_sensitive/shared_bacta_tank.iff"
-		result.attribute_template_id = -1
-		result.stfName("quest/force_sensitive/fs_medic","bacta_tank_n")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Tangible()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/tangible/item/quest/force_sensitive/shared_bacta_tank.iff"
+		result.attribute_template_id = -1
+		result.stfName("quest/force_sensitive/fs_medic","bacta_tank_n")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

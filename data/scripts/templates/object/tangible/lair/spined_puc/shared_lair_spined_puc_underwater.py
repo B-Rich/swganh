@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/lair/spined_puc/shared_lair_spined_puc_underwater.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/lair/spined_puc/shared_lair_spined_puc_underwater.iff"
-		result.attribute_template_id = -1
-		result.stfName("lair_n","spined_puc_underwater")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Tangible()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/tangible/lair/spined_puc/shared_lair_spined_puc_underwater.iff"
+		result.attribute_template_id = -1
+		result.stfName("lair_n","spined_puc_underwater")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

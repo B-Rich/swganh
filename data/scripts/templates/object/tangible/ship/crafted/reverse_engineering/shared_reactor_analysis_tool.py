@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/ship/crafted/reverse_engineering/shared_reactor_analysis_tool.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/ship/crafted/reverse_engineering/shared_reactor_analysis_tool.iff"
-		result.attribute_template_id = 8
-		result.stfName("space_crafting_n","reactor_analysis_tool")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Tangible()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/tangible/ship/crafted/reverse_engineering/shared_reactor_analysis_tool.iff"
+		result.attribute_template_id = 8
+		result.stfName("space_crafting_n","reactor_analysis_tool")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

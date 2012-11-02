@@ -20,6 +20,7 @@ import os, sys
 
 CSV_FILENAME = "templates.csv"
 TEMPLATE_FILENAME = "template_template.txt"
+BASE_TEMPLATE_FILENAME = "base_template.txt"
 
 def main(force):
 	#Load the template line by line
@@ -39,6 +40,10 @@ def main(force):
 		#Ensure the folder exists
 		out_file =  '../../data/scripts/templates/' +csv[0]
 		dir = os.path.dirname(out_file)
+		
+		#get next file if it's a 'base' folder
+		if '/base/' in out_file:
+			continue
 		if not os.path.exists(dir):
 			os.makedirs(dir)
 	
@@ -46,6 +51,7 @@ def main(force):
 		output_filename = "./" + out_file.replace(".iff", ".py")
 		
 		replaces = []
+	
 		if os.path.isfile(output_filename):
 			replace = None
 			#Read in preserved targets sections
@@ -84,13 +90,23 @@ def main(force):
 						if line.find(target) != -1:
 							line = line.replace(target, str(func(csv[index])))
 					output.write(line)
-					
+		
+	#Load the base template line by line
+	base_template_lines = []
+	for line in open(BASE_TEMPLATE_FILENAME):
+		base_template_lines.append(line)		
+		
 	## Create __init__.py for each subfolder if doesn't exist
-	for dirname, subdirs, filenames in os.walk('.'):
+	path = '../../data/scripts/templates/object'
+	for dirname, subdirs, filenames in os.walk(path):
 		if not os.path.isfile(dirname + os.sep + '__init__.py'):
 			with open(dirname + os.sep + '__init__.py', 'w') as init_py:
 				init_py.write('')
-	
+		#if not os.path.isfile(dirname + os.sep + 'base.py'):
+		with open(dirname + os.sep + 'base.py', 'w') as base_template:
+			for line in base_template_lines:
+				base_template.write(line)				
+				
 	if len(saved_files) > 0:
 		print("The following files were saved. You must run with -f, or remove the MODIFIED TAG")
 		for file in saved_files:

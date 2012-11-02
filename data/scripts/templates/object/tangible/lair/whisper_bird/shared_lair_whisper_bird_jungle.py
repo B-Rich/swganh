@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/lair/whisper_bird/shared_lair_whisper_bird_jungle.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/lair/whisper_bird/shared_lair_whisper_bird_jungle.iff"
-		result.attribute_template_id = -1
-		result.stfName("lair_n","whisper_bird_jungle")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Tangible()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/tangible/lair/whisper_bird/shared_lair_whisper_bird_jungle.iff"
+		result.attribute_template_id = -1
+		result.stfName("lair_n","whisper_bird_jungle")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/installation/turret/shared_turret_block_med.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Installation()
-	
-		result.template = "object/installation/turret/shared_turret_block_med.iff"
-		result.attribute_template_id = -1
-		result.stfName("turret_n","block_medium")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Installation()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/installation/turret/shared_turret_block_med.iff"
+		result.attribute_template_id = -1
+		result.stfName("turret_n","block_medium")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

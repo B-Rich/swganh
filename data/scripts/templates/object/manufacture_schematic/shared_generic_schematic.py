@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/manufacture_schematic/shared_generic_schematic.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = ManufactureSchematic()
-	
-		result.template = "object/manufacture_schematic/shared_generic_schematic.iff"
-		result.attribute_template_id = -1
-		result.stfName("","")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = ManufactureSchematic()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/manufacture_schematic/shared_generic_schematic.iff"
+		result.attribute_template_id = -1
+		result.stfName("","")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

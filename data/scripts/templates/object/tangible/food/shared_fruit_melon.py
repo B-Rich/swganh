@@ -3,24 +3,32 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/food/shared_fruit_melon.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
+		result = Tangible()		
+		Template.init(kernel, params, result)
+		
+		return result
 	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
 		result.template = "object/tangible/food/shared_fruit_melon.iff"
 		result.attribute_template_id = 5
-		result.stfName("food_name","fruit_melon")		
+		result.stfName("food_name","fruit_melon")	
 		
-		#### BEGIN MODIFICATIONS ####
+		#### BEGIN MODIFICATIONS ####		
 		# UsesRemaining
 		result.counter = 5
 		####  END MODIFICATIONS  ####
 		
-		return result
-
 def loadTemplates(addTemplate):
 	addTemplate(Template())

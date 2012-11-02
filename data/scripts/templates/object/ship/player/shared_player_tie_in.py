@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/ship/player/shared_player_tie_in.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Ship()
-	
-		result.template = "object/ship/player/shared_player_tie_in.iff"
-		result.attribute_template_id = -1
-		result.stfName("space_ship","player_tie_in")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Ship()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/ship/player/shared_player_tie_in.iff"
+		result.attribute_template_id = -1
+		result.stfName("space_ship","player_tie_in")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

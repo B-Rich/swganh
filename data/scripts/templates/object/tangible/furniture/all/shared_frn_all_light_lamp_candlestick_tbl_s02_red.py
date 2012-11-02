@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/furniture/all/shared_frn_all_light_lamp_candlestick_tbl_s02_red.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/furniture/all/shared_frn_all_light_lamp_candlestick_tbl_s02_red.iff"
-		result.attribute_template_id = 6
-		result.stfName("frn_n","frn_lamp_candlestick_theed")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Tangible()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/tangible/furniture/all/shared_frn_all_light_lamp_candlestick_tbl_s02_red.iff"
+		result.attribute_template_id = 6
+		result.stfName("frn_n","frn_lamp_candlestick_theed")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

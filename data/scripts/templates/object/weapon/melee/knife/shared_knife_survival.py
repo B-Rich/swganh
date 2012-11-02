@@ -3,19 +3,29 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/weapon/melee/knife/shared_knife_survival.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Weapon()
+		result = Weapon()		
+		Template.init(kernel, params, result)
+		
+		return result
 	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
 		result.template = "object/weapon/melee/knife/shared_knife_survival.iff"
 		result.attribute_template_id = 10
-		result.stfName("weapon_name","knife_survival")		
+		result.stfName("weapon_name","knife_survival")	
 		
-		#### BEGIN MODIFICATIONS ####
+		#### BEGIN MODIFICATIONS ####		
 		result.setStringAttribute('wpn_armor_pierce_rating', 'None')
 		result.setFloatAttribute('wpn_attack_speed', 4.5)
 		result.setStringAttribute('cat_wpn_damage.wpn_damage_type', 'Kinetic')
@@ -30,7 +40,5 @@ class Template(BaseTemplate):
 		result.setIntAttribute('cat_wpn_attack_cost.wpn_attack_cost_mind', 6)	
 		####  END MODIFICATIONS  ####
 		
-		return result
-
 def loadTemplates(addTemplate):
 	addTemplate(Template())

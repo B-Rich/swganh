@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/creature/npc/droid/crafted/shared_jedi_training_droid.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Creature()
-	
-		result.template = "object/creature/npc/droid/crafted/shared_jedi_training_droid.iff"
-		result.attribute_template_id = 3
-		result.stfName("droid_name","jedi_training_droid_crafted")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Creature()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/creature/npc/droid/crafted/shared_jedi_training_droid.iff"
+		result.attribute_template_id = 3
+		result.stfName("droid_name","jedi_training_droid_crafted")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

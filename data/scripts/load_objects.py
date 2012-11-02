@@ -25,6 +25,6 @@ for p in sys.path:
 			files.append(os.path.relpath(fil))
 for file in files:
 	file = file.replace('..' + os.sep, '').replace('./','').replace(os.sep, '.').replace('.py', '').replace('data.scripts.', '')
-	if not '__init__' in file:
+	if not '__init__' in file and not file.endswith('.base'):
 		module = importlib.import_module(file)
 		module.loadTemplates(addTemplate)

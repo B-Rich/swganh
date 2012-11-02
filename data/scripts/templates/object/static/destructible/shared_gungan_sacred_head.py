@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/static/destructible/shared_gungan_sacred_head.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Static()
-	
-		result.template = "object/static/destructible/shared_gungan_sacred_head.iff"
-		result.attribute_template_id = -1
-		result.stfName("battlefield","gungan_sacred_head")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Static()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/static/destructible/shared_gungan_sacred_head.iff"
+		result.attribute_template_id = -1
+		result.stfName("battlefield","gungan_sacred_head")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

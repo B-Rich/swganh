@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/creature/npc/theme_park/shared_lambda_shuttle_faction_perk.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Creature()
-	
-		result.template = "object/creature/npc/theme_park/shared_lambda_shuttle_faction_perk.iff"
-		result.attribute_template_id = 9
-		result.stfName("theme_park_name","lambda")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Creature()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/creature/npc/theme_park/shared_lambda_shuttle_faction_perk.iff"
+		result.attribute_template_id = 9
+		result.stfName("theme_park_name","lambda")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

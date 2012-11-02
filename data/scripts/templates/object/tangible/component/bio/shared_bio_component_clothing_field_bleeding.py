@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/tangible/component/bio/shared_bio_component_clothing_field_bleeding.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/component/bio/shared_bio_component_clothing_field_bleeding.iff"
-		result.attribute_template_id = -1
-		result.stfName("craft_bio_components_n","bio_component_clothing_field_bleeding")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Tangible()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/tangible/component/bio/shared_bio_component_clothing_field_bleeding.iff"
+		result.attribute_template_id = -1
+		result.stfName("craft_bio_components_n","bio_component_clothing_field_bleeding")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())

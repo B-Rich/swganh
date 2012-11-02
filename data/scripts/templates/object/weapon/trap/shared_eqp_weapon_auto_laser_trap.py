@@ -3,22 +3,30 @@
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
 from swgpy.object import *
+from . import base
 
 class Template(BaseTemplate):
 	name = "object/weapon/trap/shared_eqp_weapon_auto_laser_trap.iff"
 	is_prototype = False
 	
 	def create(self, kernel, params):
-		result = Weapon()
-	
-		result.template = "object/weapon/trap/shared_eqp_weapon_auto_laser_trap.iff"
-		result.attribute_template_id = 10
-		result.stfName("wpn_d","laser trap")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
+		result = Weapon()		
+		Template.init(kernel, params, result)
 		
 		return result
-
+	
+	@staticmethod
+	def init(kernel, params, result):
+		try:
+			base.init(kernel, params, result)
+		except AttributeError:
+			print('base.init doesnt exist')
+		result.template = "object/weapon/trap/shared_eqp_weapon_auto_laser_trap.iff"
+		result.attribute_template_id = 10
+		result.stfName("wpn_d","laser trap")	
+		
+		#### BEGIN MODIFICATIONS ####		
+		####  END MODIFICATIONS  ####
+		
 def loadTemplates(addTemplate):
 	addTemplate(Template())
