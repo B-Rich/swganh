@@ -222,7 +222,6 @@ void StaticService::_loadCloneLocations(SimulationServiceInterface* simulation_s
 	std::vector<std::shared_ptr<CloneData>> scene_clone_data;
 	while(result->next())
 	{
-		//TODO: Fill me in
 		CloneData clone_data;
 		clone_data.city = result->getString("city");
 		clone_data.parent_id = result->getUInt64("parentId");
@@ -285,12 +284,6 @@ void StaticService::_loadTerminals(SimulationServiceInterface* simulation_servic
 				parent->AddObject(nullptr, object);
 			}
 		}
-		// Check if it's a bank
-		// TODO: Remove once prototypes are in..
-		if (object->GetTemplate().compare("object/tangible/terminal/shared_terminal_bank.iff") == 0)
-		{
-			object->SetAttribute("radial_filename", L"radials.bank");
-		}
 	}
 }
 
@@ -306,8 +299,6 @@ void StaticService::_loadElevatorData(SimulationServiceInterface* simulation_ser
 		if(terminal == nullptr)
 			continue;
 		
-		terminal->SetAttribute<std::wstring>("radial_filename", L"radials.elevator");
-
 		elevator_data->dst_cell = result->getUInt64(2);
 		elevator_data->dst_orientation = glm::quat(
 			static_cast<float>(result->getDouble(6)),

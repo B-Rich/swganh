@@ -16,6 +16,7 @@ class Template(BaseTemplate):
 		result.stfName("terminal_name","terminal_elevator")		
 		
 		#### BEGIN MODIFICATIONS ####
+		result.setStringAttribute('radial_filename', 'radials.elevator')
 		####  END MODIFICATIONS  ####
 		
 		return result
