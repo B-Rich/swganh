@@ -8,11 +8,18 @@
 
 #include "swganh/chat/chat_service_interface.h"
 #include "swganh/command/command_service_interface.h"
+#include "swganh/simulation/simulation_service_interface.h"
 
 #include "swganh/app/swganh_kernel.h"
 #include "swganh_core/messages/controllers/command_queue_enqueue.h"
 
 namespace swganh {
+namespace connection {
+    class ConnectionClientInterface;
+}
+namespace messages {
+    struct ChatInstantMessageToCharacter; 
+}
 namespace object {
 	class Object;
 }}  // namespace swganh::object
@@ -59,7 +66,12 @@ public:
 
 private:
 	swganh::command::CommandServiceInterface* command_service_;
+    swganh::simulation::SimulationServiceInterface* simulation_service_;
     swganh::app::SwganhKernel* kernel_;
+
+    void HandleChatInstantMessageToCharacter(
+        const std::shared_ptr<swganh::connection::ConnectionClientInterface>& client,
+        swganh::messages::ChatInstantMessageToCharacter* message);
 };
 
 }}  // namespace swganh::chat
