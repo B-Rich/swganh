@@ -29,6 +29,7 @@ class Template(BaseTemplate):
 		result.setIntAttribute('cat_wpn_attack_cost.wpn_attack_cost_action', 20)
 		result.setIntAttribute('cat_wpn_attack_cost.wpn_attack_cost_mind', 9)		
 		####  END MODIFICATIONS  ####
+		
 		return result
 
 def loadTemplates(addTemplate):
