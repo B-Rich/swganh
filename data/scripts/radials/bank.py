@@ -95,7 +95,7 @@ def transferBank(self, owner, target):
 	window.subscribeToEventCallback(1, '', InputTrigger.CANCEL, results, transferCallback)
 	sui.openSUIWindow(window)
 	
-def transferCallback(owner, event_id, results):
+def transferCallback(kernel, owner, event_id, results):
 	if event_id == 0 and len(results) == 2:
 		cash = int(results[0])
 		bank = int(results[1])

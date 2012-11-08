@@ -81,46 +81,52 @@ void SUIService::Startup()
 
 void SUIService::_handleEventNotifyMessage(const std::shared_ptr<swganh::connection::ConnectionClientInterface>& client, swganh::messages::SUIEventNotification* message)
 {
-	auto owner = client->GetController()->GetId();
-	std::shared_ptr<Object> owner_obj;
+	try {
+		auto owner = client->GetController()->GetId();
+		std::shared_ptr<Object> owner_obj;
 
-	WindowCallbackFunction func = nullptr;
+		WindowCallbackFunction func = nullptr;
 
-	//First find the functor and the object
-	{
-		boost::lock_guard<boost::mutex> lock(sui_mutex_);
-		WindowMapRange range = window_lookup_.equal_range(owner);
-		std::shared_ptr<SUIWindowInterface> result = nullptr;
-		for(auto itr=range.first; itr != range.second; ++itr)
-		{
-			if(itr->second->GetWindowId() == message->window_id)
-			{
-				func = itr->second->GetFunctionById(message->event_type);
-				owner_obj = itr->second->GetOwner();
-				break;
-			}
-		};
-	}
-
-	//Now use the callback 
-	if(func != nullptr)
-	{
-		bool result = func(owner_obj, message->event_type, message->returnList);
-		
-		//If it returned true then we need to go back in and try to delete the window.
-		if(result)
+		//First find the functor and the object
 		{
 			boost::lock_guard<boost::mutex> lock(sui_mutex_);
 			WindowMapRange range = window_lookup_.equal_range(owner);
+			std::shared_ptr<SUIWindowInterface> result = nullptr;
 			for(auto itr=range.first; itr != range.second; ++itr)
 			{
 				if(itr->second->GetWindowId() == message->window_id)
 				{
-					window_lookup_.erase(itr);
+					func = itr->second->GetFunctionById(message->event_type);
+					owner_obj = itr->second->GetOwner();
 					break;
 				}
 			};
 		}
+
+		//Now use the callback 
+		if(func != nullptr)
+		{
+			bool result = func(boost::python::ptr(kernel_), owner_obj, message->event_type, message->returnList);
+		
+			//If it returned true then we need to go back in and try to delete the window.
+			if(result)
+			{
+				boost::lock_guard<boost::mutex> lock(sui_mutex_);
+				WindowMapRange range = window_lookup_.equal_range(owner);
+				for(auto itr=range.first; itr != range.second; ++itr)
+				{
+					if(itr->second->GetWindowId() == message->window_id)
+					{
+						window_lookup_.erase(itr);
+						break;
+					}
+				};
+			}
+		}
+	}
+	catch(const std::exception& e)
+	{
+		LOG(error) << "Error Occured in Getting the Radial Interface for an object, make sure the python code is correct and the object has a radial script: " << e.what();
 	}
 }
 
@@ -187,19 +193,25 @@ void SUIService::_handleObjectMenuRequest(
 
 void SUIService::_handleObjectMenuSelection(const std::shared_ptr<swganh::connection::ConnectionClientInterface>& client, swganh::messages::RadialMenuSelection* message)
 {
-	auto simulation_service = kernel_->GetServiceManager()->GetService<SimulationServiceInterface>("SimulationService");
+	try {
+		auto simulation_service = kernel_->GetServiceManager()->GetService<SimulationServiceInterface>("SimulationService");
 	
-	//Get Get the proper objects
-	auto requester = simulation_service->GetObjectById(client->GetController()->GetId());
-	auto target = simulation_service->GetObjectById(message->object_id);
+		//Get Get the proper objects
+		auto requester = simulation_service->GetObjectById(client->GetController()->GetId());
+		auto target = simulation_service->GetObjectById(message->object_id);
 
-	//Handle the radial.
-	std::shared_ptr<RadialInterface> radial_interface;
-	{
-		boost::lock_guard<boost::mutex> lock(sui_mutex_);
-		radial_interface = GetRadialInterfaceForObject(target);
+		//Handle the radial.
+		std::shared_ptr<RadialInterface> radial_interface;
+		{
+			boost::lock_guard<boost::mutex> lock(sui_mutex_);
+			radial_interface = GetRadialInterfaceForObject(target);
+		}
+		radial_interface->HandleRadial(requester, target, message->radial_choice);
 	}
-	radial_interface->HandleRadial(requester, target, message->radial_choice);
+	catch(const std::exception& e)
+	{
+		LOG(error) << "Error Occured in handling the radial selection ensure the python code is correct. " << e.what();
+	}
 }
 
 ServiceDescription SUIService::GetServiceDescription()

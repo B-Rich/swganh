@@ -499,16 +499,25 @@ void StaticService::_loadShuttles(SimulationServiceInterface* simulation_service
 	}
 }
 
-int32_t StaticService::GetCloneId(glm::vec3 location)
+int32_t StaticService::GetCloneId(const std::shared_ptr<Object> obj)
 {
-	auto clone_data_iter = std::find_if(clone_data_.begin(), clone_data_.end(), [=](std::shared_ptr<CloneData> clone)
+	auto container = obj->GetContainer();
+	if (obj && container)
 	{
-		return location == clone->vec;
-	});
-	if (clone_data_iter != clone_data_.end())
-		return std::distance(clone_data_.begin(), clone_data_iter);
-	else
-		return -1;
+		auto clone_data_iter = std::find_if(clone_data_.begin(), clone_data_.end(), [=](std::shared_ptr<CloneData> clone)
+		{
+			// Check obj cell id
+			if (clone->parent_id == container->GetObjectId())
+			{
+				// Check we're within 5m from position
+				return obj->InRange(clone->vec, 5.0f);				
+			}
+			return false;
+		});
+		if (clone_data_iter != clone_data_.end())
+			return std::distance(clone_data_.begin(), clone_data_iter);
+	}
+	return -1;	
 }
 
 std::vector<std::shared_ptr<ElevatorData>> StaticService::GetElevatorDataForObject(uint64_t terminal_id)

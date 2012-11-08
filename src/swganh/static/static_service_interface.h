@@ -11,6 +11,7 @@ namespace swganh
 {
 namespace object
 {
+	class Object;
 	class Creature;
 }
 
@@ -58,8 +59,10 @@ namespace statics
 		 * @brief get CloneData for a given clone_id
 		 */
 		virtual std::shared_ptr<CloneData> GetCloneData(uint32_t clone_id) = 0;		
-
-		virtual int32_t GetCloneId(glm::vec3 location) = 0;		
+		/*
+		 * @brief Gets the clone id based on the current object id
+		 */ 
+		virtual int32_t GetCloneId(const std::shared_ptr<swganh::object::Object> obj) = 0;		
 
 	};
 }

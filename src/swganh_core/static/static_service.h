@@ -62,7 +62,8 @@ namespace statics
 		std::map<std::string, std::pair<uint32_t, uint32_t>> GetSkillMods(const std::shared_ptr<swganh::object::Creature>& creature);
 
 		std::shared_ptr<CloneData> GetCloneData(uint32_t clone_id);
-		int32_t GetCloneId(glm::vec3 location);
+
+		int32_t GetCloneId(const std::shared_ptr<swganh::object::Object> obj);
 	private:
 
 		void _loadBuildings(swganh::simulation::SimulationServiceInterface* simulation_service, std::unique_ptr<sql::ResultSet> result,

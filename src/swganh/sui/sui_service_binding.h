@@ -60,10 +60,10 @@ std::shared_ptr<SUIWindowInterface> SubcribeWrapper(std::shared_ptr<SUIWindowInt
 													std::vector<std::string> result_list, PythonCallback funct)
 {
 	return self->SubscribeToEventCallback(event_id, event_source, input_trigger, result_list,
-	[=](std::shared_ptr<swganh::object::Object> object, uint32_t event_type, std::vector<std::wstring> result_list) -> bool
+	[=](swganh::app::SwganhKernel* kernel, std::shared_ptr<swganh::object::Object> object, uint32_t event_type, std::vector<std::wstring> result_list) -> bool
 	{ 
 		swganh::scripting::ScopedGilLock lock;
-		return funct.callback_(object, event_type, result_list);
+		return funct.callback_(bp::ptr(kernel), object, event_type, result_list);
 	});
 }
 

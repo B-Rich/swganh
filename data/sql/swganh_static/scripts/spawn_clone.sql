@@ -1,9 +1,9 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server version:               5.1.63-community - MySQL Community Server (GPL)
+-- Server version:               5.5.25-MariaDB-log - mariadb.org binary distribution
 -- Server OS:                    Win64
 -- HeidiSQL version:             7.0.0.4053
--- Date/time:                    2012-10-14 17:59:19
+-- Date/time:                    2012-11-07 22:11:06
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `spawn_clone` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table swganh_static.spawn_clone: ~156 rows (approximately)
+DELETE FROM `spawn_clone`;
 /*!40000 ALTER TABLE `spawn_clone` DISABLE KEYS */;
 INSERT INTO `spawn_clone` (`id`, `parentid`, `oX`, `oY`, `oZ`, `oW`, `cell_x`, `cell_y`, `cell_z`, `planet_id`, `city`) VALUES
 	(1, 1105883, 0, -0.481475, 0, 0.996456, -16.4, -4.3, -10.7, 8, 'Mos Eisley A'),
@@ -126,8 +127,8 @@ INSERT INTO `spawn_clone` (`id`, `parentid`, `oX`, `oY`, `oZ`, `oW`, `cell_x`, `
 	(92, 3605959, 0, 0.011682, 0, -0.105073, 3.5, 0.1, -3.8, 3, 'Research Outpost'),
 	(93, 1855495, 0, -0.481475, 0, 0.996456, -16.4, -4.3, -10.7, 0, 'Coronet'),
 	(94, 1855495, 0, -0.481475, 0, 0.996456, -16.4, -4.3, -14.2, 0, 'Coronet'),
-	(95, 1855495, 0, -0.53182, 0, 0.432496, -2.9, -4.8, 0.5, 0, 'Coronet'),
-	(96, 1855495, 0, -0.53182, 0, 0.432496, 1.7, -4.8, 0.5, 0, 'Coronet'),
+	(95, 1855493, 0, -0.53182, 0, 0.432496, -2.9, -4.8, 0.5, 0, 'Coronet'),
+	(96, 1855493, 0, -0.53182, 0, 0.432496, 1.7, -4.8, 0.5, 0, 'Coronet'),
 	(97, 1855495, 0, -0.53182, 0, 0.432496, 6.3, -4.8, 0.5, 0, 'Coronet'),
 	(98, 1855495, 0, -0.481475, 0, 0.288534, 16.4, -4.3, -10.7, 0, 'Coronet'),
 	(99, 1855495, 0, -0.481475, 0, 0.288534, 16.4, -4.3, -14.2, 0, 'Coronet'),

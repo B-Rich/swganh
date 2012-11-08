@@ -138,7 +138,7 @@ WindowCallbackFunction SUIWindow::GetFunctionById(uint32_t event_id)
 		return itr->second;
 	}
 
-	return [] (std::shared_ptr<Object>,int32_t, std::vector<std::wstring>) -> bool
+	return [] (swganh::app::SwganhKernel* kernel, std::shared_ptr<Object>,int32_t, std::vector<std::wstring>) -> bool
 	{
 		LOG(error) << "Client attempted to fetch an unknown callback";
 		return true;
