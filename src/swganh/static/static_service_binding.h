@@ -31,5 +31,7 @@ void exportStaticService()
 
     class_<StaticServiceInterface, shared_ptr<StaticServiceInterface>, boost::noncopyable>("StaticService", "The static service loads and holds data that never changes.", no_init)
 		.def("getElevatorDataForObject", &StaticServiceInterface::GetElevatorDataForObject, "Returns elevator data for a particular terminal id.")
+		.def("getCloneData", &StaticServiceInterface::GetCloneData, "Gets the clone position from unique id")
+		.def("getCloneId", &StaticServiceInterface::GetCloneId, "Gets the clone_id for the specified location")
         ;
 }

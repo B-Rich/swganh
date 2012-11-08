@@ -211,19 +211,14 @@ void StaticService::_loadCells(SimulationServiceInterface* simulation_service, s
 	}
 }
 
-std::vector<std::shared_ptr<CloneData>> StaticService::GetCloneData(uint32_t scene_id)
-{
-	return clone_data_[scene_id];
-}
-
 void StaticService::_loadCloneLocations(SimulationServiceInterface* simulation_service, std::unique_ptr<sql::ResultSet> result,
 	uint32_t scene_id, std::string scene_name)
 {
-	std::vector<std::shared_ptr<CloneData>> scene_clone_data;
 	while(result->next())
 	{
 		CloneData clone_data;
 		clone_data.city = result->getString("city");
+		clone_data.scene_id = scene_id;
 		clone_data.parent_id = result->getUInt64("parentId");
 		clone_data.quat.x = (float)result->getDouble("oX");
 		clone_data.quat.y = (float)result->getDouble("oY");
@@ -231,12 +226,18 @@ void StaticService::_loadCloneLocations(SimulationServiceInterface* simulation_s
 		clone_data.quat.w = (float)result->getDouble("oW");
 		clone_data.vec.x = (float)result->getDouble("cell_x");
 		clone_data.vec.y = (float)result->getDouble("cell_y");
-		clone_data.vec.z = (float)result->getDouble("cell_z");
+		clone_data.vec.z = (float)result->getDouble("cell_z");		
 
-		scene_clone_data.push_back(std::make_shared<CloneData>(clone_data));
-		
-	}
-	clone_data_[scene_id] = scene_clone_data;
+		clone_data_.push_back(std::make_shared<CloneData>(clone_data));
+	}	
+}
+
+std::shared_ptr<CloneData> StaticService::GetCloneData(uint32_t clone_id)
+{
+	auto clone_data = clone_data_.at(clone_id);
+	if (clone_data)
+		return clone_data;
+	return nullptr;
 }
 
 void StaticService::_loadTerminals(SimulationServiceInterface* simulation_service, std::unique_ptr<sql::ResultSet> result,
@@ -496,6 +497,18 @@ void StaticService::_loadShuttles(SimulationServiceInterface* simulation_service
 
 		spawn_service->StartManagingObject(object, L"shuttle");
 	}
+}
+
+int32_t StaticService::GetCloneId(glm::vec3 location)
+{
+	auto clone_data_iter = std::find_if(clone_data_.begin(), clone_data_.end(), [=](std::shared_ptr<CloneData> clone)
+	{
+		return location == clone->vec;
+	});
+	if (clone_data_iter != clone_data_.end())
+		return std::distance(clone_data_.begin(), clone_data_iter);
+	else
+		return -1;
 }
 
 std::vector<std::shared_ptr<ElevatorData>> StaticService::GetElevatorDataForObject(uint64_t terminal_id)

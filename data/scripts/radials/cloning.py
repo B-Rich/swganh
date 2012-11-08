@@ -5,38 +5,23 @@ from swgpy.static import CloningData
 from swgpy.utility import vector3, quat
 
 class PyRadialMenu(RadialMenu):
-	def buildRadial(self, owner, target, radials):
-		
-		radial_list = RadialOptionsList()
-		
-		#Extend existing radials
-		if(radials):
-			radial_list.extend(radials)
-		
-		#If the elevator can go up, then add that option
-		if target.hasAttribute("elevator_can_go_up"):
-			radial_list.append(RadialOptions(0, RadialIdentifier.elevatorUp, 3, '@elevator_text:up'))
-		
-		#If the elevator can go down, then add that option
-		if target.hasAttribute("elevator_can_go_down"):
-			radial_list.append(RadialOptions(0, RadialIdentifier.elevatorDown, 3, '@elevator_text:down'))	
-		
-		#return the list
-		return radial_list
 		
 	def handleRadial(self, owner, target, action):
-		if action == RadialIdentifier.elevatorUp and target.hasAttribute("elevator_can_go_up"):
-			handleElevatorAction(self,target, owner, False, "elevator_rise")
-		elif action == RadialIdentifier.elevatorDown and target.hasAttribute("elevator_can_go_down"):
-			handleElevatorAction(self,target, owner, True, "elevator_descend")
+		if action == RadialIdentifier.itemUse:
+			sui = self.getKernel().serviceManager().suiService()	
+			msgBox = sui.createMessageBox(MessageBoxType.OK_CANCEL, "@base_player:clone_confirm_title","@base_player:clone_confirm_prompt", owner)
+			cloneBox = PythonCallback('radials.cloning', 'cloneBoxCallback')
+			msgBox.subscribeToEventCallback(0, '', InputTrigger.OK, results, cloneBox)
+			msgBox.subscribeToEventCallback(1, '', InputTrigger.CANCEL, results, cloneBox)			
 			
-def handleElevatorAction(self, target, owner, expected_elevator_action, effect_name):
-	static_service = self.getKernel().serviceManager().staticService()
-	simulation_service = self.getKernel().serviceManager().simulationService()
-	for data in static_service.getElevatorDataForObject(target.id):
-		if data.going_down == expected_elevator_action:
-			#Move the player
-			destination_cell = simulation_service.findObjectById(data.dst_cell)
-			new_position = vector3(owner.position.x, data.dst_position.y, owner.position.z)
-			owner.updatePosition(destination_cell, new_position, owner.orientation)
-			SystemMessage.sendEffect(owner, effect_name, data.dst_orientation, data.dst_position)
+					
+def cloneBoxCallback(owner, event_id, results):
+	clone_id = self.kernel.serviceManager().staticService().getCloneId(owner.container().position)
+	#OK
+	if event_id == 0:
+		if clone_id != -1:
+			owner.setIntAttribute('clone_id', clone_id)
+			SystemMessage.sendSystemMessage(owner, swgpy.OutOfBand('base_player', 'clone_success'), False, False)
+	else
+		print('cancelled')
+	#CANCEL

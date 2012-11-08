@@ -28,6 +28,7 @@ namespace statics
 	struct CloneData
 	{
 		std::string city;
+		uint32_t scene_id;
 		uint64_t parent_id;
 		glm::vec3 vec;
 		glm::quat quat;
@@ -54,9 +55,11 @@ namespace statics
 
 
 		 /*
-		 * @brief get CloneData for a given scene
+		 * @brief get CloneData for a given clone_id
 		 */
-		virtual std::vector<std::shared_ptr<CloneData>> GetCloneData(uint32_t scene_id) = 0;
+		virtual std::shared_ptr<CloneData> GetCloneData(uint32_t clone_id) = 0;		
+
+		virtual int32_t GetCloneId(glm::vec3 location) = 0;		
 
 	};
 }
