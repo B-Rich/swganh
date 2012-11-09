@@ -799,23 +799,23 @@ void Object::SendDestroy(std::shared_ptr<swganh::observer::ObserverInterface> ob
 	observer->Notify(&scene_object);
 }
 
-void Object::SetFlag(std::string flag)
+void Object::SetTag(std::string tag)
 {
     boost::lock_guard<boost::mutex> lg(object_mutex_);
-    flags_.insert(flag);
+    tags_.insert(tag);
 }
 
-void Object::RemoveFlag(std::string flag)
+void Object::RemoveTag(std::string tag)
 {
     boost::lock_guard<boost::mutex> lg(object_mutex_);
-    flags_.erase(flag);
+    tags_.erase(tag);
 }
 
-bool Object::HasFlag(std::string flag)
+bool Object::HasTag(std::string tag)
 {
     boost::lock_guard<boost::mutex> lg(object_mutex_);
 
-    return flags_.find(flag) != flags_.end();
+    return tags_.find(tag) != tags_.end();
 }
 
 /// Slots

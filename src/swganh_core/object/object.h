@@ -466,9 +466,9 @@ public:
     void ClearDeltas();
     
 
-	void SetFlag(std::string flag);
-    void RemoveFlag(std::string flag);
-    bool HasFlag(std::string flag);
+	void SetTag(std::string tag);
+    void RemoveTag(std::string tag);
+    bool HasTag(std::string tag);
 
 	/**
 	 * @brief Creates and fires off the Baseline event to send the Baselines for the given object
@@ -732,7 +732,7 @@ private:
 	bool database_persisted_;
 	bool in_snapshot_;
 
-    std::set<std::string> flags_;
+    std::set<std::string> tags_;
 };
 
 }}  // namespace

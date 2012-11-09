@@ -1,13 +1,12 @@
 from swgpy.command import BaseSwgCommand
 from swgpy import POSTURE
+from swgpy import combat
 
 class DeathBlowCommand(BaseSwgCommand):
     def run(self):
         target = self.getTarget()
         if target:
             if target.isIncap():
-                target.posture = POSTURE.DEAD
-                target.clearAutoAttack()
-                actor.targetId = 0
-                actor.removeDuelList(target.id)
-                target.removeDuelList(actor.id)
+				combat_svc = self.getKernel().serviceManager().combat()
+				if combat_svc not None:
+					combat_svc.setDead(self.getCreatureActor(), self.getCreatureTarget())

@@ -807,6 +807,23 @@ void CombatService::SetDead(const shared_ptr<Creature>& attacker, const shared_p
 	{
         SystemMessage::Send(target, OutOfBand("base_player", "victim_dead"));
 	}
+
+	// ActivateClone if we are a player
+	auto player = equipment_service_->GetEquippedObject<Player>(target, "ghost");
+	if (player)
+	{
+		// Activates the Clone
+		auto command_service = kernel_->GetServiceManager()->GetService<CommandServiceInterface>("CommandService");
+		auto auto_command = command_service->CreateCommand("activateclone");
+		auto swg_command = std::static_pointer_cast<BaseSwgCommand>(auto_command);
+        
+		controllers::CommandQueueEnqueue request;
+		request.observable_id = target->GetObjectId();    
+		request.target_id = attacker->GetObjectId();
+
+		swg_command->SetCommandRequest(request);
+	}
+	
 }
 
 void CombatService::EndDuel(const shared_ptr<Creature>& attacker, const shared_ptr<Creature>& target)

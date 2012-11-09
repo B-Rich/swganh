@@ -12,11 +12,11 @@ class BurstRunCommand(BaseSwgCommand):
 		if actor == None:
 			return False
 
-		if actor.hasFlag("BurstRunning"):
+		if actor.hasTag("BurstRunning"):
 			SystemMessage.sendSystemMessage(actor, 'combat_effects', 'burst_run_no')
 			return False
 
-		if actor.hasFlag("BurstRunCooldown"):
+		if actor.hasTag("BurstRunCooldown"):
 			SystemMessage.sendSystemMessage(actor, 'combat_effects', 'burst_run_wait')
 			return False
 
@@ -27,8 +27,8 @@ class BurstRunCommand(BaseSwgCommand):
 	def run(self):
 		actor = self.getActor()            
 		
-		actor.setFlag("BurstRunning")
-		actor.setFlag("BurstRunCooldown")
+		actor.setTag("BurstRunning")
+		actor.setTag("BurstRunCooldown")
 		
 		# increase the actor's run speed
 		actor.run_speed *= self.base_run_multiplier
@@ -40,7 +40,7 @@ class BurstRunCommand(BaseSwgCommand):
 	def endBurstRun(self):        
 		actor = self.getActor()
 		
-		actor.removeFlag("BurstRunning")
+		actor.removeTag("BurstRunning")
 		
 		# decrease the actor's run speed by the increased amount
 		actor.run_speed /= self.base_run_multiplier
@@ -53,6 +53,6 @@ class BurstRunCommand(BaseSwgCommand):
 	def endBurstRunCooldown(self):
 		actor = self.getActor()
 		
-		actor.removeFlag("BurstRunCooldown")
+		actor.removeTag("BurstRunCooldown")
 		
 		SystemMessage.sendSystemMessage(actor, 'combat_effects', 'burst_run_not_tired')

@@ -62,8 +62,7 @@ public:
 	/**
 	 *  Open Container
 	 */
-	virtual void OpenContainer(const std::shared_ptr<swganh::object::Creature>& owner, std::shared_ptr<swganh::object::Object> object);
-
+	void OpenContainer(const std::shared_ptr<swganh::object::Creature>& owner, std::shared_ptr<swganh::object::Object> object);
 
 private:
 	void RemoveClientTimerHandler_(
