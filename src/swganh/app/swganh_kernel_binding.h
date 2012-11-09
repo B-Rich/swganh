@@ -99,7 +99,7 @@ void exportSWGANHKernel()
 }
 void exportEventDispatcher()
 {
-    class_<swganh::EventDispatcher, boost::noncopyable>("EventDispatcher", no_init)
+    class_<swganh::EventDispatcher, boost::noncopyable>("EventDispatcher", "The Event Dispatcher can dispatch and subscribe events", no_init)
         .def("dispatch",
             make_function(
                 std::bind(&swganh::EventDispatcher::Dispatch, std::placeholders::_1, std::placeholders::_2),

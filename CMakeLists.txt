@@ -46,7 +46,7 @@ option(BUILD_PLUGINS
     "Build additional plugins" OFF)
 
 option(BUILD_DOCS
-    "Explicitly force building the documentation" OFF)
+    "Explicitly force building the documentation" ON)
 
 option(BUILD_EXAMPLES
     "Explicitly force building of examples" OFF)
@@ -179,6 +179,6 @@ if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs AND BUILD_DOCS)
+if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
     add_subdirectory(docs)
 endif()

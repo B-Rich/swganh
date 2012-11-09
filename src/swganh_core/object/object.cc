@@ -1092,7 +1092,7 @@ void Object::Clone(std::shared_ptr<Object> other)
 	other->attributes_map_ = attributes_map_;
 	other->database_persisted_ = database_persisted_;
 	other->in_snapshot_ = in_snapshot_;
-    other->flags_ = flags_;
+    other->tags_ = tags_;
 	other->slot_arrangements_ = slot_arrangements_;
 
 	__InternalViewObjects(nullptr, 0, true, [&] (std::shared_ptr<Object> object) {

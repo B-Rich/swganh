@@ -8,7 +8,7 @@ BOOST_PYTHON_MODULE(py_app)
 {
     docstring_options local_docstring_options(true, true, false);
 
-    exportSWGANHKernel();
     exportEventDispatcher();
+	exportSWGANHKernel();
     exportPythonEvent();
 }

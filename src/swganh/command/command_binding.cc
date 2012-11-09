@@ -170,7 +170,7 @@ void swganh::command::ExportCommand()
     ;
 
     bp::class_<CommandInterface, boost::noncopyable>("CommandInterface", bp::no_init)
-        .def("validate", bp::pure_virtual(&CommandInterface::Validate))
+        .def("validate", bp::pure_virtual(&CommandInterface::Validate), "virtual function to handle validation of the command")
         .def("run", bp::pure_virtual(&CommandInterface::Run))
 		.def("postRun", bp::pure_virtual(&CommandInterface::PostRun))
     ;

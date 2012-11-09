@@ -16,6 +16,7 @@
 #include <boost/python.hpp>
 #include <boost/python/overloads.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
 
 #include "swganh/sui/radial_binding.h"
 
@@ -177,16 +178,17 @@ void exportObject()
 
 	class_<ContainerInterface, std::shared_ptr<ContainerInterface>, boost::noncopyable>("ContainerInterface", "Container interface", no_init)
 		.def("add", &ContainerInterface::AddObject, addObjectOverload(args("requester", "newObject", "arrangement_id"), "Adds an object to the current object"))
-		.def("remove", RemoveObject, "Removes an object fomr the current object")
+		.def("remove", RemoveObject, "Removes an object from the current object")
 		.def("transfer", &ContainerInterface::TransferObject, transferObjectOverload(args("object", "newContainer", "arrangement_id"), "Transfer an object to a different object"))
 		.def("swapSlots", &Object::SwapSlots, "Change an objects current arrangement")	
 		.def("container", &Object::GetContainer, "Gets the :class:`ContainerInterface` object of the current object")
 		.def("hasContainedObjects", &Object::HasContainedObjects, "Checks to see if container has any objects in it")
+		.def("findObjectInRangeByTag", &ContainerInterface::FindObjectInRangeByTag, "Finds all objects in range by certain tag")
 		.def_readonly("id", &ContainerInterface::GetObjectId, "Gets the object id of the container")
 		;
 	
 	class_<SystemMessage, boost::noncopyable>("SystemMessage", "Static class that deals with system messages.", no_init)
-		.def("sendSystemMessage", SendSystemMessage1, "Send a system message to the requester, see :class:`")
+		.def("sendSystemMessage", SendSystemMessage1, "Send a system message to the requester")
 		.def("sendSystemMessage", SendSystemMessage2, SysMsg2Overloads(args("requester", "custom_message", "chatbox_only", "send_to_inrange"), "Send a system message to the requester"))
 		.def("sendSystemMessage", SendSystemMessage3, SysMsg3Overloads(args("requester", "out_of_band", "chatbox_only", "send_to_inrange"), "Send a system message to the requester"))
 		.def("sendSystemMessage", SendSystemMessage4, SysMsg4Overloads(args("requester", "custom_message", "out_of_band", "chatbox_only", "send_to_inrange"), "Send a system message to the requester"))
@@ -212,7 +214,7 @@ void exportObject()
 		.add_property("id", &Object::GetObjectId, &Object::SetObjectId, "Gets or sets The id of the object")
 		.add_property("scene_id", &Object::GetSceneId, &Object::SetSceneId, "Gets and Sets the scene id the object is in")
 		.add_property("type", &Object::GetType, "Gets the type of the object")
-		.add_property("position", &Object::GetPosition, &Object::SetPosition, "Gets and Sets the position of the object, using :class:`.Vec3`")
+		.add_property("position", &Object::GetPosition, &Object::SetPosition, "Gets and Sets the position of the object, using :class:`.vector3`")
 		.add_property("heading", &Object::GetHeading, "Gets the heading as an int of the object")
 		.add_property("orientation", &Object::GetOrientation, &Object::SetOrientation, "Property to get or set the orientation of the object")
 		.add_property("template", &Object::GetTemplate, &Object::SetTemplate, "the .iff file associated with this object"					)
@@ -221,7 +223,7 @@ void exportObject()
 		.add_property("stf_name_string", &Object::GetStfNameString, "gets the stf name file of the object")
 		.def("stfName", &Object::SetStfName, "sets the full stf name, takes stf_name_file and stf_name_string as parameters")
 		.add_property("custom_name", &Object::GetCustomName, &Object::SetCustomName, "Property to get and set the custom name")
-        .def("controller", &Object::GetController, "Get the :class:`.ObjectController` of the object")
+        .def("controller", &Object::GetController, "Get the :class:`.ObserverInterface` of the object")
         .def("hasTag", &Object::HasTag, "Checks if the object has a specific tag set on it")
         .def("setTag", &Object::SetTag, "Sets a tag on the object")
         .def("removeTag", &Object::RemoveTag, "Removes a tag from the object")
@@ -244,6 +246,9 @@ void exportObject()
 
 	bp::class_<std::vector<int>>("IntVector")
 		.def(bp::vector_indexing_suite<std::vector<int>>());
+
+	bp::class_<std::map<std::shared_ptr<Object>, float>>("InRangeObjects")
+		.def(bp::map_indexing_suite<std::map<std::shared_ptr<Object>, float>>());
 
 	class_<Cell, bases<Object>, std::shared_ptr<Cell>, boost::noncopyable>("Cell");
 	class_<Intangible, bases<Object>, std::shared_ptr<Intangible>, boost::noncopyable>("Intangible");
