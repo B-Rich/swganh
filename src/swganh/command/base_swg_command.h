@@ -71,6 +71,7 @@ namespace command {
         bool IsQueuedCommand() const;
 
         const std::shared_ptr<object::Object>& GetActor() const;
+		std::shared_ptr<object::Creature> GetActorCreature();
 		void SetActor(std::shared_ptr<object::Object> object);
 
         const std::shared_ptr<object::Object>& GetTarget() const;

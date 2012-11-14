@@ -247,8 +247,8 @@ void exportObject()
 	bp::class_<std::vector<int>>("IntVector")
 		.def(bp::vector_indexing_suite<std::vector<int>>());
 
-	bp::class_<std::map<std::shared_ptr<Object>, float>>("InRangeObjects")
-		.def(bp::map_indexing_suite<std::map<std::shared_ptr<Object>, float>>());
+	bp::class_<std::map<float,std::shared_ptr<Object>>>("InRangeObjects")
+		.def(bp::map_indexing_suite<std::map<float, std::shared_ptr<Object>>>());
 
 	class_<Cell, bases<Object>, std::shared_ptr<Cell>, boost::noncopyable>("Cell");
 	class_<Intangible, bases<Object>, std::shared_ptr<Intangible>, boost::noncopyable>("Intangible");

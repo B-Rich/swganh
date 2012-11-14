@@ -114,7 +114,12 @@ const std::shared_ptr<Object>& BaseSwgCommand::GetActor() const
 
     return actor_;
 }
+std::shared_ptr<Creature> BaseSwgCommand::GetActorCreature()
+{
+	auto creature_actor = std::static_pointer_cast<Creature>(GetActor());
 
+	return creature_actor;
+}
 void BaseSwgCommand::SetActor(std::shared_ptr<Object> object)
 {
 	actor_ = object;

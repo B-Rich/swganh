@@ -47,7 +47,7 @@ namespace object
 		//Call to View
 		void ViewAwareObjects(std::function<void(std::shared_ptr<swganh::object::Object>)> func, std::shared_ptr<swganh::object::Object> hint=nullptr);
 		virtual void __InternalViewAwareObjects(std::function<void(std::shared_ptr<swganh::object::Object>)> func, std::shared_ptr<swganh::object::Object> hint=nullptr) = 0;
-		virtual std::map<std::shared_ptr<swganh::object::Object>, float> FindObjectInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range);
+		virtual std::map<float, std::shared_ptr<swganh::object::Object>> FindObjectInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range);
 
 		//Call to Destroy
 		void RemoveAwareObject(std::shared_ptr<swganh::object::Object> observer);

@@ -177,6 +177,7 @@ void StaticService::_loadBuildings(SimulationServiceInterface* simulation_servic
 
 		object->SetPosition(glm::vec3(result->getDouble(6), result->getDouble(7), result->getDouble(8)));
 		object->SetStfName(result->getString(12), result->getString(13));
+		object->SetTag(result->getString(14));
 		object->SetSceneId(scene_id);
 		object->SetInSnapshot(true);
 		object->SetDatabasePersisted(false);
