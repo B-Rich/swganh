@@ -3,5 +3,7 @@ from swgpy.sui import *
 buffTemplates = ResultList()
 buffTemplates.extend([
 	"SpiceBoosterBlueUp",
-	"SpiceBoosterBlueDown"
+	"SpiceBoosterBlueDown",
+	"BurstRun",
+	"BurstRunCooldown",
 ])

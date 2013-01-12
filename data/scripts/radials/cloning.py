@@ -22,6 +22,6 @@ def cloneBoxCallback(owner, event_id, results):
 		if clone_id != -1:
 			owner.setIntAttribute('clone_id', clone_id)
 			SystemMessage.sendSystemMessage(owner, swgpy.OutOfBand('base_player', 'clone_success'), False, False)
-	else
+	else:
 		print('cancelled')
 	#CANCEL
