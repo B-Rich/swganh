@@ -30,3 +30,4 @@ for file in files:
 	if not '__init__' in file:
 		module = importlib.import_module(file)
 		module.loadTemplates(addTemplate)
+
