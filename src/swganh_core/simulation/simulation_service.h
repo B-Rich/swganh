@@ -49,6 +49,8 @@ namespace simulation {
 		void TransferObjectToScene(uint64_t object_id, const std::string& scene, float x, float y, float z);
 		void TransferObjectToScene(std::shared_ptr<swganh::object::Object> object, const std::string& scene);
 		void TransferObjectToScene(std::shared_ptr<swganh::object::Object> object, const std::string& scene, float x, float y, float z);
+
+		std::map<float, std::shared_ptr<swganh::object::Object>> FindObjectsByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range = 16384.0f);
         /**
          * Removes the requested object from the simulation.
          */

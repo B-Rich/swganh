@@ -62,6 +62,9 @@ namespace simulation {
 			const std::shared_ptr<swganh::object::Object>& object,
 			const glm::vec3& new_position);
 
+		std::shared_ptr<swganh::simulation::SpatialProviderInterface> GetSpatialIndex();
+		std::shared_ptr<swganh::simulation::MovementManagerInterface> GetMovementManager();
+
     private:
         Scene();
 

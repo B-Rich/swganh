@@ -14,4 +14,8 @@ class ActivateClone(BaseSwgCommand):
 			#cloneSelect","Select Clone Destination","Select clone destination"
 			window = sui.createListBox(ListBoxType.OK, 'cloneSelect', 'Select Clone Destination', clone_list, creatureActor)
 			#Find predesignated location
-			
+			inRangeObjects = InRangeObjects()
+			inRangeObjects = self.getKernel().serviceManager().simulationService().findObjectsByTag(creatureActor, 'Building::CloningFacility')
+			for (range, obj in inRangeObjects):
+				print(range + ' range')
+				print(obj)

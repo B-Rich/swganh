@@ -208,3 +208,6 @@ void Scene::HandleDataTransformWithParentServer(const std::shared_ptr<swganh::ob
 {
 	impl_->GetMovementManager()->HandleDataTransformWithParentServer(parent, object, new_position);
 }
+
+shared_ptr<swganh::simulation::SpatialProviderInterface> Scene::GetSpatialIndex() { return impl_->GetSpatialIndex(); }
+shared_ptr<swganh::simulation::MovementManagerInterface> Scene::GetMovementManager() { return impl_->GetMovementManager(); }

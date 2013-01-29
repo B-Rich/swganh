@@ -32,6 +32,8 @@ void exportSimulationService()
 	typedef void (SimulationServiceInterface::*TransferObjectToSceneObjectBinding)(shared_ptr<swganh::object::Object>, const std::string&);
 	typedef void (SimulationServiceInterface::*TransferObjectToSceneAndPositionBinding)(uint64_t, const std::string&, float, float, float);
 	typedef void (SimulationServiceInterface::*TransferObjectToSceneObjectAndPositionBinding)(shared_ptr<swganh::object::Object>, const std::string&, float, float, float);
+	typedef std::map<float, std::shared_ptr<swganh::object::Object>> (SimulationServiceInterface::*FindObjectsByTag1)(const std::shared_ptr<swganh::object::Object>, const std::string&);
+	typedef std::map<float, std::shared_ptr<swganh::object::Object>> (SimulationServiceInterface::*FindObjectsByTagRange)(const std::shared_ptr<swganh::object::Object>, const std::string&, float);
 
 	enum_<PermissionType>("ContainerPermission")
 		.value("DEFAULT", DEFAULT_PERMISSION)
@@ -50,6 +52,8 @@ void exportSimulationService()
 		.def("transfer", TransferObjectToSceneAndPositionBinding(&SimulationServiceInterface::TransferObjectToScene), "transfers the object to a new scene and changes the position")
 		.def("transfer", TransferObjectToSceneObjectAndPositionBinding(&SimulationServiceInterface::TransferObjectToScene), "transfers the object to a new scene and changes the position")
 		.def("findObject", GetObjectByCustomNameBinding(&SimulationServiceInterface::GetObjectByCustomName), "finds the object by their custom name")
+		.def("findObjectsByTag", FindObjectsByTag1(&SimulationServiceInterface::FindObjectsByTag), "Finds a map of objects sorted by closest range that have a given tag")
+		.def("findObjectsByTag", FindObjectsByTagRange(&SimulationServiceInterface::FindObjectsByTag), "Finds a map of objects sorted by closest range that have a given tag")
 		.def("addObjectToScene", &SimulationServiceInterface::AddObjectToScene, "Adds the Object to the specified scene")
         .def("startScene", &SimulationServiceInterface::StartScene, "starts a scene by its label")
         .def("stopScene", &SimulationServiceInterface::StopScene, "stops a scene by the given label")

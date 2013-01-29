@@ -66,7 +66,7 @@ namespace simulation {
 
         virtual void PersistObject(uint64_t object_id, bool persist_inherited = false) = 0;
 		/*
-		*	\brief this persists the given object and all related objects (ie: everything contained inside this object)
+		*	@brief this persists the given object and all related objects (ie: everything contained inside this object)
 		*/
 		virtual void PersistRelatedObjects(uint64_t parent_object_id, bool persist_inherited = false) = 0;
         
@@ -80,6 +80,11 @@ namespace simulation {
 		virtual void TransferObjectToScene(uint64_t object_id, const std::string& scene, float x, float y, float z) = 0;
 		virtual void TransferObjectToScene(std::shared_ptr<swganh::object::Object> object, const std::string& scene) = 0;
 		virtual void TransferObjectToScene(std::shared_ptr<swganh::object::Object> object, const std::string& scene, float x, float y, float z) = 0;
+
+		/*
+		 * @brief Gets objects in range that have a given Tag
+		 */
+		virtual std::map<float, std::shared_ptr<swganh::object::Object>> FindObjectsByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range) = 0;
         
         template<typename T>
         std::shared_ptr<T> LoadObjectById(uint64_t object_id)

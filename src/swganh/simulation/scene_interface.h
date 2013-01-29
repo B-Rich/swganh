@@ -34,6 +34,9 @@ namespace controllers {
 namespace swganh {
 namespace simulation {
 
+class SpatialProviderInterface;
+class MovementManagerInterface;
+
 class SceneInterface : boost::noncopyable
 {
 public:
@@ -47,6 +50,9 @@ public:
 	virtual const std::string& GetDescription() const = 0;
 		
 	virtual const std::string& GetTerrainMap() const =  0;
+
+	virtual std::shared_ptr<swganh::simulation::SpatialProviderInterface> GetSpatialIndex() = 0;
+	virtual std::shared_ptr<swganh::simulation::MovementManagerInterface> GetMovementManager() = 0;
 
     virtual void AddObject(std::shared_ptr<swganh::object::Object> object) = 0;
         

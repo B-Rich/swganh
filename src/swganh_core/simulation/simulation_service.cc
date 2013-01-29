@@ -453,13 +453,10 @@ public:
 				controller->Notify(message);
 		});
 	}
-
-	uint32_t SceneIdByName(const std::string& scene_label)
+	
+	std::map<float, std::shared_ptr<swganh::object::Object>> FindObjectsByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range)
 	{
-	}
-
-	std::string SceneNameById(uint32_t scene_id)
-	{
+		return scene_manager_->GetScene(requester->GetSceneId())->GetSpatialIndex()->FindObjectInRangeByTag(requester, tag, range);
 	}
 
 private:
@@ -701,4 +698,9 @@ const shared_ptr<swganh::equipment::EquipmentServiceInterface>& SimulationServic
 std::shared_ptr<swganh::object::ObjectManager> SimulationService::GetObjectManager()
 {
 	return impl_->GetObjectManager();
+}
+
+std::map<float, std::shared_ptr<swganh::object::Object>> SimulationService::FindObjectsByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range)
+{
+	return impl_->FindObjectsByTag(requester, tag, range);
 }

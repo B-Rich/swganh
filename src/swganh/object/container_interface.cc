@@ -53,8 +53,7 @@ std::map<float, std::shared_ptr<swganh::object::Object>> ContainerInterface::Fin
 	std::map<float, std::shared_ptr<Object>> found_map;
 	ViewObjects(requester, 2, true, [=,&found_map](std::shared_ptr<Object> found_obj){
 		if (found_obj->HasTag(tag))
-		{
-			
+		{		
 			found_map[glm::distance(requester->GetPosition(), found_obj->GetPosition())] = found_obj;
 		}
 	});
