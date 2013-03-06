@@ -16,7 +16,7 @@
 #include "swganh_core/simulation/simulation_service.h"
 #include "swganh_core/simulation/scene_events.h"
 
-#include "swganh/object/permissions/permission_type.h"
+#include "swganh_core/object/permissions/permission_type.h"
 #include "swganh_core/object/object_manager.h"
 
 #include "swganh_core/object/object.h"
@@ -44,7 +44,7 @@ using namespace swganh::scripting;
 SpawnService::SpawnService(SwganhKernel* kernel) 
 	: kernel_(kernel)
 	, fsm_manager_(kernel->GetEventDispatcher())
-	, timer_(kernel_->GetIoService(), boost::posix_time::seconds(60))
+	, timer_(kernel_->GetCpuThreadPool(), boost::posix_time::seconds(60))
 {
 }
 

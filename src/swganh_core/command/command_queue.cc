@@ -9,9 +9,9 @@
 
 #include "swganh/app/swganh_kernel.h"
 
-#include "swganh/command/base_swg_command.h"
-#include "swganh/command/command_interface.h"
-#include "swganh/command/command_service_interface.h"
+#include "swganh_core/command/base_swg_command.h"
+#include "swganh_core/command/command_interface.h"
+#include "swganh_core/command/command_service_interface.h"
 
 #include "swganh_core/object/creature/creature.h"
 #include "swganh_core/object/tangible/tangible.h"
@@ -30,10 +30,10 @@ using swganh::object::Tangible;
 CommandQueue::CommandQueue(
     swganh::app::SwganhKernel* kernel)
     : kernel_(kernel)
-    , timer_(kernel->GetIoService())
+    , timer_(kernel->GetCpuThreadPool())
     , processing_(false)
     , default_command_(nullptr)
-    , active_(kernel->GetIoService())
+    , active_(kernel->GetCpuThreadPool())
 {
     command_service_ = kernel->GetServiceManager()->GetService<CommandService>("CommandService");
 }

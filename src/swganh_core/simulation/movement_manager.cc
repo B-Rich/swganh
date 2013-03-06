@@ -18,8 +18,8 @@
 #include "swganh_core/messages/update_transform_message.h"
 #include "swganh_core/messages/update_transform_with_parent_message.h"
 
-#include "swganh/simulation/spatial_provider_interface.h"
-#include "swganh/simulation/simulation_service_interface.h"
+#include "swganh_core/simulation/spatial_provider_interface.h"
+#include "swganh_core/simulation/simulation_service_interface.h"
 
 using namespace swganh::event_dispatcher;
 using namespace std;
@@ -30,8 +30,9 @@ using namespace swganh::object;
 using namespace swganh::simulation;
 using namespace swganh::simulation;
 
-MovementManager::MovementManager(swganh::app::SwganhKernel* kernel)
+MovementManager::MovementManager(swganh::app::SwganhKernel* kernel, std::string scene_name)
 	: kernel_(kernel)
+	, scene_name_(scene_name)
 {
 	simulation_service_ = kernel_->GetServiceManager()->GetService<SimulationServiceInterface>("SimulationService");
 
@@ -44,17 +45,38 @@ void MovementManager::HandleDataTransformServer(
 {
     counter_map_[object->GetObjectId()] = counter_map_[object->GetObjectId()];
     
-	auto old_bounding_volume = object->GetAABB();
+	AABB old_bounding_volume = object->GetAABB();
 
-	object->SetPosition(new_position);
-	
 	//If the object was inside a container we need to move it out
 	if(object->GetContainer() != spatial_provider_)
-		object->GetContainer()->TransferObject(object, object, spatial_provider_);
-	else
-		spatial_provider_->UpdateObject(object, old_bounding_volume, object->GetAABB());
+	{
+		std::shared_ptr<Object> old_container = std::static_pointer_cast<Object>(object->GetContainer());
+		if(old_container->GetTemplate().compare("object/cell/shared_cell.iff") == 0) 
+		{
+			object->GetContainer()->TransferObject(object, object, spatial_provider_, new_position);
+		} 
+		else 
+		{
+			AABB old_parent_bounding_volume = old_container->GetAABB();
+			old_container->SetPosition(new_position);
+			old_container->UpdateWorldCollisionBox();
+			old_container->UpdateAABB();
 
-    SendDataTransformMessage(object);
+			object->UpdateWorldCollisionBox();
+			object->UpdateAABB();
+			
+			spatial_provider_->UpdateObject(old_container, old_parent_bounding_volume, old_container->GetAABB());
+			SendDataTransformMessage(old_container);
+		}
+	}
+	else
+	{
+		object->SetPosition(new_position);
+		object->UpdateWorldCollisionBox();
+		object->UpdateAABB();
+		spatial_provider_->UpdateObject(object, old_bounding_volume, object->GetAABB());
+		SendDataTransformMessage(object);
+	}
 }
 
 void MovementManager::HandleDataTransformWithParentServer(
@@ -65,12 +87,17 @@ void MovementManager::HandleDataTransformWithParentServer(
 {
 	if(parent != nullptr)
 	{
-		//Set the new position and orientation
-		object->SetPosition(new_position);
-		
-		//Perform the transfer
+		//Perform the transfer if needed
 		if(object->GetContainer() != parent)
-			object->GetContainer()->TransferObject(object, object, parent);
+		{
+			object->GetContainer()->TransferObject(object, object, parent, new_position);
+		}
+		else
+		{
+			object->SetPosition(new_position);
+			object->UpdateWorldCollisionBox();
+			object->UpdateAABB();
+		}
 		
 		//Send the update transform
 		SendDataTransformWithParentMessage(object);
@@ -88,23 +115,46 @@ void MovementManager::HandleDataTransform(
 {    
     if (!ValidateCounter_(object->GetObjectId(), message.counter))
     {
+		LOG(error) << "Movement Counter is " << message.counter << " should be " << (counter_map_[object->GetObjectId()] + 1) << ".";
         return;
     }
 
     counter_map_[object->GetObjectId()] = message.counter;
-    
-	auto old_bounding_volume = object->GetAABB();
-
-	object->SetPosition(message.position);
-    object->SetOrientation(message.orientation);
+	AABB old_bounding_volume = object->GetAABB();
 
 	//If the object was inside a container we need to move it out
 	if(object->GetContainer() != spatial_provider_)
-		object->GetContainer()->TransferObject(object, object, spatial_provider_);
-	else
-		spatial_provider_->UpdateObject(object, old_bounding_volume, object->GetAABB());
+	{
+		std::shared_ptr<Object> old_container = std::static_pointer_cast<Object>(object->GetContainer());
+		if(old_container->GetTemplate().compare("object/cell/shared_cell.iff") == 0) 
+		{
+			object->SetOrientation(message.orientation);
+			object->GetContainer()->TransferObject(object, object, spatial_provider_, message.position);
+		} 
+		else 
+		{
+			AABB old_parent_bounding_volume = old_container->GetAABB();
+			old_container->SetOrientation(message.orientation);
+			old_container->SetPosition(message.position);
+			old_container->UpdateWorldCollisionBox();
+			old_container->UpdateAABB();
+			
+			object->UpdateWorldCollisionBox();
+			object->UpdateAABB();
 
-    SendUpdateDataTransformMessage(object);
+			spatial_provider_->UpdateObject(old_container, old_parent_bounding_volume, old_container->GetAABB());
+			SendUpdateDataTransformMessage(old_container);
+		}
+	}
+	else
+	{
+		object->SetPosition(message.position);
+		object->SetOrientation(message.orientation);
+		object->UpdateWorldCollisionBox();
+		object->UpdateAABB();
+		spatial_provider_->UpdateObject(object, old_bounding_volume, object->GetAABB());
+		SendUpdateDataTransformMessage(object);
+	}
 }
 
 void MovementManager::HandleDataTransformWithParent(
@@ -117,18 +167,26 @@ void MovementManager::HandleDataTransformWithParent(
 	{
 		if (!ValidateCounter_(object->GetObjectId(), message.counter))
 		{
+			LOG(error) << "Movement Counter is " << message.counter << " should be " << (counter_map_[object->GetObjectId()] + 1) << ".";
 			return;
 		}
 
 		counter_map_[object->GetObjectId()] = message.counter;
 
 		//Set the new position and orientation
-		object->SetPosition(message.position);
 		object->SetOrientation(message.orientation);
     
 		//Perform the transfer
 		if(object->GetContainer() != container)
-			object->GetContainer()->TransferObject(object, object, container);
+		{
+			object->GetContainer()->TransferObject(object, object, container, message.position);
+		}
+		else
+		{
+			object->SetPosition(message.position);
+			object->UpdateWorldCollisionBox();
+			object->UpdateAABB();
+		}
 
 		//Send the update transform
 		SendUpdateDataTransformWithParentMessage(object);
@@ -149,7 +207,7 @@ void MovementManager::SendDataTransformMessage(const shared_ptr<Object>& object,
     transform.position = object->GetPosition();
     transform.speed = creature->GetWalkingSpeed();
 
-    object->GetController()->Notify(&transform);
+    object->NotifyObservers(&transform);
 }
 
 void MovementManager::SendUpdateDataTransformMessage(const shared_ptr<Object>& object)
@@ -174,7 +232,7 @@ void MovementManager::SendDataTransformWithParentMessage(const shared_ptr<Object
     transform.position      = object->GetPosition();
     transform.speed         = creature->GetWalkingSpeed();
 
-    object->GetController()->Notify(&transform);
+    object->NotifyObservers(&transform);
 }
 
 void MovementManager::SendUpdateDataTransformWithParentMessage(const shared_ptr<Object>& object)
@@ -197,10 +255,8 @@ void MovementManager::RegisterEvents(swganh::EventDispatcher* event_dispatcher)
     {
         const auto& object = static_pointer_cast<swganh::ValueEvent<shared_ptr<Object>>>(incoming_event)->Get();
         
-        if (counter_map_.find(object->GetObjectId()) == counter_map_.end())
-        {
-            counter_map_[object->GetObjectId()] = 0;
-        }
+		LOG(error) << "Resetting counter... " << object->GetObjectId() << ":" << scene_name_;
+		counter_map_[object->GetObjectId()] = 0;
 
         if (object->GetContainer())
         {
@@ -222,7 +278,15 @@ void MovementManager::RegisterEvents(swganh::EventDispatcher* event_dispatcher)
 
 bool MovementManager::ValidateCounter_(uint64_t object_id, uint32_t counter)
 {    
-    return counter > counter_map_[object_id];
+    return counter >= counter_map_[object_id];
+}
+
+void MovementManager::ResetMovementCounter(std::shared_ptr<swganh::object::Object> object)
+{
+	if(counter_map_.find(object->GetObjectId()) == counter_map_.end())
+		return;
+
+	counter_map_[object->GetObjectId()] = 0;
 }
 
 void MovementManager::SetSpatialProvider(std::shared_ptr<swganh::simulation::SpatialProviderInterface> spatial_provider)

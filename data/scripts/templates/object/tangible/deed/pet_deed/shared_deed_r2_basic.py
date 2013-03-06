@@ -2,23 +2,19 @@
 #### MODIFICATIONS MAY BE LOST IF DONE IMPROPERLY
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
-from swgpy.object import *
+from swgpy.object import *	
 
-class Template(BaseTemplate):
-	name = "object/tangible/deed/pet_deed/shared_deed_r2_basic.iff"
-	is_prototype = False
-	
-	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/deed/pet_deed/shared_deed_r2_basic.iff"
-		result.attribute_template_id = 2
-		result.stfName("deed","r2_basic_deed")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
-		
-		return result
+def create(kernel):
+	result = Tangible()
 
-def loadTemplates(addTemplate):
-	addTemplate(Template())
+	result.template = "object/tangible/deed/pet_deed/shared_deed_r2_basic.iff"
+	result.attribute_template_id = 2
+	result.stfName("deed","r2_basic_deed")		
+	
+	#### BEGIN MODIFICATIONS ####
+	result.setStringAttribute("radial_filename", "radials.deed_datapad")
+	result.setStringAttribute("deed_pcd", "object/intangible/pet/shared_r2_crafted.iff")
+	result.setStringAttribute("deed_mobile", "object/mobile/shared_r2_crafted.iff")
+	####  END MODIFICATIONS  ####
+	
+	return result

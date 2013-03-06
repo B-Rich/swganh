@@ -2,8 +2,8 @@
 // See file LICENSE or go to http://swganh.com/LICENSE
 #pragma once
 
-#include "swganh/simulation/scene_interface.h"
-#include "swganh/simulation/spatial_provider_interface.h"
+#include "swganh_core/simulation/scene_interface.h"
+#include "swganh_core/simulation/spatial_provider_interface.h"
 #include <cstdint>
 #include <string>
 
@@ -57,10 +57,15 @@ namespace simulation {
 			const std::shared_ptr<swganh::object::Object>& object,
 			const glm::vec3& new_position);
 
+		/**
+		* Used internally for server movements (ie: NPCS)
+		*/
 		void HandleDataTransformWithParentServer(
 			const std::shared_ptr<swganh::object::Object>& parent, 
 			const std::shared_ptr<swganh::object::Object>& object,
 			const glm::vec3& new_position);
+
+		std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> FindObjectsInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range=-1);
 
     private:
         Scene();

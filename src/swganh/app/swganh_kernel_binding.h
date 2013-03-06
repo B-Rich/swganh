@@ -9,25 +9,26 @@
 
 #include "swganh_kernel.h"
 
-#include "swganh/python_shared_ptr.h"
+#include "swganh/scripting/python_shared_ptr.h"
 
 #include "swganh/event_dispatcher.h"
 #include "swganh/app/kernel_interface.h"
 #include "swganh/service/service_manager.h"
-#include "swganh/combat/combat_service_interface.h"
-#include "swganh/chat/chat_service_interface.h"
-#include "swganh/command/command_service_interface.h"
-#include "swganh/social/social_service_interface.h"
-#include "swganh/simulation/simulation_service_interface.h"
-#include "swganh/static/static_service_interface.h"
-#include "swganh/sui/sui_service_interface.h"
-#include "swganh/terrain/terrain_service_interface.h"
-#include "swganh/equipment/equipment_service_interface.h"
-#include "swganh/weather/weather_service_interface.h"
-#include "swganh/simulation/spatial_provider_interface.h"
-#include "swganh/player/player_service_interface.h"
-#include "swganh/badge/badge_service_interface.h"
-#include "swganh/map/map_service_interface.h"
+#include "swganh_core/combat/combat_service_interface.h"
+#include "swganh_core/chat/chat_service_interface.h"
+#include "swganh_core/command/command_service_interface.h"
+#include "swganh_core/social/social_service_interface.h"
+#include "swganh_core/simulation/simulation_service_interface.h"
+#include "swganh_core/static/static_service_interface.h"
+#include "swganh_core/sui/sui_service_interface.h"
+#include "swganh_core/terrain/terrain_service_interface.h"
+#include "swganh_core/equipment/equipment_service_interface.h"
+#include "swganh_core/weather/weather_service_interface.h"
+#include "swganh_core/simulation/spatial_provider_interface.h"
+#include "swganh_core/player/player_service_interface.h"
+#include "swganh_core/badge/badge_service_interface.h"
+#include "swganh_core/map/map_service_interface.h"
+#include "swganh_core/travel/travel_service_interface.h"
 
 #include <boost/python.hpp>
 
@@ -112,6 +113,11 @@ void exportSWGANHKernel()
 				return_value_policy<reference_existing_object>(),
 				boost::mpl::vector<swganh::map::MapServiceInterface*, swganh::service::ServiceManager*>()),
 				"returns an internal reference of the :class:`.MapService`")
+		.def("travelService", make_function(
+				std::bind(&swganh::service::ServiceManager::GetService<swganh::travel::TravelServiceInterface>, std::placeholders::_1, "TravelService"),
+				return_value_policy<reference_existing_object>(),
+				boost::mpl::vector<swganh::travel::TravelServiceInterface*, swganh::service::ServiceManager*>()),
+				"returns an internal reference of the :class:.`TravelService`")
        ;
        
 }

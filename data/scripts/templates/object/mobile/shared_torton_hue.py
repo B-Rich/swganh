@@ -2,23 +2,19 @@
 #### MODIFICATIONS MAY BE LOST IF DONE IMPROPERLY
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
-from swgpy.object import *
+from swgpy.object import *	
 
-class Template(BaseTemplate):
-	name = "object/mobile/shared_torton_hue.iff"
-	is_prototype = False
-	
-	def create(self, kernel, params):
-		result = Creature()
-	
-		result.template = "object/mobile/shared_torton_hue.iff"
-		result.attribute_template_id = 9
-		result.stfName("monster_name","torton")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
-		
-		return result
+def create(kernel):
+	result = Creature()
 
-def loadTemplates(addTemplate):
-	addTemplate(Template())
+	result.template = "object/mobile/shared_torton_hue.iff"
+	result.attribute_template_id = 9
+	result.stfName("monster_name","torton")		
+	
+	#### BEGIN MODIFICATIONS ####
+	result.setStringAttribute("radial_filename", "radials.player_pet")
+	result.options_mask = 0x100
+	result.pvp_status = PVPSTATUS.PvPStatus_None
+	####  END MODIFICATIONS  ####
+	
+	return result

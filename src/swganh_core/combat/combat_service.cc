@@ -15,7 +15,7 @@
 
 #include "swganh/crc.h"
 #include "swganh/event_dispatcher.h"
-#include "swganh/database/database_manager_interface.h"
+#include "swganh/database/database_manager.h"
 #include "swganh/service/service_manager.h"
 
 #include "swganh/app/swganh_kernel.h"
@@ -25,17 +25,17 @@
 #include "swganh_core/object/tangible/tangible.h"
 #include "swganh_core/object/weapon/weapon.h"
 #include "swganh_core/object/player/player.h"
-#include "swganh/command/base_combat_command.h"
+#include "swganh_core/command/base_combat_command.h"
 
-#include "swganh/command/command_service_interface.h"
-#include "swganh/command/base_swg_command.h"
-#include "swganh/command/python_command_creator.h"
-#include "swganh/command/command_properties.h"
-#include "swganh/simulation/simulation_service_interface.h"
+#include "swganh_core/command/command_service_interface.h"
+#include "swganh_core/command/base_swg_command.h"
+#include "swganh_core/command/python_command_creator.h"
+#include "swganh_core/command/command_properties.h"
+#include "swganh_core/simulation/simulation_service_interface.h"
 
 #include "swganh_core/equipment/equipment_service.h"
 #include "swganh_core/static/static_service.h"
-#include "swganh/static/skill_manager.h"
+#include "swganh_core/static/skill_manager.h"
 
 #include "swganh_core/messages/controllers/combat_action_message.h"
 #include "swganh_core/messages/controllers/combat_spam_message.h"
@@ -60,7 +60,7 @@ using swganh::app::SwganhKernel;
 
 CombatService::CombatService(SwganhKernel* kernel)
 : generator_(1, 100)
-, active_(kernel->GetIoService())
+, active_(kernel->GetCpuThreadPool())
 , kernel_(kernel)
 , buff_manager_(kernel)
 {

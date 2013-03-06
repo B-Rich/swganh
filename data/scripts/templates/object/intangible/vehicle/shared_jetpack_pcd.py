@@ -2,23 +2,18 @@
 #### MODIFICATIONS MAY BE LOST IF DONE IMPROPERLY
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
-from swgpy.object import *
+from swgpy.object import *	
 
-class Template(BaseTemplate):
-	name = "object/intangible/vehicle/shared_jetpack_pcd.iff"
-	is_prototype = False
-	
-	def create(self, kernel, params):
-		result = Intangible()
-	
-		result.template = "object/intangible/vehicle/shared_jetpack_pcd.iff"
-		result.attribute_template_id = -1
-		result.stfName("monster_name","jetpack")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
-		
-		return result
+def create(kernel):
+	result = Intangible()
 
-def loadTemplates(addTemplate):
-	addTemplate(Template())
+	result.template = "object/intangible/vehicle/shared_jetpack_pcd.iff"
+	result.attribute_template_id = -1
+	result.stfName("monster_name","jetpack")		
+	
+	#### BEGIN MODIFICATIONS ####
+	result.setStringAttribute("radial_filename", "radials.pcd_vehicle")
+	result.setIntAttribute("is_mount", 1)
+	####  END MODIFICATIONS  ####
+	
+	return result

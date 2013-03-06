@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-#include "swganh/connection/connection_client_interface.h"
+#include "swganh_core/connection/connection_client_interface.h"
 
 namespace swganh {
 namespace connection {
@@ -19,7 +19,7 @@ public:
 	/**
 	* Creates a new instance
 	*/
-    ConnectionClient(swganh::network::soe::ServerInterface* server, boost::asio::io_service& io_service, boost::asio::ip::udp::endpoint remote_endpoint);
+    ConnectionClient(swganh::network::soe::ServerInterface* server, boost::asio::io_service& cpu_pool, boost::asio::ip::udp::endpoint remote_endpoint);
     
 	/**
 	* @return the current state of this remote client

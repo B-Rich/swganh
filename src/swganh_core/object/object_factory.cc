@@ -16,11 +16,11 @@
 #include "swganh_core/object/object.h"
 #include "swganh_core/object/object_manager.h"
 #include "swganh_core/object/exception.h"
-#include "swganh/simulation/simulation_service_interface.h"
+#include "swganh_core/simulation/simulation_service_interface.h"
 #include "swganh/tre/resource_manager.h"
 #include "swganh/tre/visitors/objects/object_visitor.h"
 
-#include "swganh/object/permissions/container_permissions_interface.h"
+#include "swganh_core/object/permissions/container_permissions_interface.h"
 
 using namespace sql;
 using namespace std;
@@ -130,6 +130,9 @@ void ObjectFactory::CreateBaseObjectFromStorage(const shared_ptr<Object>& object
         object->SetEventDispatcher(GetEventDispatcher());
         object->SetSceneId(result->getUInt("scene_id"));
         object->SetPosition(glm::vec3(result->getDouble("x_position"),result->getDouble("y_position"), result->getDouble("z_position")));
+		object->UpdateWorldCollisionBox();
+		object->UpdateAABB();
+
         object->SetOrientation(glm::quat(
             static_cast<float>(result->getDouble("w_orientation")),
 			static_cast<float>(result->getDouble("x_orientation")),
@@ -205,7 +208,7 @@ void ObjectFactory::LoadAttributes(std::shared_ptr<Object> object)
 				}
 				else if (unparsed_value.find_first_of("0123456789") == 0)
 				{
-					object->SetAttribute(attr_name, boost::lexical_cast<int>(unparsed_value));
+					object->SetAttribute(attr_name, boost::lexical_cast<int64_t>(unparsed_value));
 				}
 				else
 				{

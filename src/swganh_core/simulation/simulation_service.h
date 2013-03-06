@@ -2,7 +2,7 @@
 // See file LICENSE or go to http://swganh.com/LICENSE
 #pragma once
 
-#include "swganh/simulation/simulation_service_interface.h"
+#include "swganh_core/simulation/simulation_service_interface.h"
 
 namespace swganh {
 namespace object {
@@ -26,6 +26,11 @@ namespace simulation {
         void StopScene(const std::string& scene_label);
 		virtual uint32_t SceneIdByName(const std::string& scene_label);
 		virtual std::string SceneNameById(uint32_t scene_id);
+
+		std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> FindObjectsInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range=-1);
+
+		bool SceneExists(const std::string& scene_label);
+		bool SceneExists(uint32_t scene_id);
 
         void RegisterObjectFactories();
 
@@ -73,7 +78,7 @@ namespace simulation {
 
         virtual std::shared_ptr<swganh::object::Object> CreateObjectFromTemplate(const std::string& template_name, 
 			swganh::object::PermissionType type=swganh::object::DEFAULT_PERMISSION, bool is_persisted=true, 
-			bool is_initialized=true, uint64_t object_id=0);
+			uint64_t object_id=0);
 		
 		virtual const std::shared_ptr<swganh::equipment::EquipmentServiceInterface>& GetEquipmentService();
 

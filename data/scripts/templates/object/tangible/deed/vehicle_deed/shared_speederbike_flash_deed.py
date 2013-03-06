@@ -2,23 +2,19 @@
 #### MODIFICATIONS MAY BE LOST IF DONE IMPROPERLY
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
-from swgpy.object import *
+from swgpy.object import *	
 
-class Template(BaseTemplate):
-	name = "object/tangible/deed/vehicle_deed/shared_speederbike_flash_deed.iff"
-	is_prototype = False
-	
-	def create(self, kernel, params):
-		result = Tangible()
-	
-		result.template = "object/tangible/deed/vehicle_deed/shared_speederbike_flash_deed.iff"
-		result.attribute_template_id = 2
-		result.stfName("pet_deed","speederbike_flash")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
-		
-		return result
+def create(kernel):
+	result = Tangible()
 
-def loadTemplates(addTemplate):
-	addTemplate(Template())
+	result.template = "object/tangible/deed/vehicle_deed/shared_speederbike_flash_deed.iff"
+	result.attribute_template_id = 2
+	result.stfName("pet_deed","speederbike_flash")		
+	
+	#### BEGIN MODIFICATIONS ####
+	result.setStringAttribute("radial_filename", "radials.deed_datapad")
+	result.setStringAttribute("deed_pcd", "object/intangible/vehicle/shared_speederbike_flash_pcd.iff")
+	result.setStringAttribute("deed_mobile", "object/mobile/vehicle/shared_speederbike_flash.iff")
+	####  END MODIFICATIONS  ####
+	
+	return result

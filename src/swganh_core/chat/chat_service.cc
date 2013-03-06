@@ -20,7 +20,7 @@
 
 #include "swganh/logger.h"
 
-#include "swganh/database/database_manager_interface.h"
+#include "swganh/database/database_manager.h"
 #include "swganh/service/service_manager.h"
 #include "swganh/service/service_directory_interface.h"
 
@@ -38,10 +38,10 @@
 #include "swganh_core/messages/chat_delete_persistent_message.h"
 #include "swganh_core/object/object.h"
 
-#include "swganh/connection/connection_client_interface.h"
-#include "swganh/connection/connection_service_interface.h"
-#include "swganh/command/command_service_interface.h"
-#include "swganh/simulation/simulation_service_interface.h"
+#include "swganh_core/connection/connection_client_interface.h"
+#include "swganh_core/connection/connection_service_interface.h"
+#include "swganh_core/command/command_service_interface.h"
+#include "swganh_core/simulation/simulation_service_interface.h"
 
 #include "spatial_chat_internal_command.h"
 

@@ -36,9 +36,10 @@ public:
 		auto tmp = kernel_->GetPluginManager()->CreateObject<swganh::simulation::QuadtreeSpatialProvider>("Simulation::SpatialProvider");
 		tmp->SetThis(tmp);
 		tmp->SetSceneName(description.name);
+		tmp->SetSceneId(description.id);
 		spatial_index_ = tmp;
 
-		movement_manager_ = make_shared<MovementManager>(kernel);
+		movement_manager_ = make_shared<MovementManager>(kernel, description.name);
 		movement_manager_->SetSpatialProvider(spatial_index_);
 	}
 
@@ -74,6 +75,8 @@ public:
 		EraseObject(object);             
 
 		spatial_index_->RemoveObject(nullptr, object);
+
+		movement_manager_->ResetMovementCounter(object);
     }
 
 	void InsertObject(const shared_ptr<Object>& object)
@@ -204,7 +207,15 @@ void Scene::HandleDataTransformServer(const std::shared_ptr<swganh::object::Obje
 	impl_->GetMovementManager()->HandleDataTransformServer(object, new_position);
 }
 
-void Scene::HandleDataTransformWithParentServer(const std::shared_ptr<swganh::object::Object>& parent, const std::shared_ptr<swganh::object::Object>& object, const glm::vec3& new_position)
+void Scene::HandleDataTransformWithParentServer(
+	const std::shared_ptr<swganh::object::Object>& parent, 
+	const std::shared_ptr<swganh::object::Object>& object,
+	const glm::vec3& new_position)
 {
 	impl_->GetMovementManager()->HandleDataTransformWithParentServer(parent, object, new_position);
+}
+
+std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> Scene::FindObjectsInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range)
+{
+	return impl_->GetSpatialIndex()->FindObjectsInRangeByTag(requester, tag, range);
 }

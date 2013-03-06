@@ -7,18 +7,18 @@
 #include "swganh/event_dispatcher.h"
 #include "swganh/service/service_description.h"
 #include "swganh/service/service_manager.h"
-#include "swganh/connection/connection_client_interface.h"
+#include "swganh_core/connection/connection_client_interface.h"
 #include "swganh_core/object/player/player.h"
 #include "swganh_core/object/creature/creature.h"
 #include "swganh_core/object/object_controller.h"
 #include "swganh_core/messages/system_message.h"
 #include "swganh_core/messages/out_of_band.h"
 #include "swganh_core/messages/opened_container_message.h"
-#include "swganh/simulation/simulation_service_interface.h"
+#include "swganh_core/simulation/simulation_service_interface.h"
 #include "swganh_core/equipment/equipment_service.h"
 
 #include "swganh_core/messages/controllers/add_buff.h"
-#include "swganh/combat/buff_interface.h"
+#include "swganh_core/combat/buff_interface.h"
 
 #include "swganh/database/database_manager.h"
 #include <cppconn/exception.h>
@@ -121,7 +121,7 @@ void PlayerService::OnPlayerExit(shared_ptr<swganh::object::Player> player)
 	    player->ClearStatusFlags();
 	    player->AddStatusFlag(swganh::object::LD);
 	    // set a timer to 30 seconds to destroy the object, unless logged back in.
-        auto deadline_timer = std::make_shared<boost::asio::deadline_timer>(kernel_->GetIoService(), boost::posix_time::seconds(30));
+        auto deadline_timer = std::make_shared<boost::asio::deadline_timer>(kernel_->GetCpuThreadPool(), boost::posix_time::seconds(30));
 		auto parent = std::static_pointer_cast<swganh::object::Object>(player->GetContainer());
 
 		auto object_controller = std::static_pointer_cast<swganh::object::ObjectController>(parent->GetController());
@@ -186,6 +186,64 @@ void PlayerService::OpenContainer(const std::shared_ptr<swganh::object::Creature
 	OpenedContainerMessage opened_container;
 	opened_container.container_object_id = object->GetObjectId();
 	owner->NotifyObservers(&opened_container);
+}
+
+bool PlayerService::HasCalledMount(std::shared_ptr<swganh::object::Creature> owner)
+{
+	auto equipment = kernel_->GetServiceManager()->GetService<swganh::equipment::EquipmentServiceInterface>("EquipmentService");
+	auto datapad = equipment->GetEquippedObject(owner, "datapad");
+	bool result = false;
+	if(datapad)
+	{
+		datapad->ViewObjects(nullptr, 0, true, [&] (std::shared_ptr<Object> object) {
+			if(!result && object->HasAttribute("is_mount") && !object->HasContainedObjects())
+			{
+				result = true;
+			}
+		});
+	}
+	return result;
+}
+
+void PlayerService::StoreAllCalledMounts(std::shared_ptr<swganh::object::Creature> owner)
+{
+	auto simulation = kernel_->GetServiceManager()->GetService<swganh::simulation::SimulationServiceInterface>("SimulationService");
+	auto equipment = kernel_->GetServiceManager()->GetService<swganh::equipment::EquipmentServiceInterface>("EquipmentService");
+	auto datapad = equipment->GetEquippedObject(owner, "datapad");
+	if(datapad)
+	{
+		std::list<std::shared_ptr<Object>> objects = datapad->GetObjects(nullptr, 1, true);
+		for(auto& object : objects) {
+			if(object->HasAttribute("is_mount") && !object->HasContainedObjects())
+			{
+				auto mobile = simulation->GetObjectById((uint64_t)object->GetAttribute<int64_t>("mobile_id"));
+				if(mobile)
+				{
+					mobile->GetContainer()->TransferObject(owner, mobile, object, glm::vec3(0, 0, 0));
+				}
+			}
+		}
+	}
+}
+	
+void PlayerService::StoreAllCalledObjects(std::shared_ptr<swganh::object::Creature> owner)
+{
+	auto simulation = kernel_->GetServiceManager()->GetService<swganh::simulation::SimulationServiceInterface>("SimulationService");
+	auto equipment = kernel_->GetServiceManager()->GetService<swganh::equipment::EquipmentServiceInterface>("EquipmentService");
+	auto datapad = equipment->GetEquippedObject(owner, "datapad");
+	if(datapad)
+	{
+		datapad->ViewObjects(nullptr, 0, true, [&] (std::shared_ptr<Object> object) {
+			if(object->HasAttribute("mobile_id") && !object->HasContainedObjects())
+			{
+				auto mobile = simulation->GetObjectById((uint64_t)object->GetAttribute<int64_t>("mobile_id"));
+				if(mobile)
+				{
+					mobile->GetContainer()->TransferObject(owner, mobile, object, glm::vec3(0, 0, 0));
+				}
+			}
+		});
+	}
 }
 
 void PlayerService::RemoveClientTimerHandler_(

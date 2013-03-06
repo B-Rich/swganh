@@ -16,24 +16,24 @@
 
 #include "swganh/app/swganh_kernel.h"
 
-#include "swganh/command/command_interface.h"
-#include "swganh/command/command_service_interface.h"
-#include "swganh/command/python_command_creator.h"
+#include "swganh_core/command/command_interface.h"
+#include "swganh_core/command/command_service_interface.h"
+#include "swganh_core/command/python_command_creator.h"
 
-#include "swganh/connection/connection_client_interface.h"
-#include "swganh/connection/connection_service_interface.h"
+#include "swganh_core/connection/connection_client_interface.h"
+#include "swganh_core/connection/connection_service_interface.h"
 
 #include "swganh_core/messages/select_character.h"
 
-#include "swganh/player/player_service_interface.h"
+#include "swganh_core/player/player_service_interface.h"
 
 #include "swganh_core/object/object.h"
 #include "swganh_core/object/object_manager.h"
 #include "swganh_core/object/creature/creature.h"
 #include "swganh_core/object/player/player.h"
 
-#include "swganh/simulation/scene_manager_interface.h"
-#include "swganh/simulation/scene_interface.h"
+#include "swganh_core/simulation/scene_manager_interface.h"
+#include "swganh_core/simulation/scene_interface.h"
 #include "swganh_core/messages/cmd_start_scene.h"
 #include "swganh_core/messages/cmd_scene_ready.h"
 #include "swganh_core/messages/obj_controller_message.h"
@@ -49,7 +49,7 @@
 #include "swganh_core/equipment/equipment_service.h"
 #include "movement_manager.h"
 #include "scene_manager.h"
-#include "swganh/simulation/movement_manager_interface.h"
+#include "swganh_core/simulation/movement_manager_interface.h"
 
 using namespace swganh;
 using namespace std;
@@ -205,6 +205,11 @@ public:
 		
     }
 
+	std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> FindObjectsInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range=-1)
+	{
+		return scene_manager_->GetScene(requester->GetSceneId())->FindObjectsInRangeByTag(requester, tag, range);
+	}
+
 	shared_ptr<Object> GetObjectByCustomName(const wstring& custom_name)
 	{
         return object_manager_->GetObjectByCustomName(custom_name);
@@ -212,48 +217,65 @@ public:
 
 	void TransferObjectToSceneWithPosition(uint64_t object_id, const string& scene, float x, float y, float z)
 	{
-		auto obj = TransferObjectToScene(object_id, scene);
-		obj->SetPosition(glm::vec3(x,y,z));
+		auto obj = GetObjectById(object_id);
+		if(obj != nullptr)
+			TransferObjectToScene(obj, scene, glm::vec3(x, y, z));
 	}
 	void TransferObjectToSceneWithPosition(shared_ptr<Object> obj, const string& scene, float x, float y, float z)
 	{
-		TransferObjectToScene(obj, scene);
-		obj->SetPosition(glm::vec3(x,y,z));
+		TransferObjectToScene(obj, scene, glm::vec3(x, y, z));
 	}
-	void TransferObjectToScene(shared_ptr<Object> obj, const string& scene)
+	void TransferObjectToScene(shared_ptr<Object> obj, const string& scene, glm::vec3 position)
 	{
 		// Get Next Scene
 		auto scene_obj = scene_manager_->GetScene(scene);
 
-	        if (!scene_obj)
-	        {
-	            throw std::runtime_error("Requested transfer to an invalid scene: " + scene);
-	        }
+	    if (!scene_obj)
+	    {
+	        throw std::runtime_error("Requested transfer to an invalid scene: " + scene);
+	    }
+
+		// Clear Controller
+		auto controller = obj->GetController();
+		obj->ClearController();
+
 
 		// Remove from existing scene
-		scene_manager_->GetScene(obj->GetSceneId())->RemoveObject(obj);
+		auto old_scene = scene_manager_->GetScene(obj->GetSceneId());
+		if(old_scene)
+		{
+			old_scene->RemoveObject(obj);
+		}
 
-		// Add to new scene
+		//Update the object's scene_id
+		obj->SetSceneId(scene_obj->GetSceneId());	
+
+		//Update the object's position.
+		obj->SetPosition(position);
+		obj->UpdateWorldCollisionBox();
+		obj->UpdateAABB();
+
 		// CmdStartScene
-		if(obj->GetController() != nullptr)
+		if(controller != nullptr)
 		{
 			CmdStartScene start_scene;
 			start_scene.ignore_layout = 0;
 			start_scene.character_id = obj->GetObjectId();
 
 			start_scene.terrain_map = scene_obj->GetTerrainMap();
-			start_scene.position = obj->GetPosition();
+			start_scene.position = position;
 			start_scene.shared_race_template = obj->GetTemplate();
 			start_scene.galaxy_time = 0;
 
-			obj->GetController()->Notify(&start_scene);
-		}
-		
-		//Update the object's scene_id
-		obj->SetSceneId(scene_obj->GetSceneId());		
+			controller->Notify(&start_scene, [=](uint16_t sequence) {
+				std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!Attaching controller...." << std::endl;
+				// Reset Controller
+				obj->SetController(controller);
 
-	    // Add object to scene and send baselines
-	    scene_obj->AddObject(obj);
+				// Add object to scene and send baselines
+				scene_obj->AddObject(obj);
+			});
+		}
 	}
 
 	shared_ptr<Object> TransferObjectToScene(uint64_t object_id, const string& scene)
@@ -261,7 +283,7 @@ public:
 		// Get Object
 		auto obj = GetObjectById(object_id);
 
-		TransferObjectToScene(obj, scene);
+		TransferObjectToScene(obj, scene, obj->GetPosition());
 
 		return obj;
 	}
@@ -365,6 +387,8 @@ public:
             throw std::runtime_error("Invalid scene selected for object");
         }
 
+		object->SetCollidable(false);
+
 		// CmdStartScene
         CmdStartScene start_scene;
         start_scene.ignore_layout = 0;
@@ -374,37 +398,39 @@ public:
         start_scene.position = object->GetPosition();
         start_scene.shared_race_template = object->GetTemplate();
         start_scene.galaxy_time = 0;
-        client->SendTo(start_scene);
 
-		object->SetCollidable(false);
+		client->SendTo(start_scene, boost::optional<Session::SequencedCallback>(
+			[=](uint16_t sequence){
+				LOG(warning) << "here.";
+				if(object->GetContainer() == nullptr)
+				{
+					scene->AddObject(object);
+				}
 
-		if(object->GetContainer() == nullptr)
-		{
-			scene->AddObject(object);
-		}
+				//Attach the controller
+				StartControllingObject(object, client);
 
-		//Attach the controller
-		StartControllingObject(object, client);
+				//Make sure the controller gets his awareness creates
+				//regardless of the current state of awareness.
+				auto controller = object->GetController();
+				scene->ViewObjects(object, 0, true, [&] (std::shared_ptr<swganh::object::Object> aware) {
+					if(aware->__HasAwareObject(object) && !aware->IsInSnapshot())
+					{
+						//Send create manually
+						aware->Subscribe(controller);
+						aware->SendCreateByCrc(controller);
+						aware->CreateBaselines(controller);
+					}
+					else
+					{
+						aware->AddAwareObject(object);
+						object->AddAwareObject(aware);
+					}
+				});
+				
 
-		//Make sure the controller gets his awareness creates
-		//regardless of the current state of awareness.
-		auto controller = object->GetController();
-		scene->ViewObjects(object, 0, true, [&] (std::shared_ptr<swganh::object::Object> aware) {
-			if(aware->__HasAwareObject(object) && !aware->IsInSnapshot())
-			{
-				//Send create manually
-				aware->Subscribe(controller);
-				aware->SendCreateByCrc(controller);
-				aware->CreateBaselines(controller);
-			}
-			else
-			{
-				aware->AddAwareObject(object);
-				object->AddAwareObject(aware);
-			}
-		});
-
-		object->SetCollidable(true);
+				object->SetCollidable(true);
+		}));
     }
 
 	void SendToAll(swganh::messages::BaseSwgMessage* message)
@@ -452,14 +478,6 @@ public:
 			if(controller)
 				controller->Notify(message);
 		});
-	}
-
-	uint32_t SceneIdByName(const std::string& scene_label)
-	{
-	}
-
-	std::string SceneNameById(uint32_t scene_id)
-	{
 	}
 
 private:
@@ -574,7 +592,7 @@ void SimulationService::TransferObjectToScene(uint64_t object_id, const std::str
 }
 void SimulationService::TransferObjectToScene(std::shared_ptr<swganh::object::Object> object, const std::string& scene)
 {
-	impl_->TransferObjectToScene(object, scene);
+	impl_->TransferObjectToScene(object, scene, object->GetPosition());
 }
 void SimulationService::TransferObjectToScene(std::shared_ptr<swganh::object::Object> object, const std::string& scene, float x, float y, float z)
 {
@@ -634,6 +652,11 @@ void SimulationService::AddObjectToScene(std::shared_ptr<swganh::object::Object>
 	impl_->AddObjectToScene(object, scene_label);
 }
 
+std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> SimulationService::FindObjectsInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range)
+{
+	return impl_->FindObjectsInRangeByTag(requester, tag, range);
+}
+
 void SimulationService::Startup()
 {
 	RegisterObjectFactories();
@@ -656,16 +679,27 @@ void SimulationService::Startup()
 	{
 		const auto& update_event = static_pointer_cast<swganh::object::UpdatePositionEvent>(incoming_event);
 		auto scene = impl_->GetSceneManager()->GetScene(update_event->object->GetSceneId());
-		
-		if (update_event->contained_object && update_event->contained_object->GetObjectId() != 0)
+
+		if (update_event->parent && update_event->parent->GetObjectId() != 0)
 		{
-			scene->HandleDataTransformWithParentServer(update_event->contained_object, update_event->object, update_event->position);
+			scene->HandleDataTransformWithParentServer(update_event->parent, update_event->object, update_event->position);
 		}
 		else
 		{
 			scene->HandleDataTransformServer(update_event->object, update_event->position);
 		}
 		
+	});
+    
+	kernel_->GetEventDispatcher()->Subscribe("Core::ApplicationInitComplete", [this] (shared_ptr<swganh::EventInterface> incoming_event)
+	{
+        //Now that services are started, start the scenes.
+        auto& scenes = kernel_->GetAppConfig().scenes;
+
+        for (auto scene : scenes)
+        {
+            StartScene(scene);
+        }
 	});
 
 	auto command_service = kernel_->GetServiceManager()->GetService<swganh::command::CommandServiceInterface>("CommandService");
@@ -682,9 +716,9 @@ void SimulationService::Startup()
 }
 
 shared_ptr<Object> SimulationService::CreateObjectFromTemplate(const string& template_name, PermissionType type, 
-											bool is_persisted, bool is_initialized, uint64_t object_id)
+											bool is_persisted, uint64_t object_id)
 {
-	return impl_->GetObjectManager()->CreateObjectFromTemplate(template_name, type, is_persisted, is_initialized, object_id);
+	return impl_->GetObjectManager()->CreateObjectFromTemplate(template_name, type, is_persisted, object_id);
 }
 
 void SimulationService::PrepareToAccomodate(uint32_t delta)
@@ -700,4 +734,14 @@ const shared_ptr<swganh::equipment::EquipmentServiceInterface>& SimulationServic
 std::shared_ptr<swganh::object::ObjectManager> SimulationService::GetObjectManager()
 {
 	return impl_->GetObjectManager();
+}
+
+bool SimulationService::SceneExists(const std::string& scene_label)
+{
+	return impl_->GetSceneManager()->GetScene(SceneIdByName(scene_label)) ? true : false;
+}
+
+bool SimulationService::SceneExists(uint32_t scene_id)
+{
+	return impl_->GetSceneManager()->GetScene(scene_id) ? true : false;
 }

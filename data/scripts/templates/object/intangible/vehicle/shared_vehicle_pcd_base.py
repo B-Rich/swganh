@@ -2,23 +2,19 @@
 #### MODIFICATIONS MAY BE LOST IF DONE IMPROPERLY
 #### PLEASE SEE THE ONLINE DOCUMENTATION FOR EXAMPLES
 
-from swgpy.object import *
+#### MODIFIED ####
 
-class Template(BaseTemplate):
-	name = "object/intangible/vehicle/shared_vehicle_pcd_base.iff"
-	is_prototype = False
-	
-	def create(self, kernel, params):
-		result = Intangible()
-	
-		result.template = "object/intangible/vehicle/shared_vehicle_pcd_base.iff"
-		result.attribute_template_id = -1
-		result.stfName("","")		
-		
-		#### BEGIN MODIFICATIONS ####
-		####  END MODIFICATIONS  ####
-		
-		return result
+from swgpy.simulation import ContainerPermission
+from swgpy.object import *	
 
-def loadTemplates(addTemplate):
-	addTemplate(Template())
+def create(kernel):
+	result = Intangible()
+
+	result.template = "object/intangible/vehicle/shared_vehicle_pcd_base.iff"
+	result.attribute_template_id = -1
+	result.stfName("","")		
+	
+	#### BEGIN MODIFICATIONS ####
+	####  END MODIFICATIONS  ####
+	
+	return result
