@@ -24,24 +24,21 @@ namespace attributes {
     {
     public:
 
+        virtual std::string GetCommandName() const { return "getattributesbatch"; }
+
 		/*!
 		* Creates a new instance using the kernel
 		* and the given properties
 		*/
-        GetAttributesBatchCommand(
+        void Initialize(
             swganh::app::SwganhKernel* kernel,
             const swganh::command::CommandProperties& properties);
-
-		/*!
-		* Custom Destructor
-		*/
-        virtual ~GetAttributesBatchCommand();
 
 		/*!
 		* Method that is called when the command is processed.
 		* @Override
 		*/
-        virtual boost::optional<std::shared_ptr<swganh::command::CommandCallback>> Run();
+        virtual void Run();
 
     private:
         AttributesService* attributes_service_;

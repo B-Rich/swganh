@@ -17,7 +17,7 @@
 #include "swganh/event_dispatcher.h"
 #include "swganh/database/database_manager.h"
 #include "swganh/service/service_manager.h"
-
+#include "swganh/scripting/python_instance_creator.h"
 #include "swganh/app/swganh_kernel.h"
 
 #include "swganh_core/object/creature/creature.h"
@@ -29,7 +29,6 @@
 
 #include "swganh_core/command/command_service_interface.h"
 #include "swganh_core/command/base_swg_command.h"
-#include "swganh_core/command/python_command_creator.h"
 #include "swganh_core/command/command_properties.h"
 #include "swganh_core/simulation/simulation_service_interface.h"
 
@@ -41,7 +40,7 @@
 #include "swganh_core/messages/controllers/combat_spam_message.h"
 #include "swganh_core/messages/controllers/show_fly_text.h"
 #include "swganh_core/messages/out_of_band.h"
-#include "swganh_core/messages/chat_system_message.h"
+#include "swganh_core/messages/chat/chat_system_message.h"
 #include "swganh_core/messages/system_message.h"
 
 using namespace std;
@@ -57,30 +56,28 @@ using namespace swganh::combat;
 using namespace swganh::command;
 
 using swganh::app::SwganhKernel;
+using swganh::scripting::PythonInstanceCreator;
 
 CombatService::CombatService(SwganhKernel* kernel)
 : generator_(1, 100)
+, buff_manager_(kernel)
 , active_(kernel->GetCpuThreadPool())
 , kernel_(kernel)
-, buff_manager_(kernel)
-{
-}
-
-ServiceDescription CombatService::GetServiceDescription()
-{
-    ServiceDescription service_description(
+{    
+    SetServiceDescription(ServiceDescription(
         "CombatService",
         "Combat",
         "0.1",
         "127.0.0.1", 
         0, 
-        0, 
-        0);
-
-    return service_description;
+        0,
+        0));
 }
 
-void CombatService::Startup()
+CombatService::~CombatService()
+{}
+
+void CombatService::Initialize()
 {
 	simulation_service_ = kernel_->GetServiceManager()
         ->GetService<SimulationServiceInterface>("SimulationService");
@@ -90,22 +87,11 @@ void CombatService::Startup()
 	
 	equipment_service_ = simulation_service_->GetEquipmentService();
 
-	static_service_ = kernel_->GetServiceManager()
-		->GetService<swganh::statics::StaticServiceInterface>("StaticService");	
-    
-    command_service_->AddCommandCreator("attack", swganh::command::PythonCommandCreator("commands.attack", "AttackCommand"));
-    command_service_->AddCommandCreator("deathblow", swganh::command::PythonCommandCreator("commands.deathblow", "DeathBlowCommand")); 
-    command_service_->AddCommandCreator("defaultattack", swganh::command::PythonCommandCreator("commands.defaultattack", "DefaultAttackCommand"));
-    command_service_->AddCommandCreator("duel", swganh::command::PythonCommandCreator("commands.duel", "DuelCommand"));
-    command_service_->AddCommandCreator("endduel", swganh::command::PythonCommandCreator("commands.endduel", "EndDuelCommand"));
-    command_service_->AddCommandCreator("kneel", swganh::command::PythonCommandCreator("commands.kneel", "KneelCommand"));
-    command_service_->AddCommandCreator("berserk1", swganh::command::PythonCommandCreator("commands.berserk1", "Berserk1Command"));
-    command_service_->AddCommandCreator("overchargeshot1", swganh::command::PythonCommandCreator("commands.overchargeshot1", "OverchargeShot1Command"));
-    command_service_->AddCommandCreator("peace", swganh::command::PythonCommandCreator("commands.peace", "PeaceCommand"));
-    command_service_->AddCommandCreator("prone", swganh::command::PythonCommandCreator("commands.prone", "ProneCommand"));
-    command_service_->AddCommandCreator("sitserver", swganh::command::PythonCommandCreator("commands.sitserver", "SitServerCommand"));
-    command_service_->AddCommandCreator("stand", swganh::command::PythonCommandCreator("commands.stand", "StandCommand"));
+	static_service_ = kernel_->GetServiceManager()->GetService<swganh::statics::StaticServiceInterface>("StaticService");
+}
 
+void CombatService::Startup()
+{
 	buff_manager_.Start();
 }
 
@@ -177,6 +163,13 @@ CombatDefender CombatService::DoCombat(
 				combat_spam = CombatData::MISS_spam();
 				combat_data->damage_multiplier = 0.0f;			
 				color = WHITE;
+                                
+			case RICHOCHET:
+                        case REFLECT:
+				combat_spam = CombatData::BLOCK_spam();
+				combat_data->damage_multiplier *= 0.5f;
+				break;
+                                
 		}
 	}
 	else
@@ -344,20 +337,20 @@ HIT_TYPE CombatService::GetHitResult(
 	int target_defense = 0;
 	if (weapon && weapon->GetWeaponType() == WeaponType::MELEE)
 	{
-		target_defense += defender->GetAttributeRecursive<int>("melee_defense");
+		//@TODO EquipmentList : target_defense += defender->GetAttributeRecursive<int>("melee_defense");
 	}
 	else
 	{
-		target_defense += defender->GetAttributeRecursive<int>("ranged_defense");
+		//@TODO EquipmentList : target_defense += defender->GetAttributeRecursive<int>("ranged_defense");
 	}
     
     float accuracy_total = GetHitChance(attacker_accuracy, combat_data->accuracy_bonus, target_defense);
 
     // Scout/Ranger creature hit bonus
-	accuracy_total += attacker->GetAttributeRecursive<int>("creature_hit_bonus");
+	//@TODO EquipmentList : accuracy_total += attacker->GetAttributeRecursive<int>("creature_hit_bonus");
 
-	accuracy_total -= defender->GetAttributeRecursive<int>("dodge_attack");
-	accuracy_total -= defender->GetAttributeRecursive<int>("private_center_of_being");
+	//@TODO EquipmentList : accuracy_total -= defender->GetAttributeRecursive<int>("dodge_attack");
+	//@TODO EquipmentList : accuracy_total -= defender->GetAttributeRecursive<int>("private_center_of_being");
 
 	LOG(warning) << "Final Hit chance is " << accuracy_total << " for attacker " << attacker->GetObjectId() << std::endl;
 
@@ -442,9 +435,9 @@ float CombatService::GetWeaponRangeModifier(const shared_ptr<Weapon>& weapon, fl
 
 	if (weapon)
 	{
-		min_range = weapon->GetAttributeRecursive<float>("wpn_range_zero");
-		ideal_range = weapon->GetAttributeRecursive<float>("wpn_range_mid");
-		max_range = weapon->GetAttributeRecursive<float>("wpn_range_max");
+		//@TODO EquipmentList : min_range = weapon->GetAttributeRecursive<float>("wpn_range_zero");
+		//@TODO EquipmentList : ideal_range = weapon->GetAttributeRecursive<float>("wpn_range_mid");
+		//@TODO EquipmentList : max_range = weapon->GetAttributeRecursive<float>("wpn_range_max");
 	}
 	float small_range = min_range;
 	float big_range = ideal_range;
@@ -452,8 +445,8 @@ float CombatService::GetWeaponRangeModifier(const shared_ptr<Weapon>& weapon, fl
 	{
 		if (weapon)
 		{
-			small_modifier = weapon->GetAttributeRecursive<float>("wpn_accuracy_mid");	// Get Ideal Accuracy
-			big_modifier = weapon->GetAttributeRecursive<float>("wpn_accuracy_max");	// Get Max Range Accuracy
+			//@TODO EquipmentList : small_modifier = weapon->GetAttributeRecursive<float>("wpn_accuracy_mid");	// Get Ideal Accuracy
+			//@TODO EquipmentList : big_modifier = weapon->GetAttributeRecursive<float>("wpn_accuracy_max");	// Get Max Range Accuracy
 		}
 		small_range = ideal_range;
 		big_range = max_range;
@@ -505,11 +498,11 @@ uint16_t CombatService::GetAccuracyBonus(const std::shared_ptr<swganh::object::C
 	{
 		if (weapon->GetWeaponType() == WeaponType::RANGED)
 		{
-			bonus += attacker->GetAttributeRecursive<int>("private_ranged_accuracy_bonus");
+			//@TODO EquipmentList : bonus += attacker->GetAttributeRecursive<int>("private_ranged_accuracy_bonus");
 		}
 		else
 		{
-			bonus += attacker->GetAttributeRecursive<int>("private_melee_accuracy_bonus");			
+			//@TODO EquipmentList : bonus += attacker->GetAttributeRecursive<int>("private_melee_accuracy_bonus");			
 		}
 	}
 	bonus += GetPostureModifier(attacker);
@@ -523,10 +516,10 @@ bool CombatService::ApplySpecialCost(
 {
 	if (weapon)
 	{
-		int health_cost = (int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_health") * combat_data->health_cost_multiplier);
-		int action_cost =(int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_action") * combat_data->action_cost_multiplier);
-		int mind_cost = (int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_mind") * combat_data->mind_cost_multiplier);
-		int force_cost = (int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_force") * combat_data->force_cost_multiplier);
+		int health_cost = 0; //@TODO EquipmentList : (int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_health") * combat_data->health_cost_multiplier);
+		int action_cost = 0; //@TODO EquipmentList : (int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_action") * combat_data->action_cost_multiplier);
+		int mind_cost = 0; //@TODO EquipmentList : (int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_mind") * combat_data->mind_cost_multiplier);
+		int force_cost = 0; //@TODO EquipmentList : (int)(weapon->GetAttributeRecursive<float>("wpn_attack_cost_force") * combat_data->force_cost_multiplier);
 
 		// Force is in player
 		if (force_cost > 0)

@@ -17,8 +17,9 @@ namespace object {
         {
             RegisterEventHandlers();
         }
-        virtual void RegisterEventHandlers();
-        virtual void SendBaselines(const std::shared_ptr<Tangible>& tangible, const std::shared_ptr<swganh::observer::ObserverInterface>& controller);
+
+		virtual ~TangibleMessageBuilder() {}
+		
         // deltas
         static void BuildCustomizationDelta(const std::shared_ptr<Tangible>& tangible);
         static void BuildComponentCustomizationDelta(const std::shared_ptr<Tangible>& tangible);
@@ -30,11 +31,13 @@ namespace object {
         static void BuildDefendersDelta(const std::shared_ptr<Tangible>& tangible);
         
         // baselines
-        static swganh::messages::BaselinesMessage BuildBaseline3(const std::shared_ptr<Tangible>& tangible);
-        static swganh::messages::BaselinesMessage BuildBaseline6(const std::shared_ptr<Tangible>& tangible);
-        static swganh::messages::BaselinesMessage BuildBaseline7(const std::shared_ptr<Tangible>& tangible);
+        static boost::optional<swganh::messages::BaselinesMessage> BuildBaseline3(const std::shared_ptr<Tangible>& tangible, boost::unique_lock<boost::mutex>& lock);
+        static boost::optional<swganh::messages::BaselinesMessage> BuildBaseline6(const std::shared_ptr<Tangible>& tangible, boost::unique_lock<boost::mutex>& lock);
+        static boost::optional<swganh::messages::BaselinesMessage> BuildBaseline7(const std::shared_ptr<Tangible>& tangible, boost::unique_lock<boost::mutex>& lock);
     private:
         typedef swganh::ValueEvent<std::shared_ptr<Tangible>> TangibleEvent;
+                
+        void RegisterEventHandlers();
     };
 
 }}  // swganh::object

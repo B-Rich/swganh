@@ -10,8 +10,6 @@
 #include "swganh/active_object.h"
 #include "swganh/logger.h"
 
-#include "swganh/network/soe/packet_utilities.h"
-#include "swganh/network/soe/server.h"
 #include "swganh/service/service_interface.h"
 
 #include "swganh/network/base_swg_server.h"
@@ -21,12 +19,6 @@
 
 #include "swganh_core/login/galaxy_status.h"
 #include "swganh_core/messages/login_client_id.h"
-
-namespace swganh {
-namespace network {
-namespace soe {
-class Server;
-}}}  // namespace swganh::network::soe
 
 namespace swganh {
 namespace database {
@@ -53,20 +45,19 @@ class AccountProviderInterface;
 }
 
 class LoginServiceInterface
-    : public swganh::service::ServiceInterface
+    : public swganh::service::BaseService
     , public swganh::network::BaseSwgServer
 {
 public:
     LoginServiceInterface(boost::asio::io_service& io_service)
 		: swganh::network::BaseSwgServer(io_service)
-	{
-	}
+	{	}
     
-    virtual swganh::service::ServiceDescription GetServiceDescription() = 0;
-    
-    virtual bool RemoveSession(std::shared_ptr<swganh::network::soe::Session> session) = 0;
+    virtual ~LoginServiceInterface() {}
 
-    virtual std::shared_ptr<swganh::network::soe::Session> GetSession(const boost::asio::ip::udp::endpoint& endpoint) = 0;
+    virtual bool RemoveSession(std::shared_ptr<swganh::network::Session> session) = 0;
+
+    virtual std::shared_ptr<swganh::network::Session> GetSession(const boost::asio::ip::udp::endpoint& endpoint) = 0;
 
     virtual uint32_t GetAccountBySessionKey(const std::string& session_key) = 0;
         
@@ -78,9 +69,6 @@ public:
     
     virtual int login_error_timeout_secs() const = 0;
     virtual void login_error_timeout_secs(int new_timeout) = 0;
-    
-    virtual void Startup() = 0;
-    virtual void Shutdown() = 0;
 };
 
 }} // namespace swganh::login

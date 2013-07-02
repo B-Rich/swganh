@@ -3,7 +3,7 @@
 #pragma once
 
 #include <map>
-
+#include <boost/thread/lock_guard.hpp>
 #include "swganh/tre/tre_archive.h"
 #include "visitors/visitor_interface.h"
 
@@ -16,7 +16,8 @@ namespace tre {
 	{
 	public:
 		ResourceManager(std::shared_ptr<swganh::tre::TreArchive> archive);
-
+		~ResourceManager() {}
+		
 		void LoadResourceByName(const std::string& name, std::shared_ptr<VisitorInterface> visitor, bool is_cached=true);
 
 		template<class ValueType>

@@ -18,8 +18,12 @@ using namespace std;
 using namespace swganh::object;
 
 CellFactory::CellFactory(swganh::app::SwganhKernel* kernel)
-			: IntangibleFactory(kernel)
+    : IntangibleFactory(kernel)
+{}
+
+void CellFactory::LoadFromStorage(const std::shared_ptr<sql::Connection>& connection, const std::shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock)
 {
+    IntangibleFactory::LoadFromStorage(connection, object, lock);
 }
 
 void CellFactory::RegisterEventHandlers()
@@ -37,17 +41,21 @@ void CellFactory::PersistChangedObjects()
 	}
 	for (auto& object : persisted)
 	{
-		if(object->IsDatabasePersisted())
-			PersistObject(object);
+		auto lock = object->AcquireLock();
+		if(object->IsDatabasePersisted(lock))
+		{
+			PersistObject(object, lock);
+		}
 	}
 }
 
-uint32_t CellFactory::PersistObject(const shared_ptr<Object>& object, bool persist_inherited)
+uint32_t CellFactory::PersistObject(const shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock, bool persist_inherited)
 {
 	// Persist Intangible and Base Object First
     uint32_t counter = 1;
-	if (persist_inherited)
-		IntangibleFactory::PersistObject(object, persist_inherited);
+	
+    IntangibleFactory::PersistObject(object, lock, persist_inherited);
+
 	try 
     {
 		auto conn = GetDatabaseManager()->getConnection("galaxy");
@@ -55,7 +63,7 @@ uint32_t CellFactory::PersistObject(const shared_ptr<Object>& object, bool persi
 			(conn->prepareStatement("CALL sp_PersistCell(?);"));
 		
 		auto cell = static_pointer_cast<Cell>(object);
-		statement->setInt(counter++, cell->GetCell());
+		statement->setInt(counter++, cell->GetCell(lock));
 		statement->executeUpdate();
 	}
 	catch(sql::SQLException &e)
@@ -69,12 +77,6 @@ uint32_t CellFactory::PersistObject(const shared_ptr<Object>& object, bool persi
 void CellFactory::DeleteObjectFromStorage(const shared_ptr<Object>& object)
 {
 	ObjectFactory::DeleteObjectFromStorage(object);
-}
-
-shared_ptr<Object> CellFactory::CreateObjectFromStorage(uint64_t object_id)
-{
-	//TODO: Use the db to fetch me
-    return make_shared<Cell>();
 }
 
 shared_ptr<Object> CellFactory::CreateObject()

@@ -11,7 +11,11 @@ using namespace swganh::object;
 
 WeaponFactory::WeaponFactory(swganh::app::SwganhKernel* kernel)
 	: TangibleFactory(kernel)
+{}
+
+void WeaponFactory::LoadFromStorage(const std::shared_ptr<sql::Connection>& connection, const std::shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock)
 {
+    TangibleFactory::LoadFromStorage(connection, object, lock);
 }
 
 void WeaponFactory::PersistChangedObjects()
@@ -23,27 +27,22 @@ void WeaponFactory::PersistChangedObjects()
 	}
 	for (auto& object : persisted)
 	{
-		if(object->IsDatabasePersisted())
-			PersistObject(object);
+		auto lock = object->AcquireLock();
+		if(object->IsDatabasePersisted(lock))
+		{
+			PersistObject(object, lock);
+		}
 	}
 }
 
-uint32_t WeaponFactory::PersistObject(const shared_ptr<Object>& object, bool persist_inherited)
+uint32_t WeaponFactory::PersistObject(const shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock, bool persist_inherited)
 {
-	return TangibleFactory::PersistObject(object, persist_inherited);
+	return TangibleFactory::PersistObject(object, lock, persist_inherited);
 }
 
 void WeaponFactory::DeleteObjectFromStorage(const shared_ptr<Object>& object)
 {
 	ObjectFactory::DeleteObjectFromStorage(object);
-}
-
-shared_ptr<Object> WeaponFactory::CreateObjectFromStorage(uint64_t object_id)
-{
-	auto weapon = make_shared<Weapon>();
-	weapon->SetObjectId(object_id);
-	TangibleFactory::CreateTangibleFromStorage(weapon);
-	return weapon;
 }
 
 shared_ptr<Object> WeaponFactory::CreateObject()

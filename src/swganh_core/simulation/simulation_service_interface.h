@@ -9,12 +9,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "swganh/network/soe/server.h"
 #include "swganh/service/service_interface.h"
 
 #include "swganh/app/swganh_kernel.h"
 #include "swganh_core/object/object_controller_interface.h"
 #include "swganh_core/object/permissions/permission_type.h"
+#include "swganh_core/object/waypoint/waypoint.h"
 
 namespace swganh {
 	class ByteBuffer;
@@ -51,9 +51,11 @@ namespace object {
 
 namespace simulation {
     
-    class SimulationServiceInterface : public swganh::service::ServiceInterface
+    class SimulationServiceInterface : public swganh::service::BaseService
     {
     public:
+        virtual ~SimulationServiceInterface() {}
+
         virtual void StartScene(const std::string& scene_label) = 0;
         virtual void StopScene(const std::string& scene_label) = 0;
 
@@ -70,10 +72,13 @@ namespace simulation {
 		/*
 		*	\brief this persists the given object and all related objects (ie: everything contained inside this object)
 		*/
+        virtual void PersistRelatedObjects(const std::shared_ptr<swganh::object::Object>& object) = 0;
 		virtual void PersistRelatedObjects(uint64_t parent_object_id, bool persist_inherited = false) = 0;
         
         virtual std::shared_ptr<swganh::object::Object> LoadObjectById(uint64_t object_id) = 0;
         virtual std::shared_ptr<swganh::object::Object> LoadObjectById(uint64_t object_id, uint32_t type) = 0;
+        
+		virtual std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> FindObjectsInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range=-1) = 0;
 
 		virtual std::shared_ptr<swganh::object::Object> GetObjectByCustomName(const std::wstring& custom_name) = 0;
 		virtual std::shared_ptr<swganh::object::Object> GetObjectByCustomName(const std::string& custom_name) = 0;
@@ -113,11 +118,14 @@ namespace simulation {
          */
         virtual void RemoveObjectById(uint64_t object_id) = 0;
         virtual void RemoveObject(const std::shared_ptr<swganh::object::Object>& object) = 0;
-        
+
+        virtual void DestroyObject(const std::shared_ptr<swganh::object::Object>& object) = 0;
+
         virtual std::shared_ptr<swganh::observer::ObserverInterface> StartControllingObject(
             const std::shared_ptr<swganh::object::Object>& object,
             std::shared_ptr<swganh::connection::ConnectionClientInterface> client) = 0;
 
+        virtual void StopControllingObject(uint64_t object_id) = 0;
         virtual void StopControllingObject(const std::shared_ptr<swganh::object::Object>& object) = 0;
 
         template<typename MessageType>
@@ -190,7 +198,18 @@ namespace simulation {
 		virtual void SendToScene(swganh::messages::BaseSwgMessage* message, std::string scene_name) = 0;
 		virtual void SendToSceneInRange(swganh::messages::BaseSwgMessage* message, uint32_t scene_id, glm::vec3 position, float radius) = 0;
 		virtual void SendToSceneInRange(swganh::messages::BaseSwgMessage* message, std::string scene_name, glm::vec3 position, float radius) = 0;
-
+        
+        template<typename T>
+        std::shared_ptr<T> CreateObjectFromTemplateAs(const std::string& template_name,
+			swganh::object::PermissionType type=swganh::object::DEFAULT_PERMISSION, bool is_persisted=true, uint64_t object_id=0)
+        {
+            std::shared_ptr<swganh::object::Object> object = CreateObjectFromTemplate(template_name, type, is_persisted, object_id);
+#ifdef _DEBUG
+            return std::dynamic_pointer_cast<T>(object);
+#else
+            return std::static_pointer_cast<T>(object);
+#endif
+        }
 		virtual std::shared_ptr<swganh::object::Object> CreateObjectFromTemplate(const std::string& template_name, 
 			swganh::object::PermissionType type=swganh::object::DEFAULT_PERMISSION, bool is_persisted=true, uint64_t object_id=0) = 0;
 

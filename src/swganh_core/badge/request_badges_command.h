@@ -23,21 +23,21 @@ namespace badge {
     {
     public:
 
+        virtual std::string GetCommandName() const { return "requestbadges"; }
+
 		/**
 			Creates a new instance
 		*/
-        RequestBadgesCommand(
+        void Initialize(
             swganh::app::SwganhKernel* kernel,
             const swganh::command::CommandProperties& properties);
 
 		/**
 		* Runs this command
 		*/
-        virtual boost::optional<std::shared_ptr<swganh::command::CommandCallback>> Run();
+        virtual void Run();
 
     private:
-        BadgeService* chat_service_;
-		swganh::app::SwganhKernel* kernel_;
 		swganh::equipment::EquipmentService* equipment_service_;
     };
 

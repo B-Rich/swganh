@@ -10,7 +10,11 @@ using namespace swganh::object;
 
 FactoryCrateFactory::FactoryCrateFactory(swganh::app::SwganhKernel* kernel)
 	: TangibleFactory(kernel)
+{}
+
+void FactoryCrateFactory::LoadFromStorage(const std::shared_ptr<sql::Connection>& connection, const std::shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock)
 {
+    TangibleFactory::LoadFromStorage(connection, object, lock);
 }
 
 std::shared_ptr<swganh::object::Object> FactoryCrateFactory::CreateObject()

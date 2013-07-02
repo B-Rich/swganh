@@ -11,6 +11,7 @@ namespace simulation {
 
 class QuadtreeSpatialProvider 
 	: public swganh::simulation::SpatialProviderInterface
+    , public std::enable_shared_from_this<QuadtreeSpatialProvider>
 {
 public:
 	QuadtreeSpatialProvider();
@@ -51,14 +52,12 @@ public:
 
 	virtual void __InternalGetAbsolutes(glm::vec3& pos, glm::quat& rot);
 
-	void SetThis(std::shared_ptr<ContainerInterface> si) { __this = si; }
 private:
-	std::shared_ptr<ContainerInterface> __this;
 	quadtree::Node root_node_;
 	std::string scene_name_;
 	uint32_t scene_id_;
 	quadtree::QueryBox GetQueryBoxViewRange(std::shared_ptr<swganh::object::Object> object);
-	quadtree::QueryBox QuadtreeSpatialProvider::GetQueryBoxViewRange(const swganh::object::AABB& box);
+	quadtree::QueryBox GetQueryBoxViewRange(const swganh::object::AABB& box);
 
 	void CheckCollisions(std::shared_ptr<swganh::object::Object> object);
 };

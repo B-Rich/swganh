@@ -1,6 +1,10 @@
 // This file is part of SWGANH which is released under the MIT license.
 // See file LICENSE or go to http://swganh.com/LICENSE
 
+#ifndef WIN32
+#include <Python.h>
+#endif
+
 #include "base_combat_command_binding.h"
 
 #include "swganh/scripting/python_shared_ptr.h"
@@ -16,7 +20,6 @@
 
 namespace bp = boost::python;
 using swganh::command::BaseCombatCommand;
-using swganh::command::CommandCallback;
 using swganh::command::CommandInterface;
 using swganh::command::CommandProperties;
 using swganh::combat::CombatData;
@@ -25,65 +28,52 @@ using swganh::scripting::ScopedGilLock;
 struct BaseCombatCommandWrapper : BaseCombatCommand, bp::wrapper<BaseCombatCommand>
 {
     BaseCombatCommandWrapper(
-        PyObject* obj,
-        swganh::app::SwganhKernel* kernel,
-        CommandProperties& properties)
-        : BaseCombatCommand(kernel, properties)
-        , self_(bp::handle<>(bp::borrowed(obj)))
+        PyObject* obj)
+        : self_(bp::handle<>(bp::borrowed(obj)))
     {
         ScopedGilLock lock;
         bp::detail::initialize_wrapper(obj, this);
     }
+    
 
-    boost::optional<std::shared_ptr<CommandCallback>> Run()
+    std::string GetCommandName() const
     {
-        boost::optional<std::shared_ptr<CommandCallback>> callback;
-
-
+        std::string command;
+        
         ScopedGilLock lock;
         try 
         {
-            if (bp::override run = this->get_override("run"))
+            auto overrider = this->get_override("getCommandName");
+            if (overrider)
             {
-                bp::object result = run();
-
-                if (!result.is_none())
-                {
-                    CommandCallback* obj_pointer = bp::extract<CommandCallback*>(result);
-                    callback.reset(std::shared_ptr<CommandCallback>(obj_pointer, [result] (CommandCallback*) {}));
-                }
+                bp::object name = overrider();
+                command = bp::extract<std::string>(name);
             }
-            
-            this->BaseCombatCommand::Run();
         }
-        catch(bp::error_already_set& /*e*/)
-        {
-            PyErr_Print();
-        }
+		catch (bp::error_already_set&)
+		{
+			swganh::scripting::logPythonException();
+		}
 
-        return callback;
+        return command;
     }
-	void SetCommandProperties(const CommandProperties& properties)
-	{
-		ScopedGilLock lock;
+
+    void Run()
+    {
+        ScopedGilLock lock;
         try 
         {
-			combat_data = std::make_shared<CombatData>(properties);
-            auto setup = this->get_override("setup");
-            if (setup)
-            {
-                setup(combat_data);
+            if (auto py_override = this->get_override("run")) {
+                py_override();
             }
-            else
-            {
-                this->BaseCombatCommand::SetCommandProperties(properties);
-            }
+            
+            BaseCombatCommand::Run();
         }
-        catch(bp::error_already_set& /*e*/)
-        {
-            PyErr_Print();
-        }        
-	}
+		catch (bp::error_already_set&)
+		{
+			swganh::scripting::logPythonException();
+		}
+    }
 
 private:
     bp::object self_;
@@ -92,7 +82,7 @@ private:
 void swganh::command::ExportBaseCombatCommand()
 {
     bp::class_<BaseCombatCommand, BaseCombatCommandWrapper, bp::bases<BaseSwgCommand>, boost::noncopyable>
-        ("BaseCombatCommand", bp::init<swganh::app::SwganhKernel*, CommandProperties&>())
+        ("BaseCombatCommand", bp::init<>())
         .def("run", &BaseCombatCommandWrapper::Run)
 		.def("postRun", &BaseCombatCommandWrapper::PostRun)
 		.def_readwrite("properties", &BaseCombatCommandWrapper::combat_data)

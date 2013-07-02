@@ -1,4 +1,4 @@
-// This file is part of SWGANH which is released under the MIT license.
+ // This file is part of SWGANH which is released under the MIT license.
 // See file LICENSE or go to http://swganh.com/LICENSE
 
 #include "swganh/service/datastore.h"
@@ -8,6 +8,7 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/thread/lock_guard.hpp>
 
 #include <cppconn/exception.h>
 #include <cppconn/connection.h>
@@ -188,7 +189,8 @@ std::shared_ptr<Galaxy> Datastore::findGalaxyById(uint32_t id) const {
 
         // if the statement fails to service return a nullptr
         if (!result->next()) {
-			while(statement->getMoreResults());
+			while(statement->getMoreResults())
+                ;
             return nullptr;
         }
 

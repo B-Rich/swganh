@@ -30,7 +30,6 @@
 #include "simulation/simulation_init.h"
 #include "map/map_init.h"
 #include "player/player_init.h"
-#include "social/social_init.h"
 #include "equipment/equipment_init.h"
 #include "spawn/spawn_init.h"
 #include "static/static_init.h"
@@ -46,7 +45,7 @@ using boost::program_options::options_description;
 using boost::program_options::variables_map;
 using swganh::app::SwganhKernel;
 
-extern "C" PLUGIN_API void ExitModule() 
+extern "C" PLUGIN_API void ExitModule()
 {
     return;
 }
@@ -57,10 +56,10 @@ extern "C" PLUGIN_API  void ConfigurePlugin(options_description& description)
     return;
 }
 
-extern "C" PLUGIN_API ExitFunc InitializePlugin(KernelInterface* kernel) 
+extern "C" PLUGIN_API ExitFunc InitializePlugin(KernelInterface* kernel)
 {
-    auto swganh_kernel = static_cast<SwganhKernel*>(kernel);    
-    
+    auto swganh_kernel = static_cast<SwganhKernel*>(kernel);
+
 	swganh::attributes::Initialize(swganh_kernel);
 	swganh::badge::Initialize(swganh_kernel);
     swganh::character::Initialize(swganh_kernel);
@@ -74,7 +73,6 @@ extern "C" PLUGIN_API ExitFunc InitializePlugin(KernelInterface* kernel)
     swganh::chat::Initialize(swganh_kernel);
 	swganh::simulation::Initialize(swganh_kernel);
 	swganh::player::Initialize(swganh_kernel);
-	swganh::social::Initialize(swganh_kernel);
 	swganh::spawn::Initialize(swganh_kernel);
 	swganh::statics::Initialize(swganh_kernel);
 	swganh::sui::Initialize(swganh_kernel);

@@ -22,15 +22,13 @@
 using swganh::command::CommandQueue;
 using swganh::command::CommandService;
 using swganh::command::BaseSwgCommand;
-using swganh::command::CommandCallback;
 using swganh::command::CommandInterface;
 
 using swganh::object::Tangible;
 
 CommandQueue::CommandQueue(
     swganh::app::SwganhKernel* kernel)
-    : kernel_(kernel)
-    , timer_(kernel->GetCpuThreadPool())
+    : timer_(kernel->GetCpuThreadPool())
     , processing_(false)
     , default_command_(nullptr)
     , active_(kernel->GetCpuThreadPool())
@@ -105,15 +103,12 @@ void CommandQueue::ProcessCommand(const std::shared_ptr<swganh::command::BaseSwg
         {
             if (command->Validate())
             {
-		        auto callback = command->Run();
-                if (callback)
-                {
-                    HandleCallback(*callback);
-                }
+		        command->Run();
 				command->PostRun(true);
             }
             else
             {
+                LOG(warning) << "Invalid Command: " <<  command->GetCommandName();
                 action = 1; // indicates a general error
 				command->PostRun(false);
             }
@@ -163,19 +158,6 @@ void CommandQueue::Notify()
             processing_ = false;
         }
     }		
-}
-
-void CommandQueue::HandleCallback(std::shared_ptr<CommandCallback> callback)
-{    
-    active_.AsyncDelayed(boost::posix_time::milliseconds(callback->GetDelayTimeInMs()),
-        [this, callback] ()
-    {
-        auto new_callback = (*callback)();
-        if (new_callback)
-        {
-            HandleCallback(*new_callback);
-        }
-    });
 }
 
 std::shared_ptr<swganh::command::BaseSwgCommand> CommandQueue::GetNextCommand()

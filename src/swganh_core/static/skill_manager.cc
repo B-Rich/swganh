@@ -120,8 +120,8 @@ SkillModsMap SkillManager::GetSkillMods(const std::shared_ptr<Creature>& creatur
 	auto skill_end = this->skills_.end();
 	for(auto& skill : creature->GetSkills())
 	{
-		auto skill_itr = this->skills_.find(skill.name);
-		if(skill_itr != skills_.end())
+		auto skill_itr = this->skills_.find(skill);
+		if(skill_itr != skill_end)
 		{
 			for(auto& mod : skill_itr->second->skill_mods_)
 			{
@@ -134,7 +134,7 @@ SkillModsMap SkillManager::GetSkillMods(const std::shared_ptr<Creature>& creatur
 	creature->ViewObjects(creature, 1, true, [&] (std::shared_ptr<Object> child) {
 		for(auto& mod : result)
 		{
-			auto modifier = child->GetAttributeRecursive(mod.first);
+			auto modifier = child->GetAttribute(mod.first); //@TODO : EquipmentList this
 			if(modifier.which() == 1)
 			{
 				mod.second.second += boost::get<int32_t>(modifier);

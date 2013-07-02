@@ -25,18 +25,11 @@ namespace statics
 		bool going_down;
 	};
 
-	struct CloneData
-	{
-		std::string city;
-		uint32_t scene_id;
-		uint64_t parent_id;
-		glm::vec3 vec;
-		glm::quat quat;
-	};
-
-	class StaticServiceInterface : public swganh::service::ServiceInterface
+	class StaticServiceInterface : public swganh::service::BaseService
 	{
 	public:
+
+        virtual ~StaticServiceInterface() {}
 
 		//Returns the elevator data for a particular terminal.
 		virtual std::vector<std::shared_ptr<ElevatorData>> GetElevatorDataForObject(uint64_t terminal_id) = 0;
@@ -52,14 +45,6 @@ namespace statics
 		 * @return a map of pairs of base, modifier
 		 */
 		virtual std::map<std::string, std::pair<uint32_t, uint32_t>> GetSkillMods(const std::shared_ptr<swganh::object::Creature>& creature) = 0;
-
-
-		 /*
-		 * @brief get CloneData for a given clone_id
-		 */
-		virtual std::shared_ptr<CloneData> GetCloneData(uint32_t clone_id) = 0;		
-
-		virtual int32_t GetCloneId(glm::vec3 location) = 0;		
 
 	};
 }

@@ -1,6 +1,10 @@
 // This file is part of SWGANH which is released under the MIT license.
 // See file LICENSE or go to http://swganh.com/LICENSE
 
+#ifndef WIN32
+#include <Python.h>
+#endif
+
 #include "command_binding.h"
 
 #include "swganh/scripting/python_shared_ptr.h"
@@ -16,21 +20,34 @@
 
 namespace bp = boost::python;
 using swganh::command::BaseSwgCommand;
-using swganh::command::CommandCallback;
 using swganh::command::CommandInterface;
 using swganh::command::CommandProperties;
 using swganh::scripting::ScopedGilLock;
 
 struct BaseSwgCommandWrapper : BaseSwgCommand, bp::wrapper<BaseSwgCommand>
 {
-    BaseSwgCommandWrapper(
-        PyObject* obj,
-        swganh::app::SwganhKernel* kernel,
-        const CommandProperties& properties)
-        : BaseSwgCommand(kernel, properties)
+    BaseSwgCommandWrapper(PyObject* obj)
+        : self_(obj)
     {
         ScopedGilLock lock;
         bp::detail::initialize_wrapper(obj, this);
+    }
+
+    std::string GetCommandName() const
+    {
+        std::string command;
+        
+        ScopedGilLock lock;
+        try 
+        {
+            command = bp::call_method<std::string>(self_, "getCommandName");
+        }
+		catch (bp::error_already_set&)
+		{
+			swganh::scripting::logPythonException();
+		}
+
+        return command;
     }
 
     bool Validate()
@@ -47,60 +64,32 @@ struct BaseSwgCommandWrapper : BaseSwgCommand, bp::wrapper<BaseSwgCommand>
             }
             else
             {
-                validated = this->BaseSwgCommand::Validate();
+                validated = BaseSwgCommand::Validate();
             }
         }
-        catch(bp::error_already_set& /*e*/)
-        {
-            PyErr_Print();
-        }
+		catch (bp::error_already_set&)
+		{
+			swganh::scripting::logPythonException();
+		}
 
         return validated;
     }
 
-    boost::optional<std::shared_ptr<CommandCallback>> Run()
+    void Run()
     {
-        boost::optional<std::shared_ptr<CommandCallback>> callback;
-
-
         ScopedGilLock lock;
         try 
         {
-            bp::object result = this->get_override("run")();
-
-            if (!result.is_none())
-            {
-                CommandCallback* obj_pointer = bp::extract<CommandCallback*>(result);
-                callback.reset(std::shared_ptr<CommandCallback>(obj_pointer, [result] (CommandCallback*) {}));  
+            if (auto py_override = this->get_override("run")) {
+                py_override();
             }
         }
-        catch(bp::error_already_set& /*e*/)
-        {
-            PyErr_Print();
-        }
-
-        return callback;
+		catch (bp::error_already_set&)
+		{
+			swganh::scripting::logPythonException();
+		}
     }
-	void SetCommandProperties(const CommandProperties& properties)
-	{
-		ScopedGilLock lock;
-        try 
-        {
-            auto setup = this->get_override("setup");
-            if (setup)
-            {
-                setup();
-            }
-            else
-            {
-                this->BaseSwgCommand::SetCommandProperties(properties);
-            }
-        }
-        catch(bp::error_already_set& /*e*/)
-        {
-            PyErr_Print();
-        }        
-	}
+
 	void PostRun(bool success)
 	{
 		ScopedGilLock lock;
@@ -116,63 +105,24 @@ struct BaseSwgCommandWrapper : BaseSwgCommand, bp::wrapper<BaseSwgCommand>
                 this->BaseSwgCommand::PostRun(success);
             }
         }
-        catch(bp::error_already_set& /*e*/)
-        {
-            PyErr_Print();
-        }        
+		catch (bp::error_already_set&)
+		{
+			swganh::scripting::logPythonException();
+		}      
 	}
+
+private:
+    PyObject* self_;
 };
 
-class CommandCallbackWrapper : public CommandCallback, bp::wrapper<CommandCallback>
-{
-public:
-    CommandCallbackWrapper(
-        PyObject* obj,
-        boost::python::object function,
-        uint64_t delay_timer)
-        : CommandCallback([function] () -> boost::optional<std::shared_ptr<CommandCallback>>
-    {
-        boost::optional<std::shared_ptr<CommandCallback>> callback;
-
-        {
-            ScopedGilLock lock;
-            
-            try 
-            {
-                bp::object result = function();
-                
-                if (!result.is_none())
-                {
-                    CommandCallback* obj_pointer = bp::extract<CommandCallback*>(result);
-                    callback.reset(std::shared_ptr<CommandCallback>(obj_pointer, [result] (CommandCallback*) {}));  
-                }
-            }
-            catch(bp::error_already_set& /*e*/)
-            {
-                PyErr_Print();
-            }
-        }
-
-        return callback;
-    }, delay_timer)
-    {    
-        ScopedGilLock lock;
-        bp::detail::initialize_wrapper(obj, this);
-    }
-};
 
 void swganh::command::ExportCommand()
 {
-    bp::class_<CommandCallback, std::shared_ptr<CommandCallbackWrapper>, boost::noncopyable>
-        ("Callback", bp::init<bp::object, uint64_t>())
-        .def("getDelayTimeInMs", &CommandCallbackWrapper::GetDelayTimeInMs)
-        .def("execute", &CommandCallbackWrapper::operator())
-    ;
-
     bp::class_<CommandInterface, boost::noncopyable>("CommandInterface", bp::no_init)
         .def("validate", bp::pure_virtual(&CommandInterface::Validate))
         .def("run", bp::pure_virtual(&CommandInterface::Run))
 		.def("postRun", bp::pure_virtual(&CommandInterface::PostRun))
+        .def("getCommandName", bp::pure_virtual(&CommandInterface::GetCommandName))
     ;
     
 	bp::class_<CommandProperties>("CommandProperties", bp::no_init)
@@ -191,7 +141,8 @@ void swganh::command::ExportCommand()
 	;
 
     bp::class_<BaseSwgCommand, BaseSwgCommandWrapper, bp::bases<CommandInterface>, boost::noncopyable>
-        ("BaseSwgCommand", bp::init<swganh::app::SwganhKernel*, const CommandProperties&>())
+        ("BaseSwgCommand")
+        .def("getCommandName", &BaseSwgCommandWrapper::GetCommandName)
         .def("validate", &BaseSwgCommandWrapper::Validate)
 		.def("setup", &BaseSwgCommand::SetCommandProperties)
 		.def("postRun", &BaseSwgCommand::PostRun)

@@ -60,7 +60,7 @@ using boost::regex;
 using boost::regex_search;
 #endif
 
-MysqlCharacterProvider::MysqlCharacterProvider(KernelInterface* kernel)
+MysqlCharacterProvider::MysqlCharacterProvider(SwganhKernel* kernel)
     : CharacterProviderInterface()
     , kernel_(kernel) 
 	, py_character_create_(kernel)
@@ -357,7 +357,7 @@ uint64_t MysqlCharacterProvider::GetCharacterIdByName(const string& name)
     try {
         auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
         auto statement = std::unique_ptr<sql::PreparedStatement>(
-            conn->prepareStatement("sp_GetCharacterIdByName(?,?);")
+            conn->prepareStatement("CALL sp_GetCharacterIdByName(?,?);")
             );
         statement->setString(1, name + '%');
         statement->setUInt(2, swganh::object::Player::type);

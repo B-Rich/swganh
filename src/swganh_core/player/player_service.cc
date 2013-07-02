@@ -35,22 +35,32 @@ using namespace swganh::player;
 using namespace swganh::object;
 using namespace swganh::messages;
 
-ServiceDescription PlayerService::GetServiceDescription()
-{
-    ServiceDescription service_description(
+PlayerService::PlayerService(swganh::app::SwganhKernel* kernel)
+	: kernel_(kernel)
+{    
+    SetServiceDescription(ServiceDescription(
         "PlayerService",
         "player",
         "0.1",
         "127.0.0.1", 
         0, 
         0, 
-        0);
-
-    return service_description;
+        0));
 }
 
-PlayerService::PlayerService(swganh::app::SwganhKernel* kernel)
-	: kernel_(kernel)
+PlayerService::~PlayerService()
+{}
+
+void PlayerService::Initialize()
+{
+	simulation_service_ = kernel_->GetServiceManager()->
+		GetService<swganh::simulation::SimulationServiceInterface>("SimulationService");
+
+	equipment_service_ = kernel_->GetServiceManager()->
+		GetService<swganh::equipment::EquipmentService>("EquipmentService");
+}
+
+void PlayerService::Startup()
 {
 	kernel_->GetEventDispatcher()->Subscribe(
 		"ObjectReadyEvent",
@@ -86,24 +96,19 @@ PlayerService::PlayerService(swganh::app::SwganhKernel* kernel)
 		{
 			creature->AddBuff(result->getString(1), result->getUInt(2));
 		}
+
+		OnPlayerEnter(std::static_pointer_cast<Player>(equipment_service_->GetEquippedObject(creature, "ghost")));
 	});
 
-	player_removed_ = kernel_->GetEventDispatcher()->Subscribe(
-		"Connection::PlayerRemoved",
+	kernel_->GetEventDispatcher()->Subscribe(
+		"Connection::ControllerConnectionClosed",
 		[this] (shared_ptr<EventInterface> incoming_event)
 	{
-		const auto& player = static_pointer_cast<ValueEvent<shared_ptr<Player>>>(incoming_event)->Get();
-		OnPlayerExit(player);
+		auto object_id = static_pointer_cast<ValueEvent<uint64_t>>(incoming_event)->Get();
+        auto player = simulation_service_->GetObjectById<Player>(object_id + 1);
+
+        if(player) OnPlayerExit(player);
 	});
-}
-
-void PlayerService::Startup()
-{
-	simulation_service_ = kernel_->GetServiceManager()->
-		GetService<swganh::simulation::SimulationServiceInterface>("SimulationService");
-
-	equipment_service_ = kernel_->GetServiceManager()->
-		GetService<swganh::equipment::EquipmentService>("EquipmentService");
 }
 
 void PlayerService::OnPlayerEnter(shared_ptr<swganh::object::Player> player)
@@ -213,12 +218,17 @@ void PlayerService::StoreAllCalledMounts(std::shared_ptr<swganh::object::Creatur
 	if(datapad)
 	{
 		std::list<std::shared_ptr<Object>> objects = datapad->GetObjects(nullptr, 1, true);
-		for(auto& object : objects) {
+		for(auto& object : objects) 
+        {
 			if(object->HasAttribute("is_mount") && !object->HasContainedObjects())
 			{
-				auto mobile = simulation->GetObjectById((uint64_t)object->GetAttribute<int64_t>("mobile_id"));
-				if(mobile)
+				if(auto mobile = simulation->GetObjectById((uint64_t)object->GetAttribute<int64_t>("mobile_id")))
 				{
+                    if (owner->GetContainer()->GetObjectId() == mobile->GetObjectId())
+                    {
+                        mobile->TransferObject(owner, owner, mobile->GetContainer(), mobile->GetPosition());
+                    }
+
 					mobile->GetContainer()->TransferObject(owner, mobile, object, glm::vec3(0, 0, 0));
 				}
 			}
@@ -233,12 +243,17 @@ void PlayerService::StoreAllCalledObjects(std::shared_ptr<swganh::object::Creatu
 	auto datapad = equipment->GetEquippedObject(owner, "datapad");
 	if(datapad)
 	{
-		datapad->ViewObjects(nullptr, 0, true, [&] (std::shared_ptr<Object> object) {
+		datapad->ViewObjects(nullptr, 0, true, [&] (std::shared_ptr<Object> object)
+        {
 			if(object->HasAttribute("mobile_id") && !object->HasContainedObjects())
 			{
-				auto mobile = simulation->GetObjectById((uint64_t)object->GetAttribute<int64_t>("mobile_id"));
-				if(mobile)
+				if(auto mobile = simulation->GetObjectById((uint64_t)object->GetAttribute<int64_t>("mobile_id")))
 				{
+                    if (owner->GetContainer()->GetObjectId() == mobile->GetObjectId())
+                    {
+                        mobile->TransferObject(owner, owner, mobile->GetContainer(), mobile->GetPosition());
+                    }
+
 					mobile->GetContainer()->TransferObject(owner, mobile, object, glm::vec3(0, 0, 0));
 				}
 			}
@@ -260,8 +275,6 @@ void PlayerService::RemoveClientTimerHandler_(
             auto object = controller->GetObject();
             DLOG(info) << "Destroying Object " << object->GetObjectId() << " after " << delay_in_secs << " seconds.";
 
-            simulation_service_->RemoveObject(object);
-
 			//Persist buffs
 			auto conn = kernel_->GetDatabaseManager()->getConnection("galaxy");
 			auto object_id = object->GetObjectId();
@@ -278,7 +291,10 @@ void PlayerService::RemoveClientTimerHandler_(
 				statement->execute();
 			});
 
+            StoreAllCalledMounts(creature);
 			creature->CleanUpBuffs();
+            
+            simulation_service_->RemoveObject(object);
 
             kernel_->GetEventDispatcher()->Dispatch(
                 make_shared<ValueEvent<shared_ptr<swganh::object::Object>>>("ObjectRemovedEvent", object));

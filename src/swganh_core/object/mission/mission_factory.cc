@@ -11,10 +11,14 @@ using namespace swganh::object;
 
 MissionFactory::MissionFactory(swganh::app::SwganhKernel* kernel)
 	: IntangibleFactory(kernel)
+{}
+
+void MissionFactory::LoadFromStorage(const std::shared_ptr<sql::Connection>& connection, const std::shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock)
 {
+    IntangibleFactory::LoadFromStorage(connection, object, lock);
 }
 
-uint32_t MissionFactory::PersistObject(const shared_ptr<Object>& object, bool persist_inherited)
+uint32_t MissionFactory::PersistObject(const shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock, bool persist_inherited)
 {
 	uint32_t counter = 1;
 
@@ -24,11 +28,6 @@ uint32_t MissionFactory::PersistObject(const shared_ptr<Object>& object, bool pe
 void MissionFactory::DeleteObjectFromStorage(const shared_ptr<Object>& object)
 {
 	ObjectFactory::DeleteObjectFromStorage(object);
-}
-
-shared_ptr<Object> MissionFactory::CreateObjectFromStorage(uint64_t object_id)
-{
-    return make_shared<Mission>();
 }
 
 shared_ptr<Object> MissionFactory::CreateObject()

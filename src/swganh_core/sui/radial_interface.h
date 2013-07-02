@@ -25,10 +25,13 @@ namespace sui {
 class RadialInterface
 {
 public:
-	RadialInterface(swganh::app::SwganhKernel* kernel)
-		: kernel_(kernel)
-	{
-	}
+
+	virtual ~RadialInterface() {}
+
+    void Initialize(swganh::app::SwganhKernel* kernel)
+    {
+        kernel_ = kernel;
+    }
 
 	virtual std::vector<swganh::messages::controllers::RadialOptions> BuildRadial(std::shared_ptr<swganh::object::Object> owner, std::shared_ptr<swganh::object::Object> target, std::vector<swganh::messages::controllers::RadialOptions> radials) = 0;
 	virtual void HandleRadial(std::shared_ptr<swganh::object::Object> owner, std::shared_ptr<swganh::object::Object> target, uint8_t action) = 0;

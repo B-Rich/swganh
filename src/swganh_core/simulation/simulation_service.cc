@@ -1,6 +1,10 @@
 // This file is part of SWGANH which is released under the MIT license.
 // See file LICENSE or go to http://swganh.com/LICENSE
 
+#ifndef WIN32
+#include <Python.h>
+#endif
+
 #include "simulation_service.h"
 
 #include <boost/algorithm/string.hpp>
@@ -10,15 +14,14 @@
 #include "swganh/event_dispatcher.h"
 #include "swganh/service/service_manager.h"
 #include "swganh/database/database_manager.h"
-#include "swganh/network/soe/server_interface.h"
+#include "swganh/network/server_interface.h"
 #include "swganh/plugin/plugin_manager.h"
 #include "swganh_core/object/object_controller.h"
-
+#include "swganh/scripting/python_instance_creator.h"
 #include "swganh/app/swganh_kernel.h"
 
 #include "swganh_core/command/command_interface.h"
 #include "swganh_core/command/command_service_interface.h"
-#include "swganh_core/command/python_command_creator.h"
 
 #include "swganh_core/connection/connection_client_interface.h"
 #include "swganh_core/connection/connection_service_interface.h"
@@ -65,10 +68,12 @@ using namespace swganh::player;
 using namespace swganh::tre;
 
 using swganh::observer::ObserverInterface;
-using swganh::network::soe::ServerInterface;
-using swganh::network::soe::Session;
+using swganh::network::ServerInterface;
+using swganh::network::Session;
 using swganh::service::ServiceDescription;
 using swganh::app::SwganhKernel;
+using swganh::command::CommandInterface;
+using swganh::scripting::PythonInstanceCreator;
 
 namespace swganh {
 namespace simulation {
@@ -155,7 +160,13 @@ public:
     {
         object_manager_->PersistObject(object_id, persist_inherited);
     }
-	void PersistRelatedObjects(uint64_t parent_object_id, bool persist_inherited)
+
+    void PersistRelatedObjects(const std::shared_ptr<swganh::object::Object>& object)
+    {
+        object_manager_->PersistRelatedObjects(object, true);
+    }
+	
+    void PersistRelatedObjects(uint64_t parent_object_id, bool persist_inherited)
 	{
         object_manager_->PersistRelatedObjects(parent_object_id, persist_inherited);
 	}
@@ -203,6 +214,12 @@ public:
 		});
         object_manager_->RemoveObject(object);*/
 		
+    }
+    
+    void DestroyObject(const std::shared_ptr<swganh::object::Object>& object)
+    {
+        RemoveObject(object);
+        object_manager_->DeleteObjectFromStorage(object);
     }
 
 	std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> FindObjectsInRangeByTag(const std::shared_ptr<swganh::object::Object> requester, const std::string& tag, float range=-1)
@@ -252,8 +269,6 @@ public:
 
 		//Update the object's position.
 		obj->SetPosition(position);
-		obj->UpdateWorldCollisionBox();
-		obj->UpdateAABB();
 
 		// CmdStartScene
 		if(controller != nullptr)
@@ -322,6 +337,9 @@ public:
             return;
         }
 
+        object->ClearController();
+
+        LOG(warning) << "Removing controlled object";
         controlled_objects_.unsafe_erase(find_iter);
     }
 
@@ -387,8 +405,6 @@ public:
             throw std::runtime_error("Invalid scene selected for object");
         }
 
-		object->SetCollidable(false);
-
 		// CmdStartScene
         CmdStartScene start_scene;
         start_scene.ignore_layout = 0;
@@ -400,36 +416,14 @@ public:
         start_scene.galaxy_time = 0;
 
 		client->SendTo(start_scene, boost::optional<Session::SequencedCallback>(
-			[=](uint16_t sequence){
-				LOG(warning) << "here.";
+			[=](uint16_t sequence)
+        {
+				StartControllingObject(object, client);
+
 				if(object->GetContainer() == nullptr)
 				{
 					scene->AddObject(object);
 				}
-
-				//Attach the controller
-				StartControllingObject(object, client);
-
-				//Make sure the controller gets his awareness creates
-				//regardless of the current state of awareness.
-				auto controller = object->GetController();
-				scene->ViewObjects(object, 0, true, [&] (std::shared_ptr<swganh::object::Object> aware) {
-					if(aware->__HasAwareObject(object) && !aware->IsInSnapshot())
-					{
-						//Send create manually
-						aware->Subscribe(controller);
-						aware->SendCreateByCrc(controller);
-						aware->CreateBaselines(controller);
-					}
-					else
-					{
-						aware->AddAwareObject(object);
-						object->AddAwareObject(aware);
-					}
-				});
-				
-
-				object->SetCollidable(true);
 		}));
     }
 
@@ -486,7 +480,7 @@ private:
     shared_ptr<MovementManagerInterface> movement_manager_;
 	shared_ptr<swganh::equipment::EquipmentServiceInterface> equipment_service_;
     SwganhKernel* kernel_;
-	ServerInterface* server_;
+	//ServerInterface* server_;
 	
     ObjControllerHandlerMap controller_handlers_;
 
@@ -501,24 +495,19 @@ SimulationService::SimulationService(SwganhKernel* kernel)
     , kernel_(kernel)
 {
     impl_->GetSceneManager()->LoadSceneDescriptionsFromDatabase(kernel_->GetDatabaseManager()->getConnection("galaxy"));
-}
 
-SimulationService::~SimulationService()
-{}
-
-ServiceDescription SimulationService::GetServiceDescription()
-{
-    ServiceDescription service_description(
+    SetServiceDescription(ServiceDescription(
         "SimulationService",
         "simulation",
         "0.1",
         "127.0.0.1",
         0,
         0,
-        0);
-
-    return service_description;
+        0));
 }
+
+SimulationService::~SimulationService()
+{}
 
 void SimulationService::StartScene(const std::string& scene_label)
 {
@@ -543,6 +532,10 @@ std::string SimulationService::SceneNameById(uint32_t scene_id)
 void SimulationService::PersistObject(uint64_t object_id, bool persist_inherited)
 {
     impl_->PersistObject(object_id, persist_inherited);
+}
+void SimulationService::PersistRelatedObjects(const std::shared_ptr<swganh::object::Object>& object)
+{
+	impl_->PersistRelatedObjects(object);
 }
 void SimulationService::PersistRelatedObjects(uint64_t parent_object_id, bool persist_inherited)
 {
@@ -570,6 +563,11 @@ void SimulationService::RemoveObjectById(uint64_t object_id)
 void SimulationService::RemoveObject(const shared_ptr<Object>& object)
 {
     impl_->RemoveObject(object);
+}
+
+void SimulationService::DestroyObject(const std::shared_ptr<swganh::object::Object>& object)
+{
+    impl_->DestroyObject(object);
 }
 
 shared_ptr<Object> SimulationService::GetObjectByCustomName(const string& custom_name)
@@ -608,6 +606,13 @@ shared_ptr<ObserverInterface> SimulationService::StartControllingObject(
 void SimulationService::StopControllingObject(const shared_ptr<Object>& object)
 {
     impl_->StopControllingObject(object);
+}
+
+void SimulationService::StopControllingObject(uint64_t object_id)
+{
+    auto object = GetObjectById(object_id);
+
+    if (object) impl_->StopControllingObject(object);
 }
 
 void SimulationService::RegisterControllerHandler(
@@ -657,6 +662,9 @@ std::set<std::pair<float, std::shared_ptr<swganh::object::Object>>> SimulationSe
 	return impl_->FindObjectsInRangeByTag(requester, tag, range);
 }
 
+void SimulationService::Initialize()
+{}
+
 void SimulationService::Startup()
 {
 	RegisterObjectFactories();
@@ -701,18 +709,6 @@ void SimulationService::Startup()
             StartScene(scene);
         }
 	});
-
-	auto command_service = kernel_->GetServiceManager()->GetService<swganh::command::CommandServiceInterface>("CommandService");
-
-    command_service->AddCommandCreator("burstrun", swganh::command::PythonCommandCreator("commands.burstrun", "BurstRunCommand"));
-	command_service->AddCommandCreator("addfriend", swganh::command::PythonCommandCreator("commands.addfriend", "AddFriendCommand"));
-	command_service->AddCommandCreator("removefriend", swganh::command::PythonCommandCreator("commands.removefriend", "RemoveFriendCommand"));
-	command_service->AddCommandCreator("setmoodinternal", swganh::command::PythonCommandCreator("commands.setmoodinternal", "SetMoodInternalCommand"));
-	command_service->AddCommandCreator("transferitemmisc", swganh::command::PythonCommandCreator("commands.transferItemMisc", "TransferItem"));
-	command_service->AddCommandCreator("transferitem", swganh::command::PythonCommandCreator("commands.transferItem", "TransferItem"));
-	command_service->AddCommandCreator("transferitemarmor", swganh::command::PythonCommandCreator("commands.transferItemArmor", "TransferItemArmor"));
-	command_service->AddCommandCreator("transferitemweapon", swganh::command::PythonCommandCreator("commands.transferItemWeapon", "TransferItemWeapon"));
-	command_service->AddCommandCreator("tip", swganh::command::PythonCommandCreator("commands.tip", "TipCommand"));
 }
 
 shared_ptr<Object> SimulationService::CreateObjectFromTemplate(const string& template_name, PermissionType type, 

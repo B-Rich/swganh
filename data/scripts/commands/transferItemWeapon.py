@@ -1,8 +1,12 @@
 import re
-import swgpy
 from swgpy.command import BaseSwgCommand
+from swgpy.utility import *
 
-class TransferItemWeapon(BaseSwgCommand):
+
+class TransferItemWeaponCommand(BaseSwgCommand):
+    def getCommandName(self):
+        return 'transferitemweapon'
+
     def run(self):
         split = re.split('\W+', self.getCommandString())
         container_id = split[1]

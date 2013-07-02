@@ -3,8 +3,13 @@
 #pragma once
 
 #include <cstdint>
+#include <future>
 #include <memory>
 #include <string>
+
+#include <cppconn/connection.h>
+
+#include <boost/thread.hpp>
 
 namespace swganh {
 namespace object {
@@ -22,7 +27,7 @@ namespace object {
          *
          * @param object the object instance to persist.
          */
-        virtual uint32_t PersistObject(const std::shared_ptr<Object>& object, bool persist_inherited = false) = 0;
+        virtual uint32_t PersistObject(const std::shared_ptr<Object>& object, boost::unique_lock<boost::mutex>& lock, bool persist_inherited = false) = 0;
 
         /**
          * Deletes the requested object from storage.
@@ -34,10 +39,14 @@ namespace object {
         /**
          * Creates an instance of a stored object with the specified id.
          *
-         * @return the created object instance.
+         * Intended to be passed to DatabaseManager::ExecuteAsync
+         *
+         * @return a future to the created object instance.
          * @throws InvalidObject when no object exists for the specified id.
          */
-        virtual std::shared_ptr<Object> CreateObjectFromStorage(uint64_t object_id) = 0;
+        virtual std::future<std::shared_ptr<Object>> LoadFromStorage(uint64_t object_id) = 0;
+        
+        virtual void LoadContainedObjects(const std::shared_ptr<Object>& object) = 0;
                 
         /**
          * Creates an instance of an object from the specified template.
